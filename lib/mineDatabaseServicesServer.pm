@@ -17,7 +17,7 @@ our $CallContext;
 
 our %return_counts = (
         'quick_search' => 1,
-        'quick_search' => 1,
+        'similarity_search' => 1,
         'database_query' => 1,
         'get_comps' => 1,
         'get_rxns' => 1,
@@ -35,7 +35,7 @@ sub _build_valid_methods
     my($self) = @_;
     my $methods = {
         'quick_search' => 1,
-        'quick_search' => 1,
+        'similarity_search' => 1,
         'database_query' => 1,
         'get_comps' => 1,
         'get_rxns' => 1,

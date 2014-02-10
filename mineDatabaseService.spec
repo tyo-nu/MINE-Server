@@ -25,13 +25,13 @@ module mineDatabaseServices {
 
 	/* A summery of a compound object which is returned from compound query
 
-        string _id - unique ID of a compound
+        object_id _id - unique ID of a compound
         string Formula - molecular formula of the compound
         float Mass - exact mass of the compound
         string Inchi_key - the Inchi Key of the compound
     */
     typedef structure {
-        string id;
+        object_id id;
         string Formula;
         float Mass;
         string Inchi_key;
@@ -134,7 +134,7 @@ module mineDatabaseServices {
 		Creates similarity_search_results, a list of comp_stubs whose Tannimoto coefficient to the search smiles is
 		greater that the user set threshold. Uses open babel FP2 fingerprints to match.
 	*/
-	funcdef quick_search(string db, string query) returns (list<comp_stub> quick_search_results);
+	funcdef similarity_search(string db, string smiles, float min_tc) returns (list<comp_stub> similarity_search_results);
     
     /* Input parameters for the "database_query" function.
 	

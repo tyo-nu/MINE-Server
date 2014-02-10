@@ -61,10 +61,11 @@ $db is a string
 $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 </pre>
 
@@ -76,10 +77,11 @@ $db is a string
 $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 
 =end text
@@ -126,9 +128,9 @@ sub quick_search
 
 
 
-=head2 quick_search
+=head2 similarity_search
 
-  $quick_search_results = $obj->quick_search($db, $query)
+  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc)
 
 =over 4
 
@@ -138,13 +140,15 @@ sub quick_search
 
 <pre>
 $db is a string
-$query is a string
-$quick_search_results is a reference to a list where each element is a comp_stub
+$smiles is a string
+$min_tc is a float
+$similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 </pre>
 
@@ -153,13 +157,15 @@ comp_stub is a reference to a hash where the following keys are defined:
 =begin text
 
 $db is a string
-$query is a string
-$quick_search_results is a reference to a list where each element is a comp_stub
+$smiles is a string
+$min_tc is a float
+$similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 
 =end text
@@ -175,32 +181,33 @@ greater that the user set threshold. Uses open babel FP2 fingerprints to match.
 
 =cut
 
-sub quick_search
+sub similarity_search
 {
     my $self = shift;
-    my($db, $query) = @_;
+    my($db, $smiles, $min_tc) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
-    (!ref($query)) or push(@_bad_arguments, "Invalid type for argument \"query\" (value was \"$query\")");
+    (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
+    (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument \"min_tc\" (value was \"$min_tc\")");
     if (@_bad_arguments) {
-	my $msg = "Invalid arguments passed to quick_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	my $msg = "Invalid arguments passed to similarity_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'quick_search');
+							       method_name => 'similarity_search');
     }
 
     my $ctx = $mineDatabaseServicesServer::CallContext;
-    my($quick_search_results);
-    #BEGIN quick_search
-    #END quick_search
+    my($similarity_search_results);
+    #BEGIN similarity_search
+    #END similarity_search
     my @_bad_returns;
-    (ref($quick_search_results) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"quick_search_results\" (value was \"$quick_search_results\")");
+    (ref($similarity_search_results) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"similarity_search_results\" (value was \"$similarity_search_results\")");
     if (@_bad_returns) {
-	my $msg = "Invalid returns passed to quick_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	my $msg = "Invalid returns passed to similarity_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'quick_search');
+							       method_name => 'similarity_search');
     }
-    return($quick_search_results);
+    return($similarity_search_results);
 }
 
 
@@ -226,10 +233,11 @@ database_query_params is a reference to a hash where the following keys are defi
 	regex has a value which is a bool
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 </pre>
 
@@ -246,10 +254,11 @@ database_query_params is a reference to a hash where the following keys are defi
 	regex has a value which is a bool
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
-	id has a value which is a string
+	id has a value which is an object_id
 	Formula has a value which is a string
 	Mass has a value which is a float
 	Inchi_key has a value which is a string
+object_id is a string
 
 
 =end text
@@ -891,7 +900,7 @@ a string
 
 A summery of a compound object which is returned from compound query
 
-        string _id - unique ID of a compound
+        object_id _id - unique ID of a compound
         string Formula - molecular formula of the compound
         float Mass - exact mass of the compound
         string Inchi_key - the Inchi Key of the compound
@@ -903,7 +912,7 @@ A summery of a compound object which is returned from compound query
 
 <pre>
 a reference to a hash where the following keys are defined:
-id has a value which is a string
+id has a value which is an object_id
 Formula has a value which is a string
 Mass has a value which is a float
 Inchi_key has a value which is a string
@@ -915,7 +924,7 @@ Inchi_key has a value which is a string
 =begin text
 
 a reference to a hash where the following keys are defined:
-id has a value which is a string
+id has a value which is an object_id
 Formula has a value which is a string
 Mass has a value which is a float
 Inchi_key has a value which is a string

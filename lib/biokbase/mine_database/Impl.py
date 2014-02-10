@@ -56,19 +56,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         db = self.db_client[db]
         quick_search_results = Utils.get_id(db, query)
-        #END quick_search
-
-        #At some point might do deeper type checking...
-        if not isinstance(quick_search_results, list):
-            raise ValueError('Method quick_search return value ' +
-                             'quick_search_results is not type list as required.')
-        # return the results
-        return [quick_search_results]
-
-    def quick_search(self, db, query):
-        # self.ctx is set by the wsgi application class
-        # return variables are: quick_search_results
-        #BEGIN quick_search
         db = self.db_client[db]
         quick_search_results = Utils.get_id(db, query)
         #END quick_search
@@ -79,6 +66,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'quick_search_results is not type list as required.')
         # return the results
         return [quick_search_results]
+
+    def similarity_search(self, db, smiles, min_tc):
+        # self.ctx is set by the wsgi application class
+        # return variables are: similarity_search_results
+        #BEGIN similarity_search
+        #END similarity_search
+
+        #At some point might do deeper type checking...
+        if not isinstance(similarity_search_results, list):
+            raise ValueError('Method similarity_search return value ' +
+                             'similarity_search_results is not type list as required.')
+        # return the results
+        return [similarity_search_results]
 
     def database_query(self, params):
         # self.ctx is set by the wsgi application class

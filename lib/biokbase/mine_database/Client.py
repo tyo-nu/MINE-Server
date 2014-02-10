@@ -187,10 +187,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def quick_search(self, db, query):
+    def similarity_search(self, db, smiles, min_tc):
 
-        arg_hash = {'method': 'mineDatabaseServices.quick_search',
-                    'params': [db, query],
+        arg_hash = {'method': 'mineDatabaseServices.similarity_search',
+                    'params': [db, smiles, min_tc],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
