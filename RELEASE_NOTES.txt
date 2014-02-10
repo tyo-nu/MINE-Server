@@ -1,0 +1,69 @@
+OVERVIEW
+-----------------------------------------
+
+This KBase service computes likelihoods for annotations and reactions for a given genome.
+Likelihoods are computed based on similarity to genes with literature evidence and genes
+in subsystems. More ambiguous role calls are given lower probabilities.
+
+VERSION 1.0.4 (Released 01-06-2014)
+-----------------------------------------
+NEW FEATURES
+- Added pa-checkjob command to check status of jobs started by pa-annotate command
+
+UPDATED FEATURES / MAJOR BUG FIXES:
+- Switched to user and job state service for job management
+- Switched to workspace deluxe service for typed objects
+
+ANTICIPATED FUTURE DEVELOPMENTS:
+- None
+
+VERSION 1.0.3 (Released 12-13-2013)
+-----------------------------------------
+NEW FEATURES
+- pa-getprobanno function to get a tabular format from a ProbAnno object
+
+UPDATED FEATURES / MAJOR BUG FIXES:
+- None
+
+ANTICIPATED FUTURE DEVELOPMENTS:
+- None
+
+VERSION 1.0.2 (Released 11-7-2013)
+-----------------------------------------
+NEW FEATURES:
+- None
+
+UPDATED FEATURES / MAJOR BUG FIXES:
+- Reduced redundancy in calculated RxnProbs object GPRs
+- Created complete workflow script for probabilistic annotation and gapfill analysis of a genome
+- Fixes for tests
+- Improved BLAST calling and server flexibility
+
+ANTICIPATED FUTURE DEVELOPMENTS:
+- Release of workflow script as part of a probanno narrative
+- Incorporation of gene synteny into probability calculations
+- Incorporation of template models in pa-calculate
+
+VERSION: 1.0.1 (Released 08-16-2013)
+-----------------------------------------
+NEW FEATURES:
+- pa-getrxnprobs function to get a tabular (easily searchable and joinable) format from a RxnProbs object
+
+UPDATED FEATURES / MAJOR BUG FIXES:
+- Updated spec for ProbAnno object, should now be ready for stronger type checking.
+
+ANTICIPATED FUTURE DEVELOPMENTS:
+- None
+
+VERSION: 1.0 (Released 08/06/2013)
+-----------------------------------------
+NEW FEATURES:
+- This is the first release of the probabilistic_annotation service
+- Add methods for probabilistic annotation (pa-annotate) and calculation of reaction probabilities (pa-calculate)
+- Add method for setting and viewing the URL for the probabilistic annotation service (pa-url)
+
+UPDATED FEATURES / MAJOR BUG FIXES: 
+- None
+
+ANTICIPATED FUTURE DEVELOPMENTS:
+- None

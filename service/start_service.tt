@@ -1,0 +1,19 @@
+#!/bin/sh
+
+export KB_SERVICE_NAME=[% kb_service_name %]
+export KB_TOP=[% kb_top %]
+export KB_RUNTIME=[% kb_runtime %]
+
+export KB_SERVICE_DIR=$KB_TOP/services/$KB_SERVICE_NAME
+export KB_DEPLOYMENT_CONFIG=$KB_TOP/deployment.cfg
+
+export PYTHONPATH=$KB_TOP/lib:$PYTHONPATH
+export PATH=$KB_TOP/bin:$KB_RUNTIME/bin:$PATH
+export PERL5LIB=$KB_TOP/lib:$KB_TOP/lib/perl5
+
+pid_file=$KB_SERVICE_DIR/service.pid
+wsgi_file=$KB_TOP/lib/biokbase/$KB_SERVICE_NAME/Server.py
+
+uwsgi --master --processes 20 --cheaper 4 \
+    --http :[% kb_service_port %] --http-timeout 600 --pidfile $pid_file --daemonize $KB_SERVICE_DIR/error.log \
+    --wsgi-file $wsgi_file

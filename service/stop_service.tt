@@ -1,0 +1,14 @@
+#!/bin/sh
+kbtop=[% kb_top %]
+service_name=[% kb_service_name %]
+
+pid_file=$kbtop/services/$service_name/service.pid
+
+if [ ! -f $pid_file ] ; then 
+	echo "No pid file: $pid_file found for service $service_name."
+	exit 1
+fi
+uwsgi --stop $pid_file
+
+# wsgi doesn't kill the pid file so lets do that too.
+rm $pid_file

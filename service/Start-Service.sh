@@ -1,0 +1,1 @@
+uwsgi --master --processes 20 --cheaper 4 --http :7074 --http-timeout 600 --pidfile /vol/model-prod/mine-server/service/pid2 --daemonize /vol/model-prod/mine-server/service/error2.log --wsgi-file /vol/model-prod/mine-server/lib/biokbase/mine_database/Server.py
