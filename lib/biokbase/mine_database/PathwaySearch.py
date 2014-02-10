@@ -6,7 +6,7 @@ import platform
 import time
 from optparse import OptionParser
 from HTMLPrinter import Printer
-from Utils import get_id
+from Utils import quick_search
 from Utils import establish_db_client
 
 
@@ -172,8 +172,8 @@ if __name__ == '__main__':
     client = establish_db_client()
     db = client[options.db]
 
-    options.start_comp = get_id(db, options.start_comp)
-    options.end_comp = get_id(db, options.end_comp)
+    options.start_comp = quick_search(db, options.start_comp)[0]['_id']
+    options.end_comp = quick_search(db, options.end_comp)[0]['_id']
 
     search = PathwaySearch(options)
     if options.all_paths:

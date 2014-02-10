@@ -25,11 +25,11 @@ def establish_db_client():
     return client
 
 
-def get_id(db, comp_data):
+def quick_search(db, comp_data):
     """This function takes user provided compound identifiers and attempts to find a related database ID"""
     #check if comp_data already is a _id
     if (len(comp_data) == 41) and (comp_data[0] == 'C'):
-        return comp_data
+        query_field = '_id'
     elif (len(comp_data) == 6) and (comp_data[0] == 'C'):
         query_field = 'KEGG_code'
     elif (len(comp_data) == 8) and (comp_data[0:2] == 'cpd'):
@@ -41,13 +41,15 @@ def get_id(db, comp_data):
         query_field = 'Names'
 
     if query_field == 'Inchi_key':
-        compound_id = db.compounds.find_one({query_field: {'$regex': comp_data}}, {'_id': 1})
+        results = db.compounds.find({query_field: {'$regex': comp_data}},
+                                    {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})
     else:
-        compound_id = db.compounds.find_one({query_field: comp_data}, {'_id': 1})
-    if not compound_id:
+        results = db.compounds.find({query_field: comp_data},
+                                    {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})
+    if not results:
         raise ValueError("%s was not found in the database." % comp_data)
 
-    return compound_id['_id']
+    return results
 
 
 def dict_push(dict, key, value):

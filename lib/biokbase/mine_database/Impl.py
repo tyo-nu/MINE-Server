@@ -55,9 +55,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: quick_search_results
         #BEGIN quick_search
         db = self.db_client[db]
-        quick_search_results = Utils.get_id(db, query)
-        db = self.db_client[db]
-        quick_search_results = Utils.get_id(db, query)
+        quick_search_results = Utils.quick_search(db, query)
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -71,6 +69,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
+        #TODO implement similarity search
+        similarity_search_results = ['Not Yet Implemented']
         #END similarity_search
 
         #At some point might do deeper type checking...
@@ -86,13 +86,12 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN database_query
         if params.db != 'admin':
             db = self.db_client[params.db]
-            #need name checking
-            collection = db[params.collection]
             if params.regex:
-                database_query_results = [x['_id'] for x in collection.find({params.field: {'$regex': params.value}},
-                                                                            {'_id': 1})]
+                database_query_results = [x['_id'] for x in db.compounds.find({params.field: {'$regex': params.value}},
+                                            {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
             else:
-                database_query_results = [x['_id'] for x in collection.find({params.field: params.value}, {'_id': 1})]
+                database_query_results = [x['_id'] for x in db.compounds.find({params.field: params.value},
+                                            {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query
