@@ -1,5 +1,6 @@
 #BEGIN_HEADER
 from pymongo import MongoClient
+import pybel
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
@@ -69,8 +70,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
-        #TODO implement similarity search
-        similarity_search_results = ['Not Yet Implemented']
+        similarity_search_results = []
+        mol = pybel.readstring('smi', smiles)
+        query_fp = set(mol.calcfp().bits)
+        len_fp = len(query_fp)
+        comps = db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}}, {"len_FP2": {"$lte": len_fp/min_tc}}]}
+                                  , {"FP2": 1, 'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})
+        for x in comps:
+            test_fp = set(x['FP2'])
+            tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
+            if tc >= min_tc:
+                del x['FP2']
+                similarity_search_results.append(x)
+
         #END similarity_search
 
         #At some point might do deeper type checking...
