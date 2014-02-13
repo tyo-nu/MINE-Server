@@ -74,8 +74,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         mol = pybel.readstring('smi', smiles)
         query_fp = set(mol.calcfp().bits)
         len_fp = len(query_fp)
-        comps = db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}}, {"len_FP2": {"$lte": len_fp/min_tc}}]}
-                                  , {"FP2": 1, 'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})
+        comps = [x for x in db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}},
+                    {"len_FP2": {"$lte": len_fp/min_tc}}]},
+                    {"FP2": 1, 'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
         for x in comps:
             test_fp = set(x['FP2'])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
@@ -99,11 +100,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if params.db != 'admin':
             db = self.db_client[params.db]
             if params.regex:
-                database_query_results = [x['_id'] for x in db.compounds.find({params.field: {'$regex': params.value}},
-                                            {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                database_query_results = [x for x in db.compounds.find({params.field: {'$regex': params.value}},
+                                                 {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
             else:
-                database_query_results = [x['_id'] for x in db.compounds.find({params.field: params.value},
-                                            {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                database_query_results = [x for x in db.compounds.find({params.field: params.value},
+                                                 {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query
@@ -167,7 +168,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: adducts
         #BEGIN get_adducts
-        adducts = (self.pos_adducts, self.neg_adducts)
+        adducts = [self.pos_adducts, self.neg_adducts]
         #END get_adducts
 
         #At some point might do deeper type checking...
