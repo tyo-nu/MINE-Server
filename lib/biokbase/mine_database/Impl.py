@@ -55,7 +55,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
-        db = self.db_client[db]
+        db = self.db_client[str(db)]
         quick_search_results = Utils.quick_search(db, query)
         #END quick_search
 

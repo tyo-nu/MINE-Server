@@ -18,12 +18,11 @@ class Options():
 
 config = Options()
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-
+test_db = '1GenEcoCyc'
 
 class DB_query_params():
-    def __init__(self, db, collection, field, value, regex=False):
+    def __init__(self, db, field, value, regex=False):
         self.db = db
-        self.collection = collection
         self.field = field
         self.value = value
         self.regex = regex
@@ -51,22 +50,22 @@ class Pathway_query_params():
         self.gibbs_cap = 100
 
 def test_quick_search():
-    assert services.quick_search(config.test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
-    assert services.quick_search(config.test_db, 'C00031') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
-    assert services.quick_search(config.test_db, 'Glucose') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
+    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
+    assert services.quick_search(test_db, 'C00031') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
+    assert services.quick_search(test_db, 'Glucose') == 'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'
 
 
 def test_database_query():
     assert services.database_query(DB_query_params('admin', 'users', '', '')) == ['Illegal query']
-    assert services.database_query(DB_query_params(config.test_db, 'compounds', 'KEGG_code', 'C00031')) == \
+    assert services.database_query(DB_query_params(config.test_db, 'KEGG_code', 'C00031')) == \
            ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
-    assert services.database_query(DB_query_params(config.test_db, 'compounds', 'Names', 'Grape', True)) == \
+    assert services.database_query(DB_query_params(config.test_db, 'Names', 'Grape', True)) == \
            ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
 
 
 def test_get_models():
     meh = services.get_models()
-    assert meh[2] == (u'kb|fm.3375', u'Escherichia coli 97.0264')
+    assert len(meh[0]) == 2
     assert len(meh) == 2356
 
 
