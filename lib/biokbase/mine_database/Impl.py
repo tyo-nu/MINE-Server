@@ -38,7 +38,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.models = []
-	self.db_client = MongoClient(host='branch')
+        self.db_client = MongoClient(host='branch')
         admin = self.db_client['admin']
         admin.authenticate('worker', 'bnice14bot')
         kbase_db = self.db_client['KBase']
@@ -55,8 +55,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
-        db = self.db_client[str(db)]
-        quick_search_results = Utils.quick_search(db, query)
+        mdb = self.db_client[db]
+        quick_search_results = Utils.quick_search(mdb, query)
         #END quick_search
 
         #At some point might do deeper type checking...

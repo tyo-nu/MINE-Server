@@ -79,7 +79,7 @@ module mineDatabaseServices {
 
 		Optionally:
 		list<string> KEGG_Code - KEGG compound codes
-        list<string> BRENDA_Name - Names from the BRENDA repository
+        list<string> DB_links - links to the same compound in other databases
         list<object_id> Reactant_in - Reactions in which the compound is a reactant
         list<object_id> Product_of - Reactions in which the compound is a product
 			
@@ -92,7 +92,7 @@ module mineDatabaseServices {
 		float Mass;
 		int Charge;
 		list<string> KEGG_Code;
-        list<string> BRENDA_Name;
+        list<string> DB_links;
         list<object_id> Reactant_in;
         list<object_id> Product_of;
     } CompoundObject;
@@ -135,25 +135,16 @@ module mineDatabaseServices {
 		greater that the user set threshold. Uses open babel FP2 fingerprints to match.
 	*/
 	funcdef similarity_search(string db, string smiles, float min_tc) returns (list<comp_stub> similarity_search_results);
-    
-    /* Input parameters for the "database_query" function.
-	
+
+    /*
+		Creates database_query_results, a list of object_ids which match the json query string
+		Input parameters for the "database_query" function:
 		string db - the database against which the query will be performed
         string field - the field of the database to match
         string value - the value to match
         bool regex - if true the value will be processed as a regular expression
 	*/
-	typedef structure { 
-		string db;
-        string field;
-        string value;
-        bool regex;
-	} database_query_params;
-
-    /*
-		Creates database_query_results, a list of object_ids which match the json query string
-	*/
-	funcdef database_query(database_query_params params) returns (list<comp_stub> database_query_results);
+	funcdef database_query(string db, string field, string value, bool regex) returns (list<comp_stub> database_query_results);
 
     /*
         Return a list of CompoundObjects that match supplied object_ids in a specified db
@@ -175,55 +166,33 @@ module mineDatabaseServices {
     */
     funcdef get_adducts() returns (tuple<list<string>, list<string>> adducts);
     
-    /* Input parameters for the "mass_adduct_query" function.
-	
+
+    /*
+		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
+
+		Input parameters for the "mass_adduct_query" function:
 		string db - the database in which to search for mass spec matches
 		float mz - the experimental mass per charge ratio
         float tolerance - the desired mass precision
         list<adduct> adduct_list - the adducts to consider in the query.
         list<string> models - the models in SEED that will be considered native metabolites
-        string charge - the polarity for molecules if not specified by file
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified by file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-	*/
-	typedef structure { 
-		string db;
-		float mz;
-		float tolerance;
-        list<string> adduct_list;
-        list<string> models;
-		bool ppm;
-		bool charge;
-        bool halogens;
-	} mass_adduct_query_params;
-    
-    /*
-		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
     */
-	funcdef adduct_db_search(mass_adduct_query_params params) returns (list<adduct_result> output);
+	funcdef adduct_db_search(string db, float mz, float tolerance, list<string> adduct_list, list<string> models,
+	                         bool ppm, bool charge, bool halogens) returns (list<adduct_result> output);
 
-    /* Input parameters for the "pathway_search" function.
-	
+    /*
+		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
+
+		Input parameters for the "pathway_search" function:
 		string db - the database in which to search for pathways
 		object_id start_comp - the compound to begin the search from
         object_id end_comp - the compound that that a pathway will end with if successful
         int len_limit - the max number of intermediate reactions permitted in a path.
         bool all_paths - if true, the script returns all paths less that the limit not just the shortest path
-        float np_min - Set a floor on the minimum natural product likeness of any one compound in a pathway
-        float gibbs_cap - Set a cap on the gibbs free energy of any one reaction in a pathway
 	*/
-	typedef structure {
-	    string db;
-		object_id start_comp;
-		object_id end_comp;
-        int len_limit;
-        bool all_paths;
-        float np_min;
-        float gibbs_cap;
-	} pathway_query_params;
-    
-    /*
-		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
-	*/
-	funcdef pathway_search(pathway_query_params) returns (list<pathway> pathway_query_results);
+	funcdef pathway_search(string db, object_id start_comp object_id end_comp, int len_limit, bool all_paths)
+	returns (list<pathway> pathway_query_results);
 };
