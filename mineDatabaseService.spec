@@ -193,6 +193,6 @@ module mineDatabaseServices {
         int len_limit - the max number of intermediate reactions permitted in a path.
         bool all_paths - if true, the script returns all paths less that the limit not just the shortest path
 	*/
-	funcdef pathway_search(string db, object_id start_comp object_id end_comp, int len_limit, bool all_paths)
+	funcdef pathway_search(string db, object_id start_comp, object_id end_comp, int len_limit, bool all_paths)
 	returns (list<pathway> pathway_query_results);
 };

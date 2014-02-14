@@ -215,7 +215,7 @@ sub similarity_search
 
 =head2 database_query
 
-  $database_query_results = $obj->database_query($params)
+  $database_query_results = $obj->database_query($db, $field, $value, $regex)
 
 =over 4
 
@@ -224,13 +224,11 @@ sub similarity_search
 =begin html
 
 <pre>
-$params is a database_query_params
+$db is a string
+$field is a string
+$value is a string
+$regex is a bool
 $database_query_results is a reference to a list where each element is a comp_stub
-database_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	field has a value which is a string
-	value has a value which is a string
-	regex has a value which is a bool
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -245,13 +243,11 @@ object_id is a string
 
 =begin text
 
-$params is a database_query_params
+$db is a string
+$field is a string
+$value is a string
+$regex is a bool
 $database_query_results is a reference to a list where each element is a comp_stub
-database_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	field has a value which is a string
-	value has a value which is a string
-	regex has a value which is a bool
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -268,6 +264,11 @@ object_id is a string
 =item Description
 
 Creates database_query_results, a list of object_ids which match the json query string
+Input parameters for the "database_query" function:
+string db - the database against which the query will be performed
+        string field - the field of the database to match
+        string value - the value to match
+        bool regex - if true the value will be processed as a regular expression
 
 =back
 
@@ -276,10 +277,13 @@ Creates database_query_results, a list of object_ids which match the json query 
 sub database_query
 {
     my $self = shift;
-    my($params) = @_;
+    my($db, $field, $value, $regex) = @_;
 
     my @_bad_arguments;
-    (ref($params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument \"params\" (value was \"$params\")");
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($field)) or push(@_bad_arguments, "Invalid type for argument \"field\" (value was \"$field\")");
+    (!ref($value)) or push(@_bad_arguments, "Invalid type for argument \"value\" (value was \"$value\")");
+    (!ref($regex)) or push(@_bad_arguments, "Invalid type for argument \"regex\" (value was \"$regex\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to database_query:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -326,7 +330,7 @@ CompoundObject is a reference to a hash where the following keys are defined:
 	Mass has a value which is a float
 	Charge has a value which is an int
 	KEGG_Code has a value which is a reference to a list where each element is a string
-	BRENDA_Name has a value which is a reference to a list where each element is a string
+	DB_links has a value which is a reference to a list where each element is a string
 	Reactant_in has a value which is a reference to a list where each element is an object_id
 	Product_of has a value which is a reference to a list where each element is an object_id
 
@@ -348,7 +352,7 @@ CompoundObject is a reference to a hash where the following keys are defined:
 	Mass has a value which is a float
 	Charge has a value which is an int
 	KEGG_Code has a value which is a reference to a list where each element is a string
-	BRENDA_Name has a value which is a reference to a list where each element is a string
+	DB_links has a value which is a reference to a list where each element is a string
 	Reactant_in has a value which is a reference to a list where each element is an object_id
 	Product_of has a value which is a reference to a list where each element is an object_id
 
@@ -607,7 +611,7 @@ sub get_adducts
 
 =head2 adduct_db_search
 
-  $output = $obj->adduct_db_search($params)
+  $output = $obj->adduct_db_search($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
 
 =over 4
 
@@ -616,17 +620,15 @@ sub get_adducts
 =begin html
 
 <pre>
-$params is a mass_adduct_query_params
+$db is a string
+$mz is a float
+$tolerance is a float
+$adduct_list is a reference to a list where each element is a string
+$models is a reference to a list where each element is a string
+$ppm is a bool
+$charge is a bool
+$halogens is a bool
 $output is a reference to a list where each element is an adduct_result
-mass_adduct_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	mz has a value which is a float
-	tolerance has a value which is a float
-	adduct_list has a value which is a reference to a list where each element is a string
-	models has a value which is a reference to a list where each element is a string
-	ppm has a value which is a bool
-	charge has a value which is a bool
-	halogens has a value which is a bool
 bool is an int
 adduct_result is a reference to a hash where the following keys are defined:
 	adduct has a value which is a string
@@ -640,17 +642,15 @@ object_id is a string
 
 =begin text
 
-$params is a mass_adduct_query_params
+$db is a string
+$mz is a float
+$tolerance is a float
+$adduct_list is a reference to a list where each element is a string
+$models is a reference to a list where each element is a string
+$ppm is a bool
+$charge is a bool
+$halogens is a bool
 $output is a reference to a list where each element is an adduct_result
-mass_adduct_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	mz has a value which is a float
-	tolerance has a value which is a float
-	adduct_list has a value which is a reference to a list where each element is a string
-	models has a value which is a reference to a list where each element is a string
-	ppm has a value which is a bool
-	charge has a value which is a bool
-	halogens has a value which is a bool
 bool is an int
 adduct_result is a reference to a hash where the following keys are defined:
 	adduct has a value which is a string
@@ -667,6 +667,16 @@ object_id is a string
 
 Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
 
+Input parameters for the "mass_adduct_query" function:
+string db - the database in which to search for mass spec matches
+float mz - the experimental mass per charge ratio
+        float tolerance - the desired mass precision
+        list<adduct> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified by file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+
 =back
 
 =cut
@@ -674,10 +684,17 @@ Creates output, a list of adduct, formula and isomer combinations that match the
 sub adduct_db_search
 {
     my $self = shift;
-    my($params) = @_;
+    my($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens) = @_;
 
     my @_bad_arguments;
-    (ref($params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument \"params\" (value was \"$params\")");
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($mz)) or push(@_bad_arguments, "Invalid type for argument \"mz\" (value was \"$mz\")");
+    (!ref($tolerance)) or push(@_bad_arguments, "Invalid type for argument \"tolerance\" (value was \"$tolerance\")");
+    (ref($adduct_list) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"adduct_list\" (value was \"$adduct_list\")");
+    (ref($models) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"models\" (value was \"$models\")");
+    (!ref($ppm)) or push(@_bad_arguments, "Invalid type for argument \"ppm\" (value was \"$ppm\")");
+    (!ref($charge)) or push(@_bad_arguments, "Invalid type for argument \"charge\" (value was \"$charge\")");
+    (!ref($halogens)) or push(@_bad_arguments, "Invalid type for argument \"halogens\" (value was \"$halogens\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to adduct_db_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -703,7 +720,7 @@ sub adduct_db_search
 
 =head2 pathway_search
 
-  $pathway_query_results = $obj->pathway_search($pathway_query_params)
+  $pathway_query_results = $obj->pathway_search($db, $start_comp, $end_comp, $len_limit, $all_paths)
 
 =over 4
 
@@ -712,16 +729,12 @@ sub adduct_db_search
 =begin html
 
 <pre>
-$pathway_query_params is a pathway_query_params
+$db is a string
+$start_comp is an object_id
+$end_comp is an object_id
+$len_limit is an int
+$all_paths is a bool
 $pathway_query_results is a reference to a list where each element is a pathway
-pathway_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	start_comp has a value which is an object_id
-	end_comp has a value which is an object_id
-	len_limit has a value which is an int
-	all_paths has a value which is a bool
-	np_min has a value which is a float
-	gibbs_cap has a value which is a float
 object_id is a string
 bool is an int
 pathway is a reference to a list where each element is an object_id
@@ -732,16 +745,12 @@ pathway is a reference to a list where each element is an object_id
 
 =begin text
 
-$pathway_query_params is a pathway_query_params
+$db is a string
+$start_comp is an object_id
+$end_comp is an object_id
+$len_limit is an int
+$all_paths is a bool
 $pathway_query_results is a reference to a list where each element is a pathway
-pathway_query_params is a reference to a hash where the following keys are defined:
-	db has a value which is a string
-	start_comp has a value which is an object_id
-	end_comp has a value which is an object_id
-	len_limit has a value which is an int
-	all_paths has a value which is a bool
-	np_min has a value which is a float
-	gibbs_cap has a value which is a float
 object_id is a string
 bool is an int
 pathway is a reference to a list where each element is an object_id
@@ -755,6 +764,13 @@ pathway is a reference to a list where each element is an object_id
 
 Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
 
+Input parameters for the "pathway_search" function:
+string db - the database in which to search for pathways
+object_id start_comp - the compound to begin the search from
+        object_id end_comp - the compound that that a pathway will end with if successful
+        int len_limit - the max number of intermediate reactions permitted in a path.
+        bool all_paths - if true, the script returns all paths less that the limit not just the shortest path
+
 =back
 
 =cut
@@ -762,10 +778,14 @@ Creates pathway_query_results, a list of valid pathways (length one unless all_p
 sub pathway_search
 {
     my $self = shift;
-    my($pathway_query_params) = @_;
+    my($db, $start_comp, $end_comp, $len_limit, $all_paths) = @_;
 
     my @_bad_arguments;
-    (ref($pathway_query_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument \"pathway_query_params\" (value was \"$pathway_query_params\")");
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($start_comp)) or push(@_bad_arguments, "Invalid type for argument \"start_comp\" (value was \"$start_comp\")");
+    (!ref($end_comp)) or push(@_bad_arguments, "Invalid type for argument \"end_comp\" (value was \"$end_comp\")");
+    (!ref($len_limit)) or push(@_bad_arguments, "Invalid type for argument \"len_limit\" (value was \"$len_limit\")");
+    (!ref($all_paths)) or push(@_bad_arguments, "Invalid type for argument \"all_paths\" (value was \"$all_paths\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to pathway_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -1110,7 +1130,7 @@ Data structures for a compound object
 
                 Optionally:
                 list<string> KEGG_Code - KEGG compound codes
-        list<string> BRENDA_Name - Names from the BRENDA repository
+        list<string> DB_links - links to the same compound in other databases
         list<object_id> Reactant_in - Reactions in which the compound is a reactant
         list<object_id> Product_of - Reactions in which the compound is a product
 
@@ -1128,7 +1148,7 @@ Stringcode has a value which is a string
 Mass has a value which is a float
 Charge has a value which is an int
 KEGG_Code has a value which is a reference to a list where each element is a string
-BRENDA_Name has a value which is a reference to a list where each element is a string
+DB_links has a value which is a reference to a list where each element is a string
 Reactant_in has a value which is a reference to a list where each element is an object_id
 Product_of has a value which is a reference to a list where each element is an object_id
 
@@ -1146,7 +1166,7 @@ Stringcode has a value which is a string
 Mass has a value which is a float
 Charge has a value which is an int
 KEGG_Code has a value which is a reference to a list where each element is a string
-BRENDA_Name has a value which is a reference to a list where each element is a string
+DB_links has a value which is a reference to a list where each element is a string
 Reactant_in has a value which is a reference to a list where each element is an object_id
 Product_of has a value which is a reference to a list where each element is an object_id
 
@@ -1204,165 +1224,6 @@ Reactants has a value which is a reference to a list where each element is a rxn
 Products has a value which is a reference to a list where each element is a rxn_comp
 Energy has a value which is a float
 Error has a value which is a float
-
-
-=end text
-
-=back
-
-
-
-=head2 database_query_params
-
-=over 4
-
-
-
-=item Description
-
-Input parameters for the "database_query" function.
-
-        string db - the database against which the query will be performed
-string field - the field of the database to match
-string value - the value to match
-bool regex - if true the value will be processed as a regular expression
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-field has a value which is a string
-value has a value which is a string
-regex has a value which is a bool
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-field has a value which is a string
-value has a value which is a string
-regex has a value which is a bool
-
-
-=end text
-
-=back
-
-
-
-=head2 mass_adduct_query_params
-
-=over 4
-
-
-
-=item Description
-
-Input parameters for the "mass_adduct_query" function.
-
-        string db - the database in which to search for mass spec matches
-        float mz - the experimental mass per charge ratio
-float tolerance - the desired mass precision
-list<adduct> adduct_list - the adducts to consider in the query.
-list<string> models - the models in SEED that will be considered native metabolites
-string charge - the polarity for molecules if not specified by file
-bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-mz has a value which is a float
-tolerance has a value which is a float
-adduct_list has a value which is a reference to a list where each element is a string
-models has a value which is a reference to a list where each element is a string
-ppm has a value which is a bool
-charge has a value which is a bool
-halogens has a value which is a bool
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-mz has a value which is a float
-tolerance has a value which is a float
-adduct_list has a value which is a reference to a list where each element is a string
-models has a value which is a reference to a list where each element is a string
-ppm has a value which is a bool
-charge has a value which is a bool
-halogens has a value which is a bool
-
-
-=end text
-
-=back
-
-
-
-=head2 pathway_query_params
-
-=over 4
-
-
-
-=item Description
-
-Input parameters for the "pathway_search" function.
-
-        string db - the database in which to search for pathways
-        object_id start_comp - the compound to begin the search from
-object_id end_comp - the compound that that a pathway will end with if successful
-int len_limit - the max number of intermediate reactions permitted in a path.
-bool all_paths - if true, the script returns all paths less that the limit not just the shortest path
-float np_min - Set a floor on the minimum natural product likeness of any one compound in a pathway
-float gibbs_cap - Set a cap on the gibbs free energy of any one reaction in a pathway
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-start_comp has a value which is an object_id
-end_comp has a value which is an object_id
-len_limit has a value which is an int
-all_paths has a value which is a bool
-np_min has a value which is a float
-gibbs_cap has a value which is a float
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-db has a value which is a string
-start_comp has a value which is an object_id
-end_comp has a value which is an object_id
-len_limit has a value which is an int
-all_paths has a value which is a bool
-np_min has a value which is a float
-gibbs_cap has a value which is a float
 
 
 =end text

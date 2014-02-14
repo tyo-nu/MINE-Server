@@ -235,7 +235,7 @@ class Application(object):
                              types=[basestring, basestring, float])
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
-                             types=[dict])
+                             types=[basestring, basestring, basestring, int])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
                              types=[basestring, list])
@@ -250,10 +250,10 @@ class Application(object):
                              types=[])
         self.rpc_service.add(impl_mineDatabaseServices.adduct_db_search,
                              name='mineDatabaseServices.adduct_db_search',
-                             types=[dict])
+                             types=[basestring, float, float, list, list, int, int, int])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
-                             types=[dict])
+                             types=[basestring, basestring, basestring, int, int])
 
     def __call__(self, environ, start_response):
         # Context object, equivalent to the perl impl CallContext

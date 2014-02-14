@@ -4,6 +4,7 @@ import pybel
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
+import pybel
 #END_HEADER
 
 
@@ -93,7 +94,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def database_query(self, params):
+    def database_query(self, db, field, value, regex):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
@@ -178,7 +179,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [adducts]
 
-    def adduct_db_search(self, params):
+    def adduct_db_search(self, db, mz, tolerance, adduct_list, models, ppm, charge, halogens):
         # self.ctx is set by the wsgi application class
         # return variables are: output
         #BEGIN adduct_db_search
@@ -201,7 +202,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [output]
 
-    def pathway_search(self, pathway_query_params):
+    def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
         # self.ctx is set by the wsgi application class
         # return variables are: pathway_query_results
         #BEGIN pathway_search

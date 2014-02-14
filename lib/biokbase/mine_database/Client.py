@@ -222,10 +222,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def database_query(self, params):
+    def database_query(self, db, field, value, regex):
 
         arg_hash = {'method': 'mineDatabaseServices.database_query',
-                    'params': [params],
+                    'params': [db, field, value, regex],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
@@ -397,10 +397,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def adduct_db_search(self, params):
+    def adduct_db_search(self, db, mz, tolerance, adduct_list, models, ppm, charge, halogens):
 
         arg_hash = {'method': 'mineDatabaseServices.adduct_db_search',
-                    'params': [params],
+                    'params': [db, mz, tolerance, adduct_list, models, ppm, charge, halogens],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
@@ -432,10 +432,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def pathway_search(self, pathway_query_params):
+    def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
 
         arg_hash = {'method': 'mineDatabaseServices.pathway_search',
-                    'params': [pathway_query_params],
+                    'params': [db, start_comp, end_comp, len_limit, all_paths],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
