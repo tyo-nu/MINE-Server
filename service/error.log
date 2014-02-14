@@ -1,4 +1,4 @@
-*** Starting uWSGI 1.4.5 (64bit) on [Thu Jan 23 15:37:20 2014] ***
+*** Starting uWSGI 1.4.5 (64bit) on [Fri Feb 14 13:42:09 2014] ***
 compiled with version: 4.1.2 20080704 (Red Hat 4.1.2-48) on 04 February 2013 18:06:41
 os: Linux-2.6.32-358.18.1.el6.x86_64 #1 SMP Wed Aug 28 17:19:38 UTC 2013
 nodename: twig
@@ -6,31 +6,26 @@ machine: x86_64
 clock source: unix
 pcre jit disabled
 detected number of CPU cores: 24
-current working directory: /vol/model-prod/mine-server
+current working directory: /vol/model-prod/mine-server/service
 writing pidfile to /vol/model-prod/mine-server/service/pid
 detected binary path: /vol/kbase/runtime/bin/uwsgi
 your processes number limit is 1024
 your memory page size is 4096 bytes
 detected max file descriptor number: 1024
 lock engine: pthread robust mutexes
-uWSGI http bound on 7074 fd 5
-uwsgi socket 0 bound to TCP address 127.0.0.1:40241 (port auto-assigned) fd 4
+uWSGI http bound on :7074 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:33697 (port auto-assigned) fd 3
 Python version: 2.7.3 (default, Feb  4 2013, 17:36:15)  [GCC 4.1.2 20080704 (Red Hat 4.1.2-48)]
 *** Python threads support is disabled. You can enable it with --enable-threads ***
-Python main interpreter initialized at 0x1bf6410
+Python main interpreter initialized at 0x281c1d0
 your server socket listen backlog is limited to 100 connections
 mapped 1520904 bytes (1485 KB) for 20 cores
 *** Operational MODE: preforking ***
-Traceback (most recent call last):
-  File "lib/biokbase/mine_database/Server.py", line 40, in <module>
-    from biokbase.mine_database.Impl import mineDatabaseServices
-ImportError: No module named mine_database.Impl
-unable to load app 0 (mountpoint='') (callable not found or import error)
-*** no app loaded. going in full dynamic mode ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x281c1d0 pid: 8390 (default app)
 *** uWSGI is running in multiple interpreter mode ***
-spawned uWSGI master process (pid: 1692)
-spawned uWSGI worker 1 (pid: 1694, cores: 1)
-spawned uWSGI worker 2 (pid: 1695, cores: 1)
-spawned uWSGI worker 3 (pid: 1696, cores: 1)
-spawned uWSGI worker 4 (pid: 1697, cores: 1)
-spawned uWSGI http 1 (pid: 1698)
+spawned uWSGI master process (pid: 8390)
+spawned uWSGI worker 1 (pid: 8395, cores: 1)
+spawned uWSGI worker 2 (pid: 8396, cores: 1)
+spawned uWSGI worker 3 (pid: 8397, cores: 1)
+spawned uWSGI worker 4 (pid: 8398, cores: 1)
+spawned uWSGI http 1 (pid: 8399)
