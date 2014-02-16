@@ -1,10 +1,8 @@
 #BEGIN_HEADER
-from pymongo import MongoClient
 import pybel
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
-import os
 
 
 class Pathway_query_params():
@@ -204,8 +202,7 @@ class mineDatabaseServices:
         # self.ctx is set by the wsgi application class
         # return variables are: output
         #BEGIN adduct_db_search
-        output = os.getcwd()
-        return [output]
+        output = []
         db = self.db_client[db]
         name = "Single Peak: " + str(mz)
         params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
