@@ -1,20 +1,5 @@
 __author__ = 'JGJeffryes'
-from biokbase.mine_database.Client import mineDatabaseServices
-
-
-class Options():
-    def __init__(self):
-        self.adduct_file = "lib/All Adducts.txt"
-        self.kbase_db = 'KBase'
-        self.test_db = '1GenEcoCyc'
-
-        self.positive_adduct_file = "lib/Positive Adducts full.txt"
-        self.negative_adduct_file = "lib/Negative Adducts full.txt"
-        self.adduct_list = ['M+H', 'M-H']
-        self.tolerance = 0.002
-        self.ppm = False
-        self.ms_file = "lib/Unknowns.txt"
-        self.halogens = True
+from Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = '1GenEcoCyc'
@@ -84,6 +69,3 @@ def test_pathway_search():
                          u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
     assert len(services.pathway_search(Pathway_query_params(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', 'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True))) == 9
 
-test_quick_search()
-test_get_models()
-test_get_adducts()
