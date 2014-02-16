@@ -4,7 +4,29 @@ import pybel
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
-import pybel
+
+
+class Pathway_query_params():
+        def __init__(self, db, start, end, length, all_path):
+            self.db = db
+            self.start_comp = start
+            self.end_comp = end
+            self.len_limit = length
+            self.all_paths = all_path
+            self.np_min = -3
+            self.gibbs_cap = 100
+            self.verbose = False
+
+
+class Adduct_search_params():
+    def __init__(self, db, tolerance, adducts, charge, ppm, halogens):
+        self.db = db
+        self.tolerance = tolerance
+        self.adduct_list = adducts
+        self.models = []
+        self.ppm = ppm
+        self.charge = charge
+        self.halogens = halogens
 #END_HEADER
 
 
@@ -16,13 +38,13 @@ class mineDatabaseServices:
     Module Description:
     =head1 mineDatabaseServices
 
-=head2 SYNOPSIS
+    =head2 SYNOPSIS
 
-The MINE database is fundamentally composed of two different types of documents, which are represented by the Compound
-and Reaction objects. Users can use text-matching queries to access these records directly or perform two types of more
-advanced queries: Mass Adduct queries and pathway queries. Mass Adduct queries return a list of compounds that might
-match the m/z of an unknown compound. Pathway queries return either the shortest path or all paths between two compounds
- in the database.
+    The MINE database is fundamentally composed of two different types of documents, which are represented by the Compound
+    and Reaction objects. Users can use text-matching queries to access these records directly or perform two types of more
+    advanced queries: Mass Adduct queries and pathway queries. Mass Adduct queries return a list of compounds that might
+    match the m/z of an unknown compound. Pathway queries return either the shortest path or all paths between two compounds
+    in the database.
     '''
 
     ######## WARNING FOR GEVENT USERS #######
@@ -98,13 +120,13 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
-        if params.db != 'admin':
-            db = self.db_client[params.db]
-            if params.regex:
-                database_query_results = [x for x in db.compounds.find({params.field: {'$regex': params.value}},
+        if db != 'admin':
+            db = self.db_client[db]
+            if regex:
+                database_query_results = [x for x in db.compounds.find({field: {'$regex': value}},
                                                  {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
             else:
-                database_query_results = [x for x in db.compounds.find({params.field: params.value},
+                database_query_results = [x for x in db.compounds.find({field: value},
                                                  {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
@@ -184,10 +206,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: output
         #BEGIN adduct_db_search
         output = []
-        db = self.db_client[params.db]
-        name = "Single Peak: " + str(params.mz)
+        db = self.db_client[db]
+        name = "Single Peak: " + str(mz)
+        params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
         dataset = BatchAdductQuery.Dataset(name, params)
-        dataset.unk_peaks = [BatchAdductQuery.Peak(name, 0, params.mz, params.charge, {}, "False")]
+        dataset.unk_peaks = [BatchAdductQuery.Peak(name, 0, mz, charge, {}, "False")]
         dataset.annotate_peaks(db)
         result = dataset.unk_peaks[0]
         for adduct in result.formulas:
@@ -206,9 +229,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: pathway_query_results
         #BEGIN pathway_search
-        setattr(pathway_query_params, 'verbose', False)
-        pathsearch = PathwaySearch(pathway_query_params)
-        if pathway_query_params.all_paths:
+        params = Pathway_query_params(db, start_comp, end_comp, len_limit, all_paths)
+        pathsearch = PathwaySearch(params)
+        if params.all_paths:
             pathway_query_results = pathsearch.dfs()
         else:
             pathway_query_results = pathsearch.bfs()
