@@ -4,6 +4,7 @@ import pybel
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
+import os
 
 
 class Pathway_query_params():
@@ -19,11 +20,11 @@ class Pathway_query_params():
 
 
 class Adduct_search_params():
-    def __init__(self, db, tolerance, adducts, charge, ppm, halogens):
+    def __init__(self, db, tolerance, adducts, charge, models, ppm, halogens):
         self.db = db
         self.tolerance = tolerance
         self.adduct_list = adducts
-        self.models = []
+        self.models = models
         self.ppm = ppm
         self.charge = charge
         self.halogens = halogens
@@ -61,9 +62,7 @@ class mineDatabaseServices:
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.models = []
-        self.db_client = MongoClient(host='branch')
-        admin = self.db_client['admin']
-        admin.authenticate('worker', 'bnice14bot')
+        self.db_client = Utils.establish_db_client()
         kbase_db = self.db_client['KBase']
         for model in kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
@@ -205,7 +204,8 @@ class mineDatabaseServices:
         # self.ctx is set by the wsgi application class
         # return variables are: output
         #BEGIN adduct_db_search
-        output = []
+        output = os.getcwd()
+        return [output]
         db = self.db_client[db]
         name = "Single Peak: " + str(mz)
         params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)

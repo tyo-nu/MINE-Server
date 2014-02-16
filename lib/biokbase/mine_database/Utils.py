@@ -13,7 +13,7 @@ def establish_db_client():
         if 'node' in platform.node():
             client = MongoClient(host='master')
         #special case for working on a SEED cluster
-        elif 'bio' in platform.node():
+        elif ('bio' in platform.node()) or ('twig' in platform.node()):
             client = MongoClient(host='branch')
             admin = client['admin']
             admin.authenticate('worker', 'bnice14bot')
