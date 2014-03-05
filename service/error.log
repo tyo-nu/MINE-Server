@@ -29,3 +29,219 @@ spawned uWSGI worker 2 (pid: 8396, cores: 1)
 spawned uWSGI worker 3 (pid: 8397, cores: 1)
 spawned uWSGI worker 4 (pid: 8398, cores: 1)
 spawned uWSGI http 1 (pid: 8399)
+[pid: 8398|app: 0|req: 1/1] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:17 2014] POST /services/mine-database => generated 282 bytes in 99 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 2/2] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:17 2014] POST /services/mine-database => generated 282 bytes in 68 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 3/3] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:17 2014] POST /services/mine-database => generated 282 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 4/4] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 120709 bytes in 5 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 5/5] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 6/6] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 282 bytes in 56 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 7/7] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 282 bytes in 54 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 8/8] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 281 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8395|app: 0|req: 1/9] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 505 bytes in 116 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 8395|app: 0|req: 2/10] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 10:41:18 2014] POST /services/mine-database => generated 120708 bytes in 4 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 9/11] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:20 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 8395|app: 0|req: 3/12] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:20 2014] POST /services/mine-database => generated 514 bytes in 1 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 8398|app: 0|req: 10/13] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 10:41:20 2014] POST /services/mine-database => generated 555 bytes in 2 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+SIGINT/SIGQUIT received...killing workers...
+goodbye to uWSGI.
+*** Starting uWSGI 1.4.5 (64bit) on [Sun Feb 16 11:56:08 2014] ***
+compiled with version: 4.1.2 20080704 (Red Hat 4.1.2-48) on 04 February 2013 18:06:41
+os: Linux-2.6.32-358.18.1.el6.x86_64 #1 SMP Wed Aug 28 17:19:38 UTC 2013
+nodename: twig
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 24
+current working directory: /vol/model-prod/mine-server/service
+writing pidfile to /vol/model-prod/mine-server/service/pid
+detected binary path: /vol/kbase/runtime/bin/uwsgi
+your processes number limit is 1024
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+uWSGI http bound on :7074 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:40529 (port auto-assigned) fd 3
+Python version: 2.7.3 (default, Feb  4 2013, 17:36:15)  [GCC 4.1.2 20080704 (Red Hat 4.1.2-48)]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x23a31d0
+your server socket listen backlog is limited to 100 connections
+mapped 1520904 bytes (1485 KB) for 20 cores
+*** Operational MODE: preforking ***
+WSGI app 0 (mountpoint='') ready in 2 seconds on interpreter 0x23a31d0 pid: 20597 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 20597)
+spawned uWSGI worker 1 (pid: 20605, cores: 1)
+spawned uWSGI worker 2 (pid: 20606, cores: 1)
+spawned uWSGI worker 3 (pid: 20607, cores: 1)
+spawned uWSGI worker 4 (pid: 20608, cores: 1)
+spawned uWSGI http 1 (pid: 20609)
+[pid: 20605|app: 0|req: 1/1] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 282 bytes in 63 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20606|app: 0|req: 1/2] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 283 bytes in 63 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 1/3] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 282 bytes in 59 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 2/4] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 3/5] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 282 bytes in 54 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 4/6] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:24 2014] POST /services/mine-database => generated 283 bytes in 48 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 5/7] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 11:57:25 2014] POST /services/mine-database => generated 120709 bytes in 5 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 20606|app: 0|req: 2/8] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:25 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 6/9] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:25 2014] POST /services/mine-database => generated 593 bytes in 3 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 7/10] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 11:57:25 2014] POST /services/mine-database => generated 923 bytes in 117 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 20605|app: 0|req: 2/11] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 282 bytes in 61 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 8/12] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 282 bytes in 57 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 9/13] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 282 bytes in 50 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 10/14] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 20606|app: 0|req: 3/15] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 282 bytes in 53 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20605|app: 0|req: 3/16] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 282 bytes in 51 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20606|app: 0|req: 4/17] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 12:00:48 2014] POST /services/mine-database => generated 120709 bytes in 5 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 20608|app: 0|req: 11/18] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:49 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 20605|app: 0|req: 4/19] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:49 2014] POST /services/mine-database => generated 593 bytes in 5 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 20606|app: 0|req: 5/20] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 12:00:49 2014] POST /services/mine-database => generated 923 bytes in 30 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+SIGINT/SIGQUIT received...killing workers...
+goodbye to uWSGI.
+*** Starting uWSGI 1.4.5 (64bit) on [Sun Feb 16 13:32:18 2014] ***
+compiled with version: 4.1.2 20080704 (Red Hat 4.1.2-48) on 04 February 2013 18:06:41
+os: Linux-2.6.32-358.18.1.el6.x86_64 #1 SMP Wed Aug 28 17:19:38 UTC 2013
+nodename: twig
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 24
+current working directory: /vol/model-prod/mine-server
+writing pidfile to /vol/model-prod/mine-server/service/pid
+detected binary path: /vol/kbase/runtime/bin/uwsgi
+your processes number limit is 1024
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+uWSGI http bound on :7074 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:42830 (port auto-assigned) fd 3
+Python version: 2.7.3 (default, Feb  4 2013, 17:36:15)  [GCC 4.1.2 20080704 (Red Hat 4.1.2-48)]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x1f361d0
+your server socket listen backlog is limited to 100 connections
+mapped 1520904 bytes (1485 KB) for 20 cores
+*** Operational MODE: preforking ***
+WSGI app 0 (mountpoint='') ready in 2 seconds on interpreter 0x1f361d0 pid: 22271 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 22271)
+spawned uWSGI worker 1 (pid: 22276, cores: 1)
+spawned uWSGI worker 2 (pid: 22277, cores: 1)
+spawned uWSGI worker 3 (pid: 22278, cores: 1)
+spawned uWSGI worker 4 (pid: 22279, cores: 1)
+spawned uWSGI http 1 (pid: 22280)
+[pid: 22279|app: 0|req: 1/1] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 282 bytes in 66 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22279|app: 0|req: 2/2] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 282 bytes in 53 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 1/3] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 281 bytes in 57 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 2/4] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 3/5] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 282 bytes in 52 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 4/6] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 282 bytes in 51 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22278|app: 0|req: 1/7] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 13:33:20 2014] POST /services/mine-database => generated 120709 bytes in 8 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 5/8] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:21 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22277|app: 0|req: 6/9] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:21 2014] POST /services/mine-database => generated 853 bytes in 67 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 22276|app: 0|req: 1/10] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:33:21 2014] POST /services/mine-database => generated 923 bytes in 29 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+SIGINT/SIGQUIT received...killing workers...
+goodbye to uWSGI.
+*** Starting uWSGI 1.4.5 (64bit) on [Sun Feb 16 13:46:17 2014] ***
+compiled with version: 4.1.2 20080704 (Red Hat 4.1.2-48) on 04 February 2013 18:06:41
+os: Linux-2.6.32-358.18.1.el6.x86_64 #1 SMP Wed Aug 28 17:19:38 UTC 2013
+nodename: twig
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 24
+current working directory: /vol/model-prod/mine-server
+writing pidfile to /vol/model-prod/mine-server/service/pid
+detected binary path: /vol/kbase/runtime/bin/uwsgi
+your processes number limit is 1024
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+uWSGI http bound on :7074 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:56600 (port auto-assigned) fd 3
+Python version: 2.7.3 (default, Feb  4 2013, 17:36:15)  [GCC 4.1.2 20080704 (Red Hat 4.1.2-48)]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x210a1d0
+your server socket listen backlog is limited to 100 connections
+mapped 1520904 bytes (1485 KB) for 20 cores
+*** Operational MODE: preforking ***
+WSGI app 0 (mountpoint='') ready in 2 seconds on interpreter 0x210a1d0 pid: 22563 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 22563)
+spawned uWSGI worker 1 (pid: 22570, cores: 1)
+spawned uWSGI worker 2 (pid: 22571, cores: 1)
+spawned uWSGI worker 3 (pid: 22572, cores: 1)
+spawned uWSGI worker 4 (pid: 22573, cores: 1)
+spawned uWSGI http 1 (pid: 22574)
+[pid: 22571|app: 0|req: 1/1] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:10 2014] POST /services/mine-database => generated 282 bytes in 65 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 2/2] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:10 2014] POST /services/mine-database => generated 283 bytes in 57 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22572|app: 0|req: 1/3] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:10 2014] POST /services/mine-database => generated 281 bytes in 60 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 3/4] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:10 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 1/5] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:10 2014] POST /services/mine-database => generated 283 bytes in 63 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22570|app: 0|req: 1/6] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:11 2014] POST /services/mine-database => generated 282 bytes in 60 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22572|app: 0|req: 2/7] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 13:47:11 2014] POST /services/mine-database => generated 120709 bytes in 6 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22572|app: 0|req: 3/8] 192.5.200.103 () {32 vars in 435 bytes} [Sun Feb 16 13:47:11 2014] POST /services/mine-database => generated 593 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+0 percent of peaks processed
+Proposed matches for 1 of 1 peaks
+Average hits per peak: 19.0
+Average formulas per peak: 2.0
+[pid: 22572|app: 0|req: 4/9] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:11 2014] POST /services/mine-database => generated 1178 bytes in 9 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22572|app: 0|req: 5/10] 192.5.200.103 () {32 vars in 436 bytes} [Sun Feb 16 13:47:11 2014] POST /services/mine-database => generated 783 bytes in 8 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 2/11] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:01 2014] POST /services/mine-database => generated 282 bytes in 73 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 4/12] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:01 2014] POST /services/mine-database => generated 282 bytes in 81 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 5/13] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 282 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 6/14] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 3/15] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 282 bytes in 59 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 4/16] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 282 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 5/17] 192.5.200.103 () {32 vars in 435 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 120709 bytes in 5 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 6/18] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+0 percent of peaks processed
+Proposed matches for 1 of 1 peaks
+Average hits per peak: 19.0
+Average formulas per peak: 2.0
+[pid: 22571|app: 0|req: 7/19] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 1178 bytes in 10 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 7/20] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:02:02 2014] POST /services/mine-database => generated 783 bytes in 22 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 8/21] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 282 bytes in 66 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22570|app: 0|req: 2/22] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 283 bytes in 56 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 9/23] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 282 bytes in 50 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 10/24] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 72 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 11/25] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 282 bytes in 52 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 8/26] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 282 bytes in 51 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 12/27] 192.5.200.103 () {32 vars in 435 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 120709 bytes in 4 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22571|app: 0|req: 9/28] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+0 percent of peaks processed
+Proposed matches for 1 of 1 peaks
+Average hits per peak: 19.0
+Average formulas per peak: 2.0
+[pid: 22572|app: 0|req: 6/29] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 1178 bytes in 8 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 13/30] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 282 bytes in 244 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 14/31] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:08:38 2014] POST /services/mine-database => generated 2817 bytes in 1132 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 15/32] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:14:17 2014] POST /services/mine-database => generated 745 bytes in 359 msecs (HTTP/1.0 500) 4 headers in 168 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 16/33] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 282 bytes in 60 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 17/34] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 282 bytes in 54 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 18/35] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 282 bytes in 47 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22570|app: 0|req: 3/36] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 70 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22570|app: 0|req: 4/37] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 282 bytes in 56 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22570|app: 0|req: 5/38] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 282 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 19/39] 192.5.200.103 () {32 vars in 435 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 120709 bytes in 4 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 20/40] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+0 percent of peaks processed
+Proposed matches for 1 of 1 peaks
+Average hits per peak: 19.0
+Average formulas per peak: 2.0
+[pid: 22573|app: 0|req: 21/41] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 1178 bytes in 9 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 22/42] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:35 2014] POST /services/mine-database => generated 281 bytes in 236 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 23/43] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:36 2014] POST /services/mine-database => generated 2817 bytes in 1130 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 24/44] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:58 2014] POST /services/mine-database => generated 282 bytes in 57 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 25/45] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:58 2014] POST /services/mine-database => generated 282 bytes in 52 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 26/46] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:58 2014] POST /services/mine-database => generated 281 bytes in 49 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 27/47] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 71 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 148 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 28/48] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 282 bytes in 52 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 29/49] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 282 bytes in 41 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 30/50] 192.5.200.103 () {32 vars in 435 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 120709 bytes in 4 msecs (HTTP/1.0 200) 4 headers in 152 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 31/51] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 594 bytes in 1 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+0 percent of peaks processed
+Proposed matches for 1 of 1 peaks
+Average hits per peak: 19.0
+Average formulas per peak: 2.0
+[pid: 22573|app: 0|req: 32/52] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 1179 bytes in 7 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 33/53] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 281 bytes in 321 msecs (HTTP/1.0 200) 4 headers in 149 bytes (1 switches on core 0)
+[pid: 22573|app: 0|req: 34/54] 192.5.200.103 () {32 vars in 436 bytes} [Mon Feb 17 08:16:59 2014] POST /services/mine-database => generated 2819 bytes in 1128 msecs (HTTP/1.0 200) 4 headers in 150 bytes (1 switches on core 0)
