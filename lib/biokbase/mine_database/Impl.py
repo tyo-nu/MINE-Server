@@ -6,15 +6,15 @@ from PathwaySearch import PathwaySearch
 
 
 class Pathway_query_params():
-        def __init__(self, db, start, end, length, all_path):
-            self.db = db
-            self.start_comp = start
-            self.end_comp = end
-            self.len_limit = length
-            self.all_paths = all_path
-            self.np_min = -3
-            self.gibbs_cap = 100
-            self.verbose = False
+    def __init__(self, db, start, end, length, all_path):
+        self.db = db
+        self.start_comp = start
+        self.end_comp = end
+        self.len_limit = length
+        self.all_paths = all_path
+        self.np_min = -3
+        self.gibbs_cap = 100
+        self.verbose = False
 
 
 class Adduct_search_params():
@@ -69,7 +69,6 @@ class mineDatabaseServices:
         with open('/vol/model-prod/mine-server/lib/biokbase/mine_database/Negative Adducts full.txt') as infile:
             self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
         #END_CONSTRUCTOR
-        pass
 
     def quick_search(self, db, query):
         # self.ctx is set by the wsgi application class
@@ -91,6 +90,7 @@ class mineDatabaseServices:
         # return variables are: similarity_search_results
         #BEGIN similarity_search
         similarity_search_results = []
+        db = self.db_client[db]
         mol = pybel.readstring('smi', smiles)
         query_fp = set(mol.calcfp().bits)
         len_fp = len(query_fp)

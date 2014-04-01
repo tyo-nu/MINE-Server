@@ -67,5 +67,6 @@ def test_pathway_search():
     assert meh[0] == ['C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rab0dd7bc1c91b88c6f6ba90362413cb31fe00a42',
                          u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R4cfa8ce3f06297e2282b42ad69356815ee18d94f',
                          u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
-    assert len(services.pathway_search(Pathway_query_params(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', 'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True))) == 9
+    assert len(services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
+                                       'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 9
 

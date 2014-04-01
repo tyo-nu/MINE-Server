@@ -94,4 +94,7 @@ def test_pathway_search():
     assert len(services.pathway_search(Pathway_query_params(config.test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                                          'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True))[0]) == 9
 
+def test_similarity_search():
+    meh = services.similarity_search('1GenEcoCyc', 'OC(=O)C(=O)C', 0.8)
+    print meh
 
