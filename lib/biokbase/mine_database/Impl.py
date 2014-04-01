@@ -145,7 +145,7 @@ class mineDatabaseServices:
         for x in ids:
             meh = db.compounds.find_one({'_id': x})
             if not 'Molfile' in meh:
-                mol = pybel.readstring('smi', str(meh['Stringcode']))
+                mol = pybel.readstring('smi', str(meh['SMILES']))
                 meh['Molfile'] = mol.write('mol')
             objects.append(meh)
         #END get_comps
