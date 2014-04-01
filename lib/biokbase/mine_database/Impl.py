@@ -143,7 +143,11 @@ class mineDatabaseServices:
         objects = []
         db = self.db_client[db]
         for x in ids:
-            objects.append(db.compounds.find_one({'_id': x}))
+            meh = db.compounds.find_one({'_id': x})
+            if not 'Molfile' in meh:
+                mol = pybel.readstring('smi', str(meh['Stringcode']))
+                meh['Molfile'] = mol.write('mol')
+            objects.append(meh)
         #END get_comps
 
         #At some point might do deeper type checking...
