@@ -42,7 +42,16 @@ def test_database_query():
 
 
 def test_get_comps():
-    print services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
+    meh = services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
+    assert len(meh) == 1
+    assert 'Reactant_in' in meh[0].keys()
+
+
+def test_get_rxns():
+    meh = services.get_rxns(test_db, ['R22e65ae4960404a6f2e2dfaefcfc27af3852ad98'])
+    assert len(meh) == 1
+    assert 'Operators' in meh[0].keys()
+
 
 def test_get_models():
     meh = services.get_models()
