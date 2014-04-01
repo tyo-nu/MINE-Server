@@ -64,6 +64,10 @@ def test_database_query():
            [['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']]
 
 
+def test_get_comps():
+    print services.get_comps(config.test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
+
+
 def test_get_models():
     meh = services.get_models()[0]
     assert meh[2] == (u'kb|fm.3375', u'Escherichia coli 97.0264')
@@ -97,4 +101,3 @@ def test_pathway_search():
 def test_similarity_search():
     meh = services.similarity_search('1GenEcoCyc', 'OC(=O)C(=O)C', 0.8)
     print meh
-

@@ -40,6 +40,10 @@ def test_database_query():
     assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == glucose
     assert services.database_query(test_db, 'Names', 'Grape', True) == glucose
 
+
+def test_get_comps():
+    print services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
+
 def test_get_models():
     meh = services.get_models()
     assert len(meh[0]) == 2

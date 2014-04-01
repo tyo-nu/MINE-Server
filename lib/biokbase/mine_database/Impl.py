@@ -143,7 +143,7 @@ class mineDatabaseServices:
         objects = []
         db = self.db_client[db]
         for x in ids:
-            objects.append(db.compounds.find({'_id': x}, {'_id': 1}))
+            objects.append(db.compounds.find_one({'_id': x}))
         #END get_comps
 
         #At some point might do deeper type checking...
@@ -160,7 +160,7 @@ class mineDatabaseServices:
         objects = []
         db = self.db_client[db]
         for x in ids:
-            objects.append(db.reactions.find({'_id': x}, {'_id': 1}))
+            objects.append(db.reactions.find_one({'_id': x}))
         #END get_rxns
 
         #At some point might do deeper type checking...
