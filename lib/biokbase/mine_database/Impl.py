@@ -146,7 +146,8 @@ class mineDatabaseServices:
             meh = db.compounds.find_one({'_id': x})
             if not 'Molfile' in meh:
                 mol = pybel.readstring('smi', str(meh['SMILES']))
-                mol.draw(show=False, update=True)
+                mol.make3D()
+                mol.removeh()
                 meh['Molfile'] = mol.write('mol')
             objects.append(meh)
         #END get_comps
