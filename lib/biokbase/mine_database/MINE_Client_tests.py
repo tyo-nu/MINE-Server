@@ -3,9 +3,9 @@ from Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = '1GenEcoCyc'
-glucose = [{u'Inchi_key': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'KEGG_code': u'C00031', u'Mass': 180.063388104,
+glucose = {u'Inchi_key': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'KEGG_code': u'C00031', u'Mass': 180.063388104,
             u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Formula': u'C6H12O6',
-            u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}]
+            u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
 
 
 class Adduct_search_params():
@@ -30,15 +30,15 @@ class Pathway_query_params():
         self.gibbs_cap = 100
 
 def test_quick_search():
-    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == glucose
-    assert services.quick_search(test_db, 'C00031') == glucose
-    assert services.quick_search(test_db, 'Glucose') == glucose
+    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
+    assert services.quick_search(test_db, 'C00031') == [glucose]
+    assert glucose in services.quick_search(test_db, 'Glucose')
 
 
 def test_database_query():
     assert services.database_query('admin', '', '', False) == ['Illegal query']
-    assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == glucose
-    assert services.database_query(test_db, 'Names', 'Grape', True) == glucose
+    assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
+    assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
 
 
 def test_get_comps():

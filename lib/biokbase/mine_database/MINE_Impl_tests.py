@@ -17,7 +17,7 @@ class Options():
         self.halogens = True
 
 config = Options()
-services = mineDatabaseServices(config)
+services = mineDatabaseServices(None)
 
 
 class DB_query_params():
