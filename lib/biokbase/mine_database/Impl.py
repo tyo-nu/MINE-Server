@@ -91,7 +91,7 @@ class mineDatabaseServices:
         #BEGIN similarity_search
         similarity_search_results = []
         db = self.db_client[db]
-        mol = pybel.readstring('smi', smiles)
+        mol = pybel.readstring('smi', str(smiles))
         query_fp = set(mol.calcfp().bits)
         len_fp = len(query_fp)
         comps = [x for x in db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}},
