@@ -2,10 +2,9 @@ __author__ = 'JGJeffryes'
 from Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-test_db = '1GenEcoCyc'
-glucose = {u'Inchi_key': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'KEGG_code': u'C00031', u'Mass': 180.063388104,
-            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Formula': u'C6H12O6',
-            u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
+test_db = 'EcoCycexp'
+glucose = {u'Inchi_key': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
+           u'Mass': 180.063388104, u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Formula': u'C6H12O6'}
 
 
 class Adduct_search_params():
@@ -31,13 +30,13 @@ class Pathway_query_params():
 
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
-    assert services.quick_search(test_db, 'C00031') == [glucose]
+    #assert services.quick_search(test_db, 'C00031') == [glucose]
     assert glucose in services.quick_search(test_db, 'Glucose')
 
 
 def test_database_query():
     assert services.database_query('admin', '', '', False) == ['Illegal query']
-    assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
+    assert services.database_query(test_db, 'KEGG Code', 'C00031', False) == [glucose]
     assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
 
 
@@ -48,7 +47,7 @@ def test_get_comps():
 
 
 def test_get_rxns():
-    meh = services.get_rxns(test_db, ['R22e65ae4960404a6f2e2dfaefcfc27af3852ad98'])
+    meh = services.get_rxns(test_db, ['R2e28f382545b6b00b88bcd5b1bb927bc480c2711'])
     assert len(meh) == 1
     assert 'Operators' in meh[0].keys()
 
@@ -68,7 +67,7 @@ def test_get_adducts():
 
 def test_adduct_db_search():
     meh = services.adduct_db_search(test_db, 164.0937301, 0.002, ['M+H'], [], False, True, False)
-    assert len(meh) == 4
+    assert len(meh) == 3
     assert len(meh[1]) == 3
     print len(meh[1][2])
 
@@ -77,9 +76,9 @@ def test_pathway_search():
     meh = services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, False)
     assert len(meh) == 1
-    assert meh[0] == ['C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rab0dd7bc1c91b88c6f6ba90362413cb31fe00a42',
-                         u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R4cfa8ce3f06297e2282b42ad69356815ee18d94f',
-                         u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
+    assert meh[0] == [u'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rbbc40c762b05d59890c196c949522e3ee6ca08c6',
+                      u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R0e87f4c178bcb78b9190938b3413b7889b3fbad4',
+                      u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
     assert len(services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
-                                       'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 9
+                                       'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 4
 
