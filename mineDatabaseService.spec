@@ -26,15 +26,15 @@ module mineDatabaseServices {
 	/* A summery of a compound object which is returned from compound query
 
         object_id _id - unique ID of a compound
+        string SEED_id - The model SEED id of a compound, if id < 100000 then the compound is computationally generated
+        list<string> Names - common name for the compound
         string Formula - molecular formula of the compound
-        float Mass - exact mass of the compound
-        string Inchi_key - the Inchi Key of the compound
     */
     typedef structure {
         object_id id;
+        string SEED_id;
+        list<string> Names;
         string Formula;
-        float Mass;
-        string Inchi_key;
     } comp_stub;
     
     /* A compound that is a component of a reaction as tuple of stoichiometric coefficient and _id  */

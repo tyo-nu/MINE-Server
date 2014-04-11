@@ -42,14 +42,14 @@ def quick_search(db, comp_data):
 
     if query_field == 'Inchi_key':
         results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}},
-                                    {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                                    {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
     elif query_field == 'Names':
         regx = re.compile(comp_data, re.IGNORECASE)
         results = [x for x in db.compounds.find({query_field: regx},
-                                    {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                                    {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
     else:
         results = [x for x in db.compounds.find({query_field: comp_data},
-                                    {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                                    {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
     if not results:
         raise ValueError("%s was not found in the database." % comp_data)
 

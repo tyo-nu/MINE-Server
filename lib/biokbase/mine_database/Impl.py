@@ -96,7 +96,7 @@ class mineDatabaseServices:
         len_fp = len(query_fp)
         comps = [x for x in db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}},
                     {"len_FP2": {"$lte": len_fp/min_tc}}]},
-                    {"FP2": 1, 'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                    {"FP2": 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         for x in comps:
             test_fp = set(x['FP2'])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
@@ -121,10 +121,10 @@ class mineDatabaseServices:
             db = self.db_client[db]
             if regex:
                 database_query_results = [x for x in db.compounds.find({field: {'$regex': value}},
-                                                 {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                                                                       {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
             else:
                 database_query_results = [x for x in db.compounds.find({field: value},
-                                                 {'Mass': 1, 'Formula': 1, 'Inchi_key': 1, 'KEGG_code': 1, 'Names': 1})]
+                                                                       {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query
@@ -143,12 +143,12 @@ class mineDatabaseServices:
         objects = []
         db = self.db_client[db]
         for x in ids:
-            meh = db.compounds.find_one({'_id': x})
-            if not 'Molfile' in meh:
+            meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
+            '''if not 'Molfile' in meh:
                 mol = pybel.readstring('smi', str(meh['SMILES']))
                 mol.make3D()
                 mol.removeh()
-                meh['Molfile'] = mol.write('mol')
+                meh['Molfile'] = mol.write('mol')'''
             objects.append(meh)
         #END get_comps
 
