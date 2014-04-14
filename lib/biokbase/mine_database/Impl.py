@@ -37,13 +37,13 @@ class mineDatabaseServices:
     Module Description:
     =head1 mineDatabaseServices
 
-    =head2 SYNOPSIS
+=head2 SYNOPSIS
 
-    The MINE database is fundamentally composed of two different types of documents, which are represented by the Compound
-    and Reaction objects. Users can use text-matching queries to access these records directly or perform two types of more
-    advanced queries: Mass Adduct queries and pathway queries. Mass Adduct queries return a list of compounds that might
-    match the m/z of an unknown compound. Pathway queries return either the shortest path or all paths between two compounds
-    in the database.
+The MINE database is fundamentally composed of two different types of documents, which are represented by the Compound
+and Reaction objects. Users can use text-matching queries to access these records directly or perform two types of more
+advanced queries: Mass Adduct queries and pathway queries. Mass Adduct queries return a list of compounds that might
+match the m/z of an unknown compound. Pathway queries return either the shortest path or all paths between two compounds
+ in the database.
     '''
 
     ######## WARNING FOR GEVENT USERS #######
@@ -69,6 +69,7 @@ class mineDatabaseServices:
         with open('/vol/model-prod/mine-server/lib/biokbase/mine_database/Negative Adducts full.txt') as infile:
             self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
         #END_CONSTRUCTOR
+        pass
 
     def quick_search(self, db, query):
         # self.ctx is set by the wsgi application class
@@ -85,7 +86,7 @@ class mineDatabaseServices:
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, smiles, min_tc):
+    def similarity_search(self, db, smiles, min_tc, fp_type):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search

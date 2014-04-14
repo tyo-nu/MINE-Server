@@ -69,9 +69,9 @@ $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 </pre>
@@ -85,9 +85,9 @@ $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 
@@ -152,7 +152,7 @@ sub quick_search
 
 =head2 similarity_search
 
-  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc)
+  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc, $fp_type)
 
 =over 4
 
@@ -164,12 +164,13 @@ sub quick_search
 $db is a string
 $smiles is a string
 $min_tc is a float
+$fp_type is a string
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 </pre>
@@ -181,12 +182,13 @@ object_id is a string
 $db is a string
 $smiles is a string
 $min_tc is a float
+$fp_type is a string
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 
@@ -195,7 +197,7 @@ object_id is a string
 =item Description
 
 Creates similarity_search_results, a list of comp_stubs whose Tannimoto coefficient to the search smiles is
-greater that the user set threshold. Uses open babel FP2 fingerprints to match.
+greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
 
 =back
 
@@ -207,18 +209,19 @@ sub similarity_search
 
 # Authentication: none
 
-    if ((my $n = @args) != 3)
+    if ((my $n = @args) != 4)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function similarity_search (received $n, expecting 3)");
+							       "Invalid argument count for function similarity_search (received $n, expecting 4)");
     }
     {
-	my($db, $smiles, $min_tc) = @args;
+	my($db, $smiles, $min_tc, $fp_type) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument 2 \"smiles\" (value was \"$smiles\")");
         (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument 3 \"min_tc\" (value was \"$min_tc\")");
+        (!ref($fp_type)) or push(@_bad_arguments, "Invalid type for argument 4 \"fp_type\" (value was \"$fp_type\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to similarity_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -269,9 +272,9 @@ $database_query_results is a reference to a list where each element is a comp_st
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 </pre>
@@ -288,9 +291,9 @@ $database_query_results is a reference to a list where each element is a comp_st
 bool is an int
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
-	Mass has a value which is a float
-	Inchi_key has a value which is a string
 object_id is a string
 
 
@@ -780,7 +783,7 @@ float mz - the experimental mass per charge ratio
         list<adduct> adduct_list - the adducts to consider in the query.
         list<string> models - the models in SEED that will be considered native metabolites
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules if not specified by file. 1 = +, 0 = -
+        bool charge - the polarity for molecules. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
 
 =back
@@ -1078,9 +1081,9 @@ a string
 A summery of a compound object which is returned from compound query
 
         object_id _id - unique ID of a compound
+        string SEED_id - The model SEED id of a compound, if id < 100000 then the compound is computationally generated
+        list<string> Names - common name for the compound
         string Formula - molecular formula of the compound
-        float Mass - exact mass of the compound
-        string Inchi_key - the Inchi Key of the compound
 
 
 =item Definition
@@ -1090,9 +1093,9 @@ A summery of a compound object which is returned from compound query
 <pre>
 a reference to a hash where the following keys are defined:
 id has a value which is an object_id
+SEED_id has a value which is a string
+Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
-Mass has a value which is a float
-Inchi_key has a value which is a string
 
 </pre>
 
@@ -1102,9 +1105,9 @@ Inchi_key has a value which is a string
 
 a reference to a hash where the following keys are defined:
 id has a value which is an object_id
+SEED_id has a value which is a string
+Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
-Mass has a value which is a float
-Inchi_key has a value which is a string
 
 
 =end text
