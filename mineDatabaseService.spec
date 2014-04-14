@@ -132,9 +132,10 @@ module mineDatabaseServices {
 
 	/*
 		Creates similarity_search_results, a list of comp_stubs whose Tannimoto coefficient to the search smiles is
-		greater that the user set threshold. Uses open babel FP2 fingerprints to match.
+		greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
 	*/
-	funcdef similarity_search(string db, string smiles, float min_tc) returns (list<comp_stub> similarity_search_results);
+	funcdef similarity_search(string db, string smiles, float min_tc, string fp_type)
+	returns (list<comp_stub> similarity_search_results);
 
     /*
 		Creates database_query_results, a list of object_ids which match the json query string
@@ -177,7 +178,7 @@ module mineDatabaseServices {
         list<adduct> adduct_list - the adducts to consider in the query.
         list<string> models - the models in SEED that will be considered native metabolites
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules if not specified by file. 1 = +, 0 = -
+        bool charge - the polarity for molecules. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
     */
 	funcdef adduct_db_search(string db, float mz, float tolerance, list<string> adduct_list, list<string> models,
