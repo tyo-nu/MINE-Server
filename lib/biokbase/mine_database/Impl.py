@@ -91,18 +91,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: similarity_search_results
         #BEGIN similarity_search
         similarity_search_results = []
+        fp_type = str(fp_type)
         db = self.db_client[db]
         mol = pybel.readstring('smi', str(smiles))
-        query_fp = set(mol.calcfp().bits)
+        query_fp = set(mol.calcfp(fp_type).bits)
         len_fp = len(query_fp)
-        comps = [x for x in db.compounds.find({"$and": [{"len_FP2": {"$gte": min_tc*len_fp}},
-                    {"len_FP2": {"$lte": len_fp/min_tc}}]},
-                    {"FP2": 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
+        comps = [x for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
+                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
+                    {fp_type: 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         for x in comps:
-            test_fp = set(x['FP2'])
+            test_fp = set(x[fp_type])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
             if tc >= min_tc:
-                del x['FP2']
+                del x[fp_type]
                 similarity_search_results.append(x)
 
         #END similarity_search

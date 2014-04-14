@@ -3,8 +3,8 @@ from Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp'
-glucose = {u'Inchi_key': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
-           u'Mass': 180.063388104, u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Formula': u'C6H12O6'}
+glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
+           u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Model_SEED': 17398}
 
 
 class Adduct_search_params():
@@ -36,7 +36,7 @@ def test_quick_search():
 
 def test_database_query():
     assert services.database_query('admin', '', '', False) == ['Illegal query']
-    assert services.database_query(test_db, 'KEGG Code', 'C00031', False) == [glucose]
+    assert services.database_query(test_db, 'DB Links.PubChem', '3333', False) == [glucose]
     assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
 
 
@@ -82,3 +82,6 @@ def test_pathway_search():
     assert len(services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 4
 
+
+def test_similarity_search():
+    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2")) == 28
