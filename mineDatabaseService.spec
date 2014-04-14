@@ -43,18 +43,6 @@ module mineDatabaseServices {
     /* A list of all the compounds and reactions in a pathway */
 	typedef list<object_id> pathway;
     
-    /* An annotated ms peak output by a batch mass adduct query(not yet implemented)
-
-        string name - name of the peak
-        int num_forms - number of formula hits
-        int num_hits - total number of compound matches
-    */
-    typedef structure {
-        string name;
-        int num_forms;
-        int num_hits;
-    } peak;
-
     /* The result of a single adduct query on the database
 
         string adduct - the name of the mass adduct that returned the result
@@ -66,6 +54,22 @@ module mineDatabaseServices {
         string formula;
         list<object_id> isomers;
     } adduct_result;
+
+    /* An annotated ms peak output by a batch mass adduct query
+
+        string name - name of the peak
+        int num_forms - number of formula hits
+        int num_hits - total number of compound matches
+        bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model
+        list<adduct_result> adducts - the adducts that match a given peak
+    */
+    typedef structure {
+        string name;
+        int num_forms;
+        int num_hits;
+        bool native_hit;
+        list<adduct_result> adducts;
+    } peak;
     
     /* Data structures for a compound object
 
@@ -183,6 +187,23 @@ module mineDatabaseServices {
     */
 	funcdef adduct_db_search(string db, float mz, float tolerance, list<string> adduct_list, list<string> models,
 	                         bool ppm, bool charge, bool halogens) returns (list<adduct_result> output);
+
+	/*
+		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
+
+		Input parameters for the "mass_adduct_query" function:
+		string db - the database in which to search for M/S matches
+		string text - the user supplied text
+		string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
+        float tolerance - the desired mass precision
+        list<adduct> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+    */
+	funcdef batch_ms_adduct_search(string db, string text, string text_type, float tolerance, list<string> adduct_list,
+	                    list<string> models, bool ppm, bool charge, bool halogens) returns (list<peak> batch_output);
 
     /*
 		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)

@@ -71,8 +71,10 @@ class Dataset():
                     if re.search('F[^e]|Cl|Br', compound['Formula']):
                         continue
 
-                #update the total hits for the peak
+                #update the total hits for the peak and make a not if the compound is in the native_set
                 peak.total_hits += 1
+                if compound['_id'] in self.native_set:
+                    peak.native_hit = True
 
                 #create a dictionary of formulas keyed by the adduct that produces them
                 try:
@@ -387,15 +389,16 @@ def read_csv(input_file):
 
 class Peak:
     """A class holding information about an unknown peak"""
-    def __init__(self, name, r_time, mz, charge, formula, id):
+    def __init__(self, name, r_time, mz, charge, formula, inchi_key):
         self.name = name
         self.r_time = float(r_time)  # retention time
         self.mz = float(mz)  # mass to charge ratio
         self.charge = charge  # polarity of charge
-        self.inchi_key = id  # the id of the peak if known, as an InChI Key
+        self.inchi_key = inchi_key  # the id of the peak if known, as an InChI Key
         self.formulas = formula  # a dictionary of all the formulas that match the peak for a given adduct as a key
         self.total_formulas = 0
         self.total_hits = 0
+        self.native_hit = False
 
     def __str__(self):
         return self.name

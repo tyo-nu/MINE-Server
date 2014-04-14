@@ -72,6 +72,14 @@ def test_adduct_db_search():
     print len(meh[1][2])
 
 
+def test_batch_ms_adduct_search():
+    result = services.batch_ms_adduct_search(test_db, "164.0937301", "form", 0.002, ['M+H'], [], False, True, False)[0]
+    meh = result['adducts']
+    assert len(meh) == 3
+    assert len(meh[1]) == 3
+    print len(meh[1][2])
+
+
 def test_pathway_search():
     meh = services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, False)
@@ -85,3 +93,4 @@ def test_pathway_search():
 
 def test_similarity_search():
     assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2")) == 28
+    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4")) == 46
