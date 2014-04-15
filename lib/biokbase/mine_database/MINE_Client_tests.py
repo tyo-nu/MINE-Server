@@ -68,16 +68,14 @@ def test_get_adducts():
 def test_adduct_db_search():
     meh = services.adduct_db_search(test_db, 164.0937301, 0.002, ['M+H'], [], False, True, False)
     assert len(meh) == 3
-    assert len(meh[1]) == 3
-    print len(meh[1][2])
+    assert isinstance(meh[1]['isomers'], list)
 
 
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "164.0937301", "form", 0.002, ['M+H'], [], False, True, False)[0]
     meh = result['adducts']
     assert len(meh) == 3
-    assert len(meh[1]) == 3
-    print len(meh[1][2])
+    assert isinstance(meh[1]['isomers'], list)
 
 
 def test_pathway_search():

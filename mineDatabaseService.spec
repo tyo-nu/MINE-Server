@@ -46,8 +46,8 @@ module mineDatabaseServices {
     /* The result of a single adduct query on the database
 
         string adduct - the name of the mass adduct that returned the result
-        string formula; - the formula that was matched
-        list<object_id> - a list of the isomers of the formula present in the database
+        string formula - the formula that was matched
+        list<object_id> isomers - a list of the isomers of the formula present in the database
     */
     typedef structure {
         string adduct;
@@ -58,6 +58,9 @@ module mineDatabaseServices {
     /* An annotated ms peak output by a batch mass adduct query
 
         string name - name of the peak
+        float r_time - retention time
+        float mz - mass to charge ratio
+        bool charge - polarity of charge
         int num_forms - number of formula hits
         int num_hits - total number of compound matches
         bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model
