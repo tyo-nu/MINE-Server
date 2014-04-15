@@ -25,9 +25,9 @@ class Dataset():
         self.options = options  # Object containing all options from the optparser
         dtype = numpy.dtype("S20, f8, f8")
         if hasattr(options, 'adduct_list'):
-            all_pos_adducts = numpy.loadtxt('/vol/model-prod/mine-server/lib/biokbase/mine_database/Positive Adducts full.txt', dtype=dtype)
+            all_pos_adducts = numpy.loadtxt('./Positive Adducts full.txt', dtype=dtype)
             self.pos_adducts = numpy.array(filter(lambda x: x[0] in options.adduct_list, all_pos_adducts), dtype=dtype)
-            all_neg_adducts = numpy.loadtxt('/vol/model-prod/mine-server/lib/biokbase/mine_database/Negative Adducts full.txt', dtype=dtype)
+            all_neg_adducts = numpy.loadtxt('./Negative Adducts full.txt', dtype=dtype)
             self.neg_adducts = numpy.array(filter(lambda x: x[0] in options.adduct_list, all_neg_adducts), dtype=dtype)
         if hasattr(options, 'positive_adduct_file'):
             self.pos_adducts = numpy.loadtxt(options.positive_adduct_file, dtype=dtype)

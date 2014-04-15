@@ -2,6 +2,7 @@
 import pybel
 import time
 import Utils
+import os
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 
@@ -65,9 +66,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         kbase_db = self.db_client['KBase']
         for model in kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
-        with open('/vol/model-prod/mine-server/lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
+        with open('./Positive Adducts full.txt') as infile:
             self.pos_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
-        with open('/vol/model-prod/mine-server/lib/biokbase/mine_database/Negative Adducts full.txt') as infile:
+        with open('./Negative Adducts full.txt') as infile:
             self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
         #END_CONSTRUCTOR
         pass
@@ -243,7 +244,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if text_type == 'form':
             batch_output = []
             for mz in text.split('\n'):
-                dataset.unk_peaks = [BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False")]
+                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False"))
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.annotate_peaks(db)

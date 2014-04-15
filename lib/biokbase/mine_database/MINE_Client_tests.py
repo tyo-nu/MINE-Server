@@ -72,8 +72,9 @@ def test_adduct_db_search():
 
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "164.0937301", "form", 0.002, ['M+H'], [], False, True, False)[0]
-    meh = result['adducts']
+    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)
+    assert len(result) == 2
+    meh = result[0]['adducts']
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
 
