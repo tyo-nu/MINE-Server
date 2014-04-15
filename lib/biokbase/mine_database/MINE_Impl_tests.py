@@ -73,7 +73,7 @@ def test_similarity_search():
     print meh
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)
+    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)[0]
     assert len(result) == 2
     meh = result[0]['adducts']
     assert len(meh) == 3
