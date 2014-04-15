@@ -230,6 +230,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [output]
 
+    def batch_ms_adduct_search(self, db, text, text_type, tolerance, adduct_list, models, ppm, charge, halogens):
+        # self.ctx is set by the wsgi application class
+        # return variables are: batch_output
+        #BEGIN batch_ms_adduct_search
+        #END batch_ms_adduct_search
+
+        #At some point might do deeper type checking...
+        if not isinstance(batch_output, list):
+            raise ValueError('Method batch_ms_adduct_search return value ' +
+                             'batch_output is not type list as required.')
+        # return the results
+        return [batch_output]
+
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
         # self.ctx is set by the wsgi application class
         # return variables are: pathway_query_results

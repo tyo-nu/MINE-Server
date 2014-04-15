@@ -721,6 +721,131 @@ sub adduct_db_search
 
 
 
+=head2 batch_ms_adduct_search
+
+  $batch_output = $obj->batch_ms_adduct_search($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$text is a string
+$text_type is a string
+$tolerance is a float
+$adduct_list is a reference to a list where each element is a string
+$models is a reference to a list where each element is a string
+$ppm is a bool
+$charge is a bool
+$halogens is a bool
+$batch_output is a reference to a list where each element is a peak
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$text is a string
+$text_type is a string
+$tolerance is a float
+$adduct_list is a reference to a list where each element is a string
+$models is a reference to a list where each element is a string
+$ppm is a bool
+$charge is a bool
+$halogens is a bool
+$batch_output is a reference to a list where each element is a peak
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
+
+Input parameters for the "mass_adduct_query" function:
+string db - the database in which to search for M/S matches
+string text - the user supplied text
+string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
+        float tolerance - the desired mass precision
+        list<adduct> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+
+=back
+
+=cut
+
+sub batch_ms_adduct_search
+{
+    my $self = shift;
+    my($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($text)) or push(@_bad_arguments, "Invalid type for argument \"text\" (value was \"$text\")");
+    (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument \"text_type\" (value was \"$text_type\")");
+    (!ref($tolerance)) or push(@_bad_arguments, "Invalid type for argument \"tolerance\" (value was \"$tolerance\")");
+    (ref($adduct_list) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"adduct_list\" (value was \"$adduct_list\")");
+    (ref($models) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"models\" (value was \"$models\")");
+    (!ref($ppm)) or push(@_bad_arguments, "Invalid type for argument \"ppm\" (value was \"$ppm\")");
+    (!ref($charge)) or push(@_bad_arguments, "Invalid type for argument \"charge\" (value was \"$charge\")");
+    (!ref($halogens)) or push(@_bad_arguments, "Invalid type for argument \"halogens\" (value was \"$halogens\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to batch_ms_adduct_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'batch_ms_adduct_search');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($batch_output);
+    #BEGIN batch_ms_adduct_search
+    #END batch_ms_adduct_search
+    my @_bad_returns;
+    (ref($batch_output) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"batch_output\" (value was \"$batch_output\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to batch_ms_adduct_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'batch_ms_adduct_search');
+    }
+    return($batch_output);
+}
+
+
+
+
 =head2 pathway_search
 
   $pathway_query_results = $obj->pathway_search($db, $start_comp, $end_comp, $len_limit, $all_paths)
@@ -1027,49 +1152,6 @@ a reference to a list where each element is an object_id
 
 
 
-=head2 peak
-
-=over 4
-
-
-
-=item Description
-
-An annotated ms peak output by a batch mass adduct query(not yet implemented)
-
-        string name - name of the peak
-        int num_forms - number of formula hits
-        int num_hits - total number of compound matches
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-name has a value which is a string
-num_forms has a value which is an int
-num_hits has a value which is an int
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-name has a value which is a string
-num_forms has a value which is an int
-num_hits has a value which is an int
-
-
-=end text
-
-=back
-
-
-
 =head2 adduct_result
 
 =over 4
@@ -1105,6 +1187,55 @@ a reference to a hash where the following keys are defined:
 adduct has a value which is a string
 formula has a value which is a string
 isomers has a value which is a reference to a list where each element is an object_id
+
+
+=end text
+
+=back
+
+
+
+=head2 peak
+
+=over 4
+
+
+
+=item Description
+
+An annotated ms peak output by a batch mass adduct query
+
+        string name - name of the peak
+        int num_forms - number of formula hits
+        int num_hits - total number of compound matches
+        bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model
+        list<adduct_result> adducts - the adducts that match a given peak
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+name has a value which is a string
+num_forms has a value which is an int
+num_hits has a value which is an int
+native_hit has a value which is a bool
+adducts has a value which is a reference to a list where each element is an adduct_result
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+name has a value which is a string
+num_forms has a value which is an int
+num_hits has a value which is an int
+native_hit has a value which is a bool
+adducts has a value which is a reference to a list where each element is an adduct_result
 
 
 =end text

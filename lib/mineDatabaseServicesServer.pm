@@ -24,6 +24,7 @@ our %return_counts = (
         'get_models' => 1,
         'get_adducts' => 1,
         'adduct_db_search' => 1,
+        'batch_ms_adduct_search' => 1,
         'pathway_search' => 1,
         'version' => 1,
 );
@@ -42,6 +43,7 @@ sub _build_valid_methods
         'get_models' => 1,
         'get_adducts' => 1,
         'adduct_db_search' => 1,
+        'batch_ms_adduct_search' => 1,
         'pathway_search' => 1,
         'version' => 1,
     };

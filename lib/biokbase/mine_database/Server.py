@@ -251,6 +251,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.adduct_db_search,
                              name='mineDatabaseServices.adduct_db_search',
                              types=[basestring, float, float, list, list, int, int, int])
+        self.rpc_service.add(impl_mineDatabaseServices.batch_ms_adduct_search,
+                             name='mineDatabaseServices.batch_ms_adduct_search',
+                             types=[basestring, basestring, basestring, float, list, list, int, int, int])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
                              types=[basestring, basestring, basestring, int, int])
