@@ -252,7 +252,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append((adduct, formula, [x['_id'] for x in dataset.isomers[formula]]))
             del peak.formulas
-            batch_output.append(peak)
+            batch_output.append(peak.__dict__)
         #END batch_ms_adduct_search
 
         #At some point might do deeper type checking...
