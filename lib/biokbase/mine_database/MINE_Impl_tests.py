@@ -71,3 +71,10 @@ def test_pathway_search():
 def test_similarity_search():
     meh = services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8)
     print meh
+
+def test_batch_ms_adduct_search():
+    result = services.batch_ms_adduct_search(test_db, "164.0937301", "form", 0.002, ['M+H'], [], False, True, False)[0]
+    meh = result['adducts']
+    assert len(meh) == 3
+    assert len(meh[1]) == 3
+    print len(meh[1][2])

@@ -1,5 +1,6 @@
 #BEGIN_HEADER
 import pybel
+import time
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
@@ -234,6 +235,24 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: batch_output
         #BEGIN batch_ms_adduct_search
+        name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
+        db = self.db_client[db]
+        params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
+        dataset = BatchAdductQuery.Dataset(name, params)
+        if text_type == 'form':
+            batch_output = []
+            for mz in text.split('\n'):
+                dataset.unk_peaks = [BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False")]
+        else:
+            raise IOError('%s files not supported' % text_type)
+        dataset.annotate_peaks(db)
+        for peak in dataset.unk_peaks:
+            peak.adducts = []
+            for adduct in peak.formulas:
+                for formula in peak.formulas[adduct]:
+                    peak.adducts.append((adduct, formula, [x['_id'] for x in dataset.isomers[formula]]))
+            del peak.formulas
+            batch_output.append(peak)
         #END batch_ms_adduct_search
 
         #At some point might do deeper type checking...
