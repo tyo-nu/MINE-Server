@@ -41,7 +41,7 @@ module mineDatabaseServices {
         A generic structure for mongo queries
     */
     typedef structure {
-        string query
+        string query;
     } mongo_query;
     
     /* A compound that is a component of a reaction as tuple of stoichiometric coefficient and _id  */

@@ -305,7 +305,7 @@ sub substructure_search
 
 =head2 database_query
 
-  $database_query_results = $obj->database_query($db, $field, $value, $regex)
+  $database_query_results = $obj->database_query($db, $query)
 
 =over 4
 
@@ -315,11 +315,10 @@ sub substructure_search
 
 <pre>
 $db is a string
-$field is a string
-$value is a string
-$regex is a bool
+$query is a mongo_query
 $database_query_results is a reference to a list where each element is a comp_stub
-bool is an int
+mongo_query is a reference to a hash where the following keys are defined:
+	query has a value which is a string
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
 	SEED_id has a value which is a string
@@ -334,11 +333,10 @@ object_id is a string
 =begin text
 
 $db is a string
-$field is a string
-$value is a string
-$regex is a bool
+$query is a mongo_query
 $database_query_results is a reference to a list where each element is a comp_stub
-bool is an int
+mongo_query is a reference to a hash where the following keys are defined:
+	query has a value which is a string
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
 	SEED_id has a value which is a string
@@ -353,12 +351,11 @@ object_id is a string
 
 =item Description
 
-Creates database_query_results, a list of object_ids which match the json query string
+A general function which uses mongo's find to create database_query_results, a list of object_ids which match
+the specified json query
 Input parameters for the "database_query" function:
 string db - the database against which the query will be performed
-        string field - the field of the database to match
-        string value - the value to match
-        bool regex - if true the value will be processed as a regular expression
+mongo_query query - A valid mongo query
 
 =back
 
@@ -367,13 +364,11 @@ string db - the database against which the query will be performed
 sub database_query
 {
     my $self = shift;
-    my($db, $field, $value, $regex) = @_;
+    my($db, $query) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
-    (!ref($field)) or push(@_bad_arguments, "Invalid type for argument \"field\" (value was \"$field\")");
-    (!ref($value)) or push(@_bad_arguments, "Invalid type for argument \"value\" (value was \"$value\")");
-    (!ref($regex)) or push(@_bad_arguments, "Invalid type for argument \"regex\" (value was \"$regex\")");
+    (ref($query) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument \"query\" (value was \"$query\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to database_query:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -1163,6 +1158,41 @@ id has a value which is an object_id
 SEED_id has a value which is a string
 Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
+
+
+=end text
+
+=back
+
+
+
+=head2 mongo_query
+
+=over 4
+
+
+
+=item Description
+
+A generic structure for mongo queries
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+query has a value which is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+query has a value which is a string
 
 
 =end text

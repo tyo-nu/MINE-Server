@@ -141,7 +141,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [substructure_search_results]
 
-    def database_query(self, db, field, value, regex):
+    def database_query(self, db, query):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
