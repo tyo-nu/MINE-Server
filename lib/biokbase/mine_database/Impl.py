@@ -140,7 +140,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         query_mol = pybel.readstring('smi', str(smiles))
         query_fp = query_mol.calcfp().bits
-        smarts = pybel.Smarts(smiles)
+        smarts = pybel.Smarts(str(smiles))
         comps = [x for x in db.compounds.find({"FP2": {"$all": query_fp}},
                                               {'SMILES' :1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         for x in comps:
