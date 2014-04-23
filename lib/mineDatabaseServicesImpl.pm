@@ -216,6 +216,87 @@ sub similarity_search
 
 
 
+=head2 substructure_search
+
+  $substructure_search_results = $obj->substructure_search($db, $smiles)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$smiles is a string
+$substructure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$smiles is a string
+$substructure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
+
+=back
+
+=cut
+
+sub substructure_search
+{
+    my $self = shift;
+    my($db, $smiles) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'substructure_search');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($substructure_search_results);
+    #BEGIN substructure_search
+    #END substructure_search
+    my @_bad_returns;
+    (ref($substructure_search_results) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"substructure_search_results\" (value was \"$substructure_search_results\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'substructure_search');
+    }
+    return($substructure_search_results);
+}
+
+
+
+
 =head2 database_query
 
   $database_query_results = $obj->database_query($db, $field, $value, $regex)
@@ -1163,8 +1244,8 @@ a reference to a list where each element is an object_id
 The result of a single adduct query on the database
 
         string adduct - the name of the mass adduct that returned the result
-        string formula; - the formula that was matched
-        list<object_id> - a list of the isomers of the formula present in the database
+        string formula - the formula that was matched
+        list<object_id> isomers - a list of the isomers of the formula present in the database
 
 
 =item Definition
@@ -1206,6 +1287,9 @@ isomers has a value which is a reference to a list where each element is an obje
 An annotated ms peak output by a batch mass adduct query
 
         string name - name of the peak
+        float r_time - retention time
+        float mz - mass to charge ratio
+        bool charge - polarity of charge
         int num_forms - number of formula hits
         int num_hits - total number of compound matches
         bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model

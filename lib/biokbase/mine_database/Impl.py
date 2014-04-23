@@ -63,7 +63,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         self.models = []
         self.db_client = Utils.establish_db_client()
         kbase_db = self.db_client['KBase']
-        for model in kbase_db.models.find({}, {'Name': 1}):
+	for model in kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
             self.pos_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
@@ -107,6 +107,22 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 del x[fp_type]
                 similarity_search_results.append(x)
 
+        similarity_search_results = []
+        fp_type = str(fp_type)
+        db = self.db_client[db]
+        mol = pybel.readstring('smi', str(smiles))
+        query_fp = set(mol.calcfp(fp_type).bits)
+        len_fp = len(query_fp)
+        comps = [x for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
+                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
+                    {fp_type: 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
+        for x in comps:
+            test_fp = set(x[fp_type])
+            tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
+            if tc >= min_tc:
+                del x[fp_type]
+                similarity_search_results.append(x)
+
         #END similarity_search
 
         #At some point might do deeper type checking...
@@ -115,6 +131,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'similarity_search_results is not type list as required.')
         # return the results
         return [similarity_search_results]
+
+    def substructure_search(self, db, smiles):
+        # self.ctx is set by the wsgi application class
+        # return variables are: substructure_search_results
+        #BEGIN substructure_search
+        #END substructure_search
+
+        #At some point might do deeper type checking...
+        if not isinstance(substructure_search_results, list):
+            raise ValueError('Method substructure_search return value ' +
+                             'substructure_search_results is not type list as required.')
+        # return the results
+        return [substructure_search_results]
 
     def database_query(self, db, field, value, regex):
         # self.ctx is set by the wsgi application class

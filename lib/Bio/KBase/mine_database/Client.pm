@@ -253,6 +253,102 @@ sub similarity_search
 
 
 
+=head2 substructure_search
+
+  $substructure_search_results = $obj->substructure_search($db, $smiles)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$smiles is a string
+$substructure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$smiles is a string
+$substructure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+=item Description
+
+Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
+
+=back
+
+=cut
+
+sub substructure_search
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 2)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function substructure_search (received $n, expecting 2)");
+    }
+    {
+	my($db, $smiles) = @args;
+
+	my @_bad_arguments;
+        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
+        (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument 2 \"smiles\" (value was \"$smiles\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'substructure_search');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, {
+	method => "mineDatabaseServices.substructure_search",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'substructure_search',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method substructure_search",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'substructure_search',
+				       );
+    }
+}
+
+
+
 =head2 database_query
 
   $database_query_results = $obj->database_query($db, $field, $value, $regex)
@@ -1335,8 +1431,8 @@ a reference to a list where each element is an object_id
 The result of a single adduct query on the database
 
         string adduct - the name of the mass adduct that returned the result
-        string formula; - the formula that was matched
-        list<object_id> - a list of the isomers of the formula present in the database
+        string formula - the formula that was matched
+        list<object_id> isomers - a list of the isomers of the formula present in the database
 
 
 =item Definition
@@ -1378,6 +1474,9 @@ isomers has a value which is a reference to a list where each element is an obje
 An annotated ms peak output by a batch mass adduct query
 
         string name - name of the peak
+        float r_time - retention time
+        float mz - mass to charge ratio
+        bool charge - polarity of charge
         int num_forms - number of formula hits
         int num_hits - total number of compound matches
         bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model
