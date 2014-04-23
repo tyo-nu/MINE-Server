@@ -63,12 +63,12 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         self.models = []
         self.db_client = Utils.establish_db_client()
         kbase_db = self.db_client['KBase']
-	for model in kbase_db.models.find({}, {'Name': 1}):
+        for model in kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
-        with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
+        """with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
             self.pos_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
         with open('./lib/biokbase/mine_database/Negative Adducts full.txt') as infile:
-            self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
+            self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']"""
         #END_CONSTRUCTOR
         pass
 
@@ -136,6 +136,17 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
+        substructure_search_results = []
+        db = self.db_client[db]
+        query_mol = pybel.readstring('smi', str(smiles))
+        query_fp = query_mol.calcfp().bits
+        smarts = pybel.Smarts(smiles)
+        comps = [x for x in db.compounds.find({"FP2": {"$all": query_fp}},
+                                              {'SMILES' :1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
+        for x in comps:
+            if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
+                del x["SMILES"]
+                substructure_search_results.append(x)
         #END substructure_search
 
         #At some point might do deeper type checking...

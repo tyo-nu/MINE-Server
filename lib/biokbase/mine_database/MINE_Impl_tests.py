@@ -72,6 +72,10 @@ def test_similarity_search():
     meh = services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2')
     print meh
 
+def test_substructure_search():
+    meh = services.substructure_search('EcoCycexp', 'CCO')
+    print len(meh[0])
+
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)[0]
     assert len(result) == 2
@@ -79,4 +83,4 @@ def test_batch_ms_adduct_search():
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
 
-test_batch_ms_adduct_search()
+test_substructure_search()
