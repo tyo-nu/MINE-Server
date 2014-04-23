@@ -1,6 +1,5 @@
 __author__ = 'JGJeffryes'
 from Client import mineDatabaseServices
-import time
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp'
@@ -37,7 +36,7 @@ def test_quick_search():
 
 def test_database_query():
     assert services.database_query('admin', '', '', False) == ['Illegal query']
-    assert services.database_query(test_db, 'DB Links.PubChem', '3333', False) == [glucose]
+    #assert services.database_query(test_db, 'DB Links.PubChem', '3333', False) == [glucose]
     assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
 
 
@@ -98,3 +97,5 @@ def test_similarity_search():
 def test_substructure_search():
     assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
+
+print services.database_query(test_db, 'DB_links', {"KEGG": "C01274"}, True)
