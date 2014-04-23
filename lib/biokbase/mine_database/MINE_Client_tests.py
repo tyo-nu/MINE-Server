@@ -1,5 +1,6 @@
 __author__ = 'JGJeffryes'
 from Client import mineDatabaseServices
+import time
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp'
@@ -91,10 +92,9 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
-    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4", 100)) == 46
+    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
+    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4", 100)) == 46
 
 def test_substructure_search():
-    print services.substructure_search('EcoCycexp', 'CCCO', 100)
-
-test_substructure_search()
+    assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
+    assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
