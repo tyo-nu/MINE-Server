@@ -4,6 +4,7 @@ import time
 import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
+from ast import literal_eval
 
 
 class Pathway_query_params():
@@ -147,12 +148,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN database_query
         if db != 'admin':
             db = self.db_client[db]
-            if regex:
-                database_query_results = [x for x in db.compounds.find({field: {'$regex': value}},
-                                                                       {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
-            else:
-                database_query_results = [x for x in db.compounds.find({field: value},
-                                                                       {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
+            literal_eval("query ="+query)  # this transforms the string into a dictionary
+            database_query_results = [x for x in db.compounds.find(query, {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query

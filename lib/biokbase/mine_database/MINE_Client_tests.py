@@ -98,4 +98,4 @@ def test_substructure_search():
     assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
 
-print services.database_query(test_db, 'DB_links', {"KEGG": "C01274"}, True)
+print services.database_query(test_db, '{"len_FP4" : 35}')

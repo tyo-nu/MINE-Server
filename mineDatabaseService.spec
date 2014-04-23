@@ -36,13 +36,6 @@ module mineDatabaseServices {
         list<string> Names;
         string Formula;
     } comp_stub;
-
-    /*
-        A generic structure for mongo queries
-    */
-    typedef structure {
-        string query;
-    } mongo_query;
     
     /* A compound that is a component of a reaction as tuple of stoichiometric coefficient and _id  */
 	typedef tuple<int stoic, object_id id> rxn_comp;
@@ -162,10 +155,9 @@ module mineDatabaseServices {
 		the specified json query
 		Input parameters for the "database_query" function:
 		string db - the database against which the query will be performed
-		mongo_query query - A valid mongo query
-
+		mongo_query query - A valid mongo query as a string
 	*/
-	funcdef database_query(string db, mongo_query query) returns (list<comp_stub> database_query_results);
+	funcdef database_query(string db, string mongo_query) returns (list<comp_stub> database_query_results);
 
     /*
         Return a list of CompoundObjects that match supplied object_ids in a specified db
