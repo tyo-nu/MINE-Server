@@ -97,26 +97,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         mol = pybel.readstring('smi', str(smiles))
         query_fp = set(mol.calcfp(fp_type).bits)
         len_fp = len(query_fp)
-        comps = [x for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
-                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
-                    {fp_type: 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
-        for x in comps:
-            test_fp = set(x[fp_type])
-            tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
-            if tc >= min_tc:
-                del x[fp_type]
-                similarity_search_results.append(x)
-
-        similarity_search_results = []
-        fp_type = str(fp_type)
-        db = self.db_client[db]
-        mol = pybel.readstring('smi', str(smiles))
-        query_fp = set(mol.calcfp(fp_type).bits)
-        len_fp = len(query_fp)
-        comps = [x for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
-                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
-                    {fp_type: 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
-        for x in comps:
+        for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
+                                   {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
+                                   {fp_type: 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
             test_fp = set(x[fp_type])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
             if tc >= min_tc:
@@ -141,9 +124,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         query_mol = pybel.readstring('smi', str(smiles))
         query_fp = query_mol.calcfp().bits
         smarts = pybel.Smarts(str(smiles))
-        comps = [x for x in db.compounds.find({"FP2": {"$all": query_fp}},
-                                              {'SMILES' :1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
-        for x in comps:
+        for x in db.compounds.find({"FP2": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)

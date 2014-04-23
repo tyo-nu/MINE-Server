@@ -138,16 +138,17 @@ module mineDatabaseServices {
 	funcdef quick_search(string db, string query) returns (list<comp_stub> quick_search_results);
 
 	/*
-		Creates similarity_search_results, a list of comp_stubs whose Tannimoto coefficient to the search smiles is
-		greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
+		Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
+		the search smiles is greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
 	*/
-	funcdef similarity_search(string db, string smiles, float min_tc, string fp_type)
+	funcdef similarity_search(string db, string smiles, float min_tc, string fp_type, int limit)
 	returns (list<comp_stub> similarity_search_results);
 
 	/*
-		Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
+		Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
 	*/
-	funcdef substructure_search(string db, string smiles) returns (list<comp_stub> substructure_search_results);
+	funcdef substructure_search(string db, string smiles, int limit)
+	returns (list<comp_stub> substructure_search_results);
 
     /*
 		Creates database_query_results, a list of object_ids which match the json query string
