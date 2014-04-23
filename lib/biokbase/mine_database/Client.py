@@ -187,10 +187,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def similarity_search(self, db, smiles, min_tc, fp_type):
+    def similarity_search(self, db, smiles, min_tc, fp_type, limit):
 
         arg_hash = {'method': 'mineDatabaseServices.similarity_search',
-                    'params': [db, smiles, min_tc, fp_type],
+                    'params': [db, smiles, min_tc, fp_type, limit],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
@@ -222,10 +222,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def substructure_search(self, db, smiles):
+    def substructure_search(self, db, smiles, limit):
 
         arg_hash = {'method': 'mineDatabaseServices.substructure_search',
-                    'params': [db, smiles],
+                    'params': [db, smiles, limit],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }

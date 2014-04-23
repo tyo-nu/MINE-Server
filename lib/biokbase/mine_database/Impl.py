@@ -87,7 +87,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, smiles, min_tc, fp_type):
+    def similarity_search(self, db, smiles, min_tc, fp_type, limit):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
@@ -115,7 +115,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def substructure_search(self, db, smiles):
+    def substructure_search(self, db, smiles, limit):
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search

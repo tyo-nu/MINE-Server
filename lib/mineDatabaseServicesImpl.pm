@@ -130,7 +130,7 @@ sub quick_search
 
 =head2 similarity_search
 
-  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc, $fp_type)
+  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc, $fp_type, $limit)
 
 =over 4
 
@@ -143,6 +143,7 @@ $db is a string
 $smiles is a string
 $min_tc is a float
 $fp_type is a string
+$limit is an int
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -161,6 +162,7 @@ $db is a string
 $smiles is a string
 $min_tc is a float
 $fp_type is a string
+$limit is an int
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -176,8 +178,8 @@ object_id is a string
 
 =item Description
 
-Creates similarity_search_results, a list of comp_stubs whose Tannimoto coefficient to the search smiles is
-greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
+Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
+the search smiles is greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
 
 =back
 
@@ -186,13 +188,14 @@ greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to 
 sub similarity_search
 {
     my $self = shift;
-    my($db, $smiles, $min_tc, $fp_type) = @_;
+    my($db, $smiles, $min_tc, $fp_type, $limit) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
     (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
     (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument \"min_tc\" (value was \"$min_tc\")");
     (!ref($fp_type)) or push(@_bad_arguments, "Invalid type for argument \"fp_type\" (value was \"$fp_type\")");
+    (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument \"limit\" (value was \"$limit\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to similarity_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -218,7 +221,7 @@ sub similarity_search
 
 =head2 substructure_search
 
-  $substructure_search_results = $obj->substructure_search($db, $smiles)
+  $substructure_search_results = $obj->substructure_search($db, $smiles, $limit)
 
 =over 4
 
@@ -229,6 +232,7 @@ sub similarity_search
 <pre>
 $db is a string
 $smiles is a string
+$limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -245,6 +249,7 @@ object_id is a string
 
 $db is a string
 $smiles is a string
+$limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -260,7 +265,7 @@ object_id is a string
 
 =item Description
 
-Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
+Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
 
 =back
 
@@ -269,11 +274,12 @@ Creates substructure_search_results, a list of comp_stubs who contain the specif
 sub substructure_search
 {
     my $self = shift;
-    my($db, $smiles) = @_;
+    my($db, $smiles, $limit) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
     (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
+    (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument \"limit\" (value was \"$limit\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
