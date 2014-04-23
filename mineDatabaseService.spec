@@ -147,7 +147,7 @@ module mineDatabaseServices {
 	/*
 		Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
 	*/
-	funcdef similarity_search(string db, string smiles) returns (list<comp_stub> similarity_search_results);
+	funcdef substructure_search(string db, string smiles) returns (list<comp_stub> substructure_search_results);
 
     /*
 		Creates database_query_results, a list of object_ids which match the json query string
