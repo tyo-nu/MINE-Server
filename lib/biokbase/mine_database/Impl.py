@@ -105,6 +105,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             if tc >= min_tc:
                 del x[fp_type]
                 similarity_search_results.append(x)
+                if len(similarity_search_results) == limit:
+                    break
 
         #END similarity_search
 
@@ -128,6 +130,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)
+                if len(substructure_search_results) == limit:
+                    break
         #END substructure_search
 
         #At some point might do deeper type checking...

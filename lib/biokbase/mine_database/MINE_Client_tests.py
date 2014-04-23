@@ -91,10 +91,10 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2")) == 28
-    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4")) == 46
+    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
+    assert len(services.similarity_search('EcoCycexp', 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4", 100)) == 46
 
 def test_substructure_search():
-    print services.substructure_search('EcoCycexp', 'CCCO')
+    print services.substructure_search('EcoCycexp', 'CCCO', 100)
 
 test_substructure_search()
