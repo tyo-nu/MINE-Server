@@ -144,6 +144,11 @@ module mineDatabaseServices {
 	funcdef similarity_search(string db, string smiles, float min_tc, string fp_type)
 	returns (list<comp_stub> similarity_search_results);
 
+	/*
+		Creates substructure_search_results, a list of comp_stubs who contain the specified substructure
+	*/
+	funcdef similarity_search(string db, string smiles) returns (list<comp_stub> similarity_search_results);
+
     /*
 		Creates database_query_results, a list of object_ids which match the json query string
 		Input parameters for the "database_query" function:
