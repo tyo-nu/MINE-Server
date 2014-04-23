@@ -142,14 +142,14 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [substructure_search_results]
 
-    def database_query(self, db, query):
+    def database_query(self, db, mongo_query):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
         if db != 'admin':
             db = self.db_client[db]
-            literal_eval("query ="+query)  # this transforms the string into a dictionary
-            database_query_results = [x for x in db.compounds.find(query, {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
+            query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
+            database_query_results = [x for x in db.compounds.find(query_dict, {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query

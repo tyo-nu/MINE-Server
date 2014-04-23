@@ -257,10 +257,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def database_query(self, db, query):
+    def database_query(self, db, mongo_query):
 
         arg_hash = {'method': 'mineDatabaseServices.database_query',
-                    'params': [db, query],
+                    'params': [db, mongo_query],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }

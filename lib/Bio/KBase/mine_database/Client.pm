@@ -357,7 +357,7 @@ sub substructure_search
 
 =head2 database_query
 
-  $database_query_results = $obj->database_query($db, $query)
+  $database_query_results = $obj->database_query($db, $mongo_query)
 
 =over 4
 
@@ -367,10 +367,8 @@ sub substructure_search
 
 <pre>
 $db is a string
-$query is a mongo_query
+$mongo_query is a string
 $database_query_results is a reference to a list where each element is a comp_stub
-mongo_query is a reference to a hash where the following keys are defined:
-	query has a value which is a string
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
 	SEED_id has a value which is a string
@@ -385,10 +383,8 @@ object_id is a string
 =begin text
 
 $db is a string
-$query is a mongo_query
+$mongo_query is a string
 $database_query_results is a reference to a list where each element is a comp_stub
-mongo_query is a reference to a hash where the following keys are defined:
-	query has a value which is a string
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
 	SEED_id has a value which is a string
@@ -405,7 +401,7 @@ A general function which uses mongo's find to create database_query_results, a l
 the specified json query
 Input parameters for the "database_query" function:
 string db - the database against which the query will be performed
-mongo_query query - A valid mongo query
+mongo_query query - A valid mongo query as a string
 
 =back
 
@@ -423,11 +419,11 @@ sub database_query
 							       "Invalid argument count for function database_query (received $n, expecting 2)");
     }
     {
-	my($db, $query) = @args;
+	my($db, $mongo_query) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
-        (ref($query) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 2 \"query\" (value was \"$query\")");
+        (!ref($mongo_query)) or push(@_bad_arguments, "Invalid type for argument 2 \"mongo_query\" (value was \"$mongo_query\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to database_query:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -1345,41 +1341,6 @@ id has a value which is an object_id
 SEED_id has a value which is a string
 Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
-
-
-=end text
-
-=back
-
-
-
-=head2 mongo_query
-
-=over 4
-
-
-
-=item Description
-
-A generic structure for mongo queries
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-query has a value which is a string
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-query has a value which is a string
 
 
 =end text
