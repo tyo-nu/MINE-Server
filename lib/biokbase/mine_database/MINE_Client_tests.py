@@ -30,14 +30,14 @@ class Pathway_query_params():
 
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
-    #assert services.quick_search(test_db, 'C00031') == [glucose]
+    assert services.quick_search(test_db, 'C00031') == [glucose]
     assert glucose in services.quick_search(test_db, 'Glucose')
 
 
 def test_database_query():
-    assert services.database_query('admin', '', '', False) == ['Illegal query']
-    #assert services.database_query(test_db, 'DB Links.PubChem', '3333', False) == [glucose]
-    assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
+    assert services.database_query('admin', '') == ['Illegal query']
+    assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}") == [glucose]
+    assert services.database_query(test_db, "{'Names': 'Glucose'}") == [glucose]
 
 
 def test_get_comps():
@@ -97,5 +97,3 @@ def test_similarity_search():
 def test_substructure_search():
     assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
-
-print services.database_query(test_db, '{"len_FP4" : 35}')

@@ -31,9 +31,9 @@ def quick_search(db, comp_data):
     if (len(comp_data) == 41) and (comp_data[0] == 'C'):
         query_field = '_id'
     elif (len(comp_data) == 6) and (comp_data[0] == 'C'):
-        query_field = 'KEGG_code'
+        query_field = 'DB_links.KEGG'
     elif (len(comp_data) == 8) and (comp_data[0:2] == 'cpd'):
-        query_field = 'ModelSEED_id'
+        query_field = 'Model_SEED'
     elif (len(comp_data.split('-')) == 3) or (len(comp_data) == 14):
         query_field = 'Inchi_key'
         comp_data = comp_data.split('-')[0]
