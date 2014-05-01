@@ -1,5 +1,5 @@
 __author__ = 'JGJeffryes'
-from Client import mineDatabaseServices
+from lib.biokbase.mine_database.Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp'

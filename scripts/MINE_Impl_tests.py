@@ -83,4 +83,4 @@ def test_batch_ms_adduct_search():
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
 
-test_substructure_search()
+test_batch_ms_adduct_search()
