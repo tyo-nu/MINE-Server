@@ -262,8 +262,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
         dataset = BatchAdductQuery.Dataset(name, params)
+        batch_output = []
         if text_type == 'form':
-            batch_output = []
             for mz in text.split('\n'):
                 dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False"))
         elif text_type == 'csv':
