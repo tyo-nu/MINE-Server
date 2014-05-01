@@ -125,9 +125,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         substructure_search_results = []
         db = self.db_client[db]
         query_mol = pybel.readstring('smi', str(smiles))
-        query_fp = query_mol.calcfp().bits
+        query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(str(smiles))
-        for x in db.compounds.find({"FP2": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
+        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)
@@ -169,11 +169,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         for x in ids:
             meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
-            '''if not 'Molfile' in meh:
+            if not 'Molfile' in meh:
                 mol = pybel.readstring('smi', str(meh['SMILES']))
                 mol.make3D()
                 mol.removeh()
-                meh['Molfile'] = mol.write('mol')'''
+                meh['Molfile'] = mol.write('mol')
             objects.append(meh)
         #END get_comps
 
