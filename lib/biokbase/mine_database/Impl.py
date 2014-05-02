@@ -80,7 +80,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         mdb = self.db_client[db]
         quick_search_results = Utils.quick_search(mdb, query)
-        quick_search_results = [dumps(x) for x in quick_search_results]
+        quick_search_results = [unicode(x) for x in quick_search_results]
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -284,7 +284,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append({'adduct': adduct, 'formula': formula, 'isomers':
-                                        [dumps(x['_id']) for x in dataset.isomers[formula]]})
+                                        [unicode(x['_id']) for x in dataset.isomers[formula]]})
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
         #END batch_ms_adduct_search
