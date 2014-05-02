@@ -5,6 +5,7 @@ import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
+from bson.json_util import dumps
 
 
 class Pathway_query_params():
@@ -79,6 +80,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         mdb = self.db_client[db]
         quick_search_results = Utils.quick_search(mdb, query)
+        quick_search_results = dumps(quick_search_results)
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -285,6 +287,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                                         [x['_id'] for x in dataset.isomers[formula]]})
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
+        batch_output = dumps(batch_output)
         #END batch_ms_adduct_search
 
         #At some point might do deeper type checking...
