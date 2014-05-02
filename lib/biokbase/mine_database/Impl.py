@@ -80,14 +80,14 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         mdb = self.db_client[db]
         quick_search_results = Utils.quick_search(mdb, query)
-        quick_search_results = dumps(quick_search_results)
+        quick_search_results = [dumps(x) for x in quick_search_results]
         #END quick_search
-        """
+
         #At some point might do deeper type checking...
         if not isinstance(quick_search_results, list):
             raise ValueError('Method quick_search return value ' +
                              'quick_search_results is not type list as required.')
-        # return the results"""
+        # return the results
         return [quick_search_results]
 
     def similarity_search(self, db, smiles, min_tc, fp_type, limit):
