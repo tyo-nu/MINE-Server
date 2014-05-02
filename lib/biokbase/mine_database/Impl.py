@@ -80,7 +80,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         mdb = self.db_client[db]
         quick_search_results = Utils.quick_search(mdb, query)
-        quick_search_results = [unicode(x) for x in quick_search_results]
+        for x in quick_search_results:
+            x['_id'] = unicode(x['_id'])
         #END quick_search
 
         #At some point might do deeper type checking...
