@@ -14,7 +14,7 @@ for line in test_compounds.split('\r')[:-1]:
     sl = line.split(',')
     result = services.batch_ms_adduct_search(test_db, sl[2], "form", 0.003, [sl[5]], [], False, sl[3] == "Positive", False)
     try:
-        _ids = services.quick_search(test_db, sl[6].strip())[0]
+        _ids = services.quick_search(test_db, sl[6].strip())[0]['_id']
     except:
         print "%s not in db!" % sl[0]
         continue
