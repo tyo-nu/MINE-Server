@@ -82,12 +82,12 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         quick_search_results = Utils.quick_search(mdb, query)
         quick_search_results = dumps(quick_search_results)
         #END quick_search
-
+        """
         #At some point might do deeper type checking...
         if not isinstance(quick_search_results, list):
             raise ValueError('Method quick_search return value ' +
                              'quick_search_results is not type list as required.')
-        # return the results
+        # return the results"""
         return [quick_search_results]
 
     def similarity_search(self, db, smiles, min_tc, fp_type, limit):
@@ -284,10 +284,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append({'adduct': adduct, 'formula': formula, 'isomers':
-                                        [x['_id'] for x in dataset.isomers[formula]]})
+                                        [dumps(x['_id']) for x in dataset.isomers[formula]]})
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
-        batch_output = dumps(batch_output)
         #END batch_ms_adduct_search
 
         #At some point might do deeper type checking...
