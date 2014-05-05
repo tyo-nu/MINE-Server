@@ -5,9 +5,9 @@ import numpy
 import itertools
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-pos_unks = open("Oce_Pos_MZ").read()
-neg_unks = open("Oce_Neg_MZ").read()
-test_db = "KEGGdb"
+pos_unks = open("PosUnk_MZ.txt").read()
+neg_unks = open("NegUnk_MZ").read()
+test_db = "KEGGexp"
 """
 test_compounds = open("/Users/JGJeffryes/Desktop/test comps.csv").read()
 for line in test_compounds.split('\r')[:-1]:
@@ -28,8 +28,14 @@ for line in test_compounds.split('\r')[:-1]:
 pos_result = services.batch_ms_adduct_search(test_db, pos_unks, "form", 0.003, ['M+H', "M+Na", "M+NH4"], ['kb|fm.1697'], False, True, False)
 neg_result = services.batch_ms_adduct_search(test_db, neg_unks, "form", 0.003, ['M-H', 'M+CH3COO'], ['kb|fm.1697'], False, False, False)
 hits = []
+native = 0
+total = float(len(pos_result+neg_result))
 for peak in pos_result+neg_result:
     if peak['total_hits']:
         hits.append(peak['total_hits'])
-print len(hits), len(hits)/float(len(pos_result+neg_result))
+    if peak['native_hit']:
+        native += 1
+
+print len(hits), len(hits)/total
+print native, native/total
 print numpy.average(hits), numpy.median(hits)

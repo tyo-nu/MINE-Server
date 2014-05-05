@@ -282,14 +282,14 @@ class Dataset():
             printer.print_compound_html(sort_NPLike(other_isomers), outfile, labels=labels)
 
 
-def get_modelSEED_comps(kb_db, db, models):
+def get_modelSEED_comps(kb_db, models):
     seed_ids, _ids = set(), set()
     for x in models:
         for z in kb_db.models.find_one({'_id': x}, {'Compounds': 1})['Compounds']:
             seed_ids.add(z)
     for y in seed_ids:
         y = int(y.split('.')[1])
-        for w in db.compounds.find({'Model_SEED': y}, {'_id': 1}):
+        for w in kb_db.compounds.find({'Model_SEED': y}, {'_id': 1}):
             _ids.add(w['_id'])
     return _ids
 
@@ -515,7 +515,7 @@ if __name__ == '__main__':
     if options.modelSEED != 'null':
         print "Loading native compounds"
         kbase_db = client['KBase']
-        data.native_set = get_modelSEED_comps(kbase_db, db, [options.modelSEED])
+        data.native_set = get_modelSEED_comps(kbase_db, [options.modelSEED])
 
     data.annotate_peaks(db)
 
