@@ -205,7 +205,7 @@ module mineDatabaseServices {
 		string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
         float tolerance - the desired mass precision
         list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
         bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results

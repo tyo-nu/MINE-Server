@@ -63,8 +63,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN_CONSTRUCTOR
         self.models = []
         self.db_client = Utils.establish_db_client()
-        kbase_db = self.db_client['KBase']
-        for model in kbase_db.models.find({}, {'Name': 1}):
+        self.kbase_db = self.db_client['KBase']
+        for model in self.kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
             self.pos_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
@@ -269,16 +269,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if text_type == 'form':
             for mz in text.split('\n'):
                 dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False"))
-        elif text_type == 'csv':
-            for line in text.split('\n'):
-                sl = line.strip('\n').split(',')
-                if len(sl) > 2:
-                    if len(sl) > 4:
-                        dataset.unk_peaks.append(BatchAdductQuery.Peak(sl[0], sl[1], sl[2], sl[3], {sl[5]: [sl[4]]}, sl[6]))
-                    else:
-                        dataset.unk_peaks.append(BatchAdductQuery.Peak(sl[0], sl[1], sl[2], sl[3], {}, "False"))
         else:
             raise IOError('%s files not supported' % text_type)
+        dataset.native_set = BatchAdductQuery.get_modelSEED_comps(self.kbase_db, db, models)
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
             peak.adducts = []
