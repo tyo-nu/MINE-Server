@@ -289,7 +289,7 @@ def get_modelSEED_comps(kb_db, db, models):
             seed_ids.add(z)
     for y in seed_ids:
         y = y.split('.')[1].zfill(5)
-        for w in db.compounds.find({'DB_links.Model_SEED': y}, {'_id': 1}):
+        for w in db.compounds.find({'Model_SEED': y}, {'_id': 1}):
             _ids.add(w['_id'])
     return _ids
 
