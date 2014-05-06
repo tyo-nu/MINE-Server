@@ -23,8 +23,8 @@ for line in test_compounds.split('\r')[:-1]:
         print "Found correct id in list of %s possibilities" % result[0]['total_hits']
     else:
         print "missed %s!" % sl[0]
-
 """
+
 pos_result = services.batch_ms_adduct_search(test_db, pos_unks, "form", 0.003, ['M+H', "M+Na", "M+NH4"], ['kb|fm.1697'], False, True, False)
 neg_result = services.batch_ms_adduct_search(test_db, neg_unks, "form", 0.003, ['M-H', 'M+CH3COO'], ['kb|fm.1697'], False, False, False)
 hits = []
