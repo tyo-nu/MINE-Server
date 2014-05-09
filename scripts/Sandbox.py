@@ -5,9 +5,9 @@ import numpy
 import itertools
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-pos_unks = open("PosUnk_MZ.txt").read()
-neg_unks = open("NegUnk_MZ").read()
-test_db = "KEGGexp"
+pos_unks = open("Oce_Neg_MZ").read()
+neg_unks = open("Oce_Pos_MZ").read()
+test_db = "EcoCycexp"
 """
 test_compounds = open("/Users/JGJeffryes/Desktop/test comps.csv").read()
 for line in test_compounds.split('\r')[:-1]:
@@ -25,7 +25,7 @@ for line in test_compounds.split('\r')[:-1]:
         print "missed %s!" % sl[0]
 """
 
-pos_result = services.batch_ms_adduct_search(test_db, pos_unks, "form", 0.003, ['M+H', "M+Na", "M+NH4"], ['kb|fm.1697'], False, True, False)
+pos_result = services.batch_ms_adduct_search(test_db, pos_unks, "form", 0.003, ['M+H', "M+", "M+Na", "M+NH4"], ['kb|fm.1697'], False, True, False)
 neg_result = services.batch_ms_adduct_search(test_db, neg_unks, "form", 0.003, ['M-H', 'M+CH3COO'], ['kb|fm.1697'], False, False, False)
 hits = []
 native = 0

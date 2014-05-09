@@ -60,9 +60,9 @@ def test_get_models():
 
 def test_get_adducts():
     meh = services.get_adducts()
-    assert len(meh[0]) == 33
+    assert len(meh[0]) == 32
     assert len(meh[1]) == 15
-    assert meh[0][2] == 'M+Na '
+    assert meh[0][2] == 'M+Na'
 
 
 def test_adduct_db_search():

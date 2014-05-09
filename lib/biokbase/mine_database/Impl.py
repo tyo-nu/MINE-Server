@@ -67,9 +67,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         for model in self.kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
-            self.pos_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
+            self.pos_adducts = [line.split(' \t')[0] for line in infile if not line[0] == '#']
         with open('./lib/biokbase/mine_database/Negative Adducts full.txt') as infile:
-            self.neg_adducts = [line.split('\t')[0] for line in infile if not line[0] == '#']
+            self.neg_adducts = [line.split(' \t')[0] for line in infile if not line[0] == '#']
         #END_CONSTRUCTOR
         pass
 
