@@ -3,8 +3,13 @@ from lib.biokbase.mine_database.Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp'
-glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
-           u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose'], u'Model_SEED': 17398}
+glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'Names':
+    [u'D-Gulose', u'D-gulo-Hexose', u'beta-D-Glucose', u'alpha-D-Galactose', u'D-Hexose', u'Hexose', u'D-Allose',
+     u'L-Galactose', u'beta-D-Mannose', u'1,4-beta-D-Mannooligosaccharide', u'alpha-D-Mannose', u'beta-D-Galactose',
+     u'D-galactopyranose', u'D-Aldose', u'D-Aldose1', u'D-Aldose2', u'D-Idose', u'D-ido-Hexose', u'D-Galactose',
+     u'D-Talose', u'D-talo-Hexose', u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose', u'alpha-D-Glucose',
+     u'D-glucopyranose', u'L-Gulose', u'D-Mannose', u'Mannose', u'Seminose', u'Carubinose', u'D-Altrose',
+     u'D-altro-Hexose'], u'Model_SEED': 17398}
 
 
 class Adduct_search_params():
