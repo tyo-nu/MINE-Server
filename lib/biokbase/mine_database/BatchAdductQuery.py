@@ -16,7 +16,7 @@ import cPickle
 import time
 import string
 import re
-
+from collections import defaultdict
 
 class Dataset():
     """A class containing all the information for a metabolomics data set"""
@@ -42,6 +42,8 @@ class Dataset():
         self.total_formulas = 0
         self.total_hits = 0
         self.matched_peaks = 0
+        self.direct_pathways = defaultdict(list)
+        self.implied_pathways = defaultdict(list)
 
     def __str__(self):
         return self.name
@@ -73,6 +75,7 @@ class Dataset():
 
                 #update the total hits for the peak and make a not if the compound is in the native_set
                 peak.total_hits += 1
+                self.record_pathway_counts(compound)
                 if compound['_id'] in self.native_set:
                     peak.native_hit = True
 
@@ -90,6 +93,7 @@ class Dataset():
                         self.isomers[compound['Formula']].append(compound)
                 except KeyError:
                     self.isomers[compound['Formula']] = [compound]
+
 
     def find_M_hits(self, peak, db):
         """This function finds compounds that have a natural positive charge (M+)"""
@@ -109,6 +113,9 @@ class Dataset():
                 if re.search('F[^e]|Cl|Br', compound['Formula']):
                     continue
             peak.total_hits += 1
+            if compound['_id'] in self.native_set:
+                    peak.native_hit = True
+            self.record_pathway_counts(compound)
 
             #create a dictionary of formulas keyed by the adduct that produces them
             try:
@@ -216,7 +223,7 @@ class Dataset():
         native_isomers = []
         other_isomers = []
         for isomer in self.isomers[formula]:
-            if isomer['InChI Key'].split('-')[0] in self.known_set:
+            if isomer['Inchikey'].split('-')[0] in self.known_set:
                 known_isomers.append(isomer)
             elif isomer['_id'] in self.native_set:
                 native_isomers.append(isomer)
@@ -238,7 +245,7 @@ class Dataset():
         native_isomers = []
         other_isomers = []
         for isomer in self.isomers[formula]:
-            if isomer['InChI Key'].split('-')[0] in self.known_set:
+            if isomer['Inchikey'].split('-')[0] in self.known_set:
                 known_isomers.append(isomer)
             elif isomer['_id'] in self.native_set:
                 native_isomers.append(isomer)
@@ -265,7 +272,7 @@ class Dataset():
         native_isomers = []
         other_isomers = []
         for isomer in self.isomers[formula]:
-            if isomer['InChI Key'].split('-')[0] in self.known_set:
+            if isomer['Inchikey'].split('-')[0] in self.known_set:
                 known_isomers.append(isomer)
             elif isomer['_id'] in self.native_set:
                 native_isomers.append(isomer)
@@ -280,6 +287,18 @@ class Dataset():
         if len(other_isomers) > 0:
             outfile.write('<tr> <td colspan="2"> Matches with promiscuity products: %s</td></tr>\n' % len(other_isomers))
             printer.print_compound_html(sort_NPLike(other_isomers), outfile, labels=labels)
+
+    def record_pathway_counts(self, compound):
+        try:
+            if "Pathways" in compound:
+                for x in compound["Pathways"]:
+                    if isinstance(x, unicode):
+                        self.direct_pathways[x].append(compound['_id'])
+                    else:
+                        for y in x[1]:
+                            self.implied_pathways[y].append(compound['_id'])
+        except:
+            print compound["Pathways"]
 
 
 def get_modelSEED_comps(kb_db, models):
@@ -308,7 +327,7 @@ def validate():
                 for adduct in upeak.formulas:
                     for formula in upeak.formulas[adduct]:
                         for compound in data.isomers[formula]:
-                            if compound["InChI Key"] == right_key:
+                            if compound["Inchikey"] == right_key:
                                 print upeak.name
                                 found += 1
     print found / float(len(data.known_peaks)) * 100
@@ -394,7 +413,7 @@ class Peak:
         self.r_time = float(r_time)  # retention time
         self.mz = float(mz)  # mass to charge ratio
         self.charge = charge  # polarity of charge
-        self.inchi_key = inchi_key  # the id of the peak if known, as an InChI Key
+        self.inchi_key = inchi_key  # the id of the peak if known, as an Inchikey
         self.formulas = formula  # a dictionary of all the formulas that match the peak for a given adduct as a key
         self.total_formulas = 0
         self.total_hits = 0

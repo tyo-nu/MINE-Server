@@ -5,6 +5,7 @@ import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
+from collections import defaultdict
 
 
 class Pathway_query_params():
@@ -278,9 +279,13 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append({'adduct': adduct, 'formula': formula, 'isomers':
-                                        [unicode(x['_id']) for x in dataset.isomers[formula]]})
+                                        [unicode(x['_id']) for x in
+                                         BatchAdductQuery.sort_NPLike(dataset.isomers[formula])]})
+                    #dataset.record_pathway_counts(x for x in dataset.isomers[formula])
+
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
+            #batch_output = [dataset.direct_pathways, dataset.implied_pathways]
         #END batch_ms_adduct_search
 
         #At some point might do deeper type checking...

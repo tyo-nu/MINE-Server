@@ -35,12 +35,12 @@ def quick_search(db, comp_data):
     elif (len(comp_data) == 8) and (comp_data[0:2] == 'cpd'):
         query_field = 'Model_SEED'
     elif (len(comp_data.split('-')) == 3) or (len(comp_data) == 14):
-        query_field = 'Inchi_key'
+        query_field = 'Inchikey'
         comp_data = comp_data.split('-')[0]
     else:
         query_field = 'Names'
 
-    if query_field == 'Inchi_key':
+    if query_field == 'Inchikey':
         results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}},
                                                 {'Formula': 1, 'Model_SEED': 1, 'Names': 1}) if x['_id'][0] == "C"]
     elif query_field == 'Names':
