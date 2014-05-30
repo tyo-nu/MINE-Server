@@ -314,7 +314,7 @@ def get_modelSEED_comps(kb_db, models):
 
 
 def sort_NPLike(dic_list):
-    return sorted(dic_list, key=lambda x: float(x['NP Likeness']), reverse=True)
+    return sorted(dic_list, key=lambda x: float(x['NP_likeness']), reverse=True)
 
 
 def validate():
