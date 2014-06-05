@@ -17,6 +17,10 @@ def establish_db_client():
             client = MongoClient(host='branch')
             admin = client['admin']
             admin.authenticate('worker', 'bnice14bot')
+        elif ('branch' in platform.node()):
+            client = MongoClient()
+            admin = client['admin']
+            admin.authenticate('worker', 'bnice14bot')
         #local database
         else:
             client = MongoClient()
