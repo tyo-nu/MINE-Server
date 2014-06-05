@@ -139,15 +139,23 @@ module mineDatabaseServices {
 
 	/*
 		Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
-		the search smiles is greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
+		the search structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
+		fingerprints to perform the Tannimoto calculation.
 	*/
-	funcdef similarity_search(string db, string smiles, float min_tc, string fp_type, int limit)
+	funcdef similarity_search(string db, string structure, float min_tc, string fp_type, int limit)
 	returns (list<comp_stub> similarity_search_results);
+	/*
+		Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
+		structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+	*/
+	funcdef structure_search(string db,string input_format, string structure)
+	returns (list<comp_stub> structure_search_results);
 
 	/*
 		Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
+		(as SMILES or molfile)
 	*/
-	funcdef substructure_search(string db, string smiles, int limit)
+	funcdef substructure_search(string db, string substructure, int limit)
 	returns (list<comp_stub> substructure_search_results);
 
     /*
@@ -178,23 +186,6 @@ module mineDatabaseServices {
         Returns a tuple of lists of positive and negative mass adducts names that may be used for querying the databases
     */
     funcdef get_adducts() returns (tuple<list<string>, list<string>> adducts);
-    
-
-    /*
-		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
-
-		Input parameters for the "mass_adduct_query" function:
-		string db - the database in which to search for mass spec matches
-		float mz - the experimental mass per charge ratio
-        float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
-        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules. 1 = +, 0 = -
-        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-    */
-	funcdef adduct_db_search(string db, float mz, float tolerance, list<string> adduct_list, list<string> models,
-	                         bool ppm, bool charge, bool halogens) returns (list<adduct_result> output);
 
 	/*
 		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
