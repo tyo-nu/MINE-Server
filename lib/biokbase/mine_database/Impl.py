@@ -92,7 +92,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, smiles, min_tc, fp_type, limit):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
@@ -122,7 +122,20 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def substructure_search(self, db, smiles, limit):
+    def structure_search(self, db, input_format, comp_structure):
+        # self.ctx is set by the wsgi application class
+        # return variables are: structure_search_results
+        #BEGIN structure_search
+        #END structure_search
+
+        #At some point might do deeper type checking...
+        if not isinstance(structure_search_results, list):
+            raise ValueError('Method structure_search return value ' +
+                             'structure_search_results is not type list as required.')
+        # return the results
+        return [structure_search_results]
+
+    def substructure_search(self, db, substructure, limit):
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
@@ -232,31 +245,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'adducts is not type list as required.')
         # return the results
         return [adducts]
-
-    def adduct_db_search(self, db, mz, tolerance, adduct_list, models, ppm, charge, halogens):
-        # self.ctx is set by the wsgi application class
-        # return variables are: output
-        #BEGIN adduct_db_search
-        output = []
-        db = self.db_client[db]
-        name = "Single Peak: " + str(mz)
-        params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
-        dataset = BatchAdductQuery.Dataset(name, params)
-        dataset.unk_peaks = [BatchAdductQuery.Peak(name, 0, mz, charge, {}, "False")]
-        dataset.annotate_peaks(db)
-        result = dataset.unk_peaks[0]
-        for adduct in result.formulas:
-            for formula in result.formulas[adduct]:
-                output.append({'adduct': adduct, 'formula': formula,
-                               'isomers': [x['_id'] for x in dataset.isomers[formula]]})
-        #END adduct_db_search
-
-        #At some point might do deeper type checking...
-        if not isinstance(output, list):
-            raise ValueError('Method adduct_db_search return value ' +
-                             'output is not type list as required.')
-        # return the results
-        return [output]
 
     def batch_ms_adduct_search(self, db, text, text_type, tolerance, adduct_list, models, ppm, charge, halogens):
         # self.ctx is set by the wsgi application class

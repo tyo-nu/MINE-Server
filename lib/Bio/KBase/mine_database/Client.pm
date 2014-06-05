@@ -152,7 +152,7 @@ sub quick_search
 
 =head2 similarity_search
 
-  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc, $fp_type, $limit)
+  $similarity_search_results = $obj->similarity_search($db, $comp_structure, $min_tc, $fp_type, $limit)
 
 =over 4
 
@@ -162,7 +162,7 @@ sub quick_search
 
 <pre>
 $db is a string
-$smiles is a string
+$comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
@@ -181,7 +181,7 @@ object_id is a string
 =begin text
 
 $db is a string
-$smiles is a string
+$comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
@@ -199,7 +199,8 @@ object_id is a string
 =item Description
 
 Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
-the search smiles is greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
+the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
+fingerprints to perform the Tannimoto calculation.
 
 =back
 
@@ -217,11 +218,11 @@ sub similarity_search
 							       "Invalid argument count for function similarity_search (received $n, expecting 5)");
     }
     {
-	my($db, $smiles, $min_tc, $fp_type, $limit) = @args;
+	my($db, $comp_structure, $min_tc, $fp_type, $limit) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
-        (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument 2 \"smiles\" (value was \"$smiles\")");
+        (!ref($comp_structure)) or push(@_bad_arguments, "Invalid type for argument 2 \"comp_structure\" (value was \"$comp_structure\")");
         (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument 3 \"min_tc\" (value was \"$min_tc\")");
         (!ref($fp_type)) or push(@_bad_arguments, "Invalid type for argument 4 \"fp_type\" (value was \"$fp_type\")");
         (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument 5 \"limit\" (value was \"$limit\")");
@@ -256,9 +257,9 @@ sub similarity_search
 
 
 
-=head2 substructure_search
+=head2 structure_search
 
-  $substructure_search_results = $obj->substructure_search($db, $smiles, $limit)
+  $structure_search_results = $obj->structure_search($db, $input_format, $comp_structure)
 
 =over 4
 
@@ -268,7 +269,107 @@ sub similarity_search
 
 <pre>
 $db is a string
-$smiles is a string
+$input_format is a string
+$comp_structure is a string
+$structure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$input_format is a string
+$comp_structure is a string
+$structure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+=item Description
+
+Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
+comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+
+=back
+
+=cut
+
+sub structure_search
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 3)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function structure_search (received $n, expecting 3)");
+    }
+    {
+	my($db, $input_format, $comp_structure) = @args;
+
+	my @_bad_arguments;
+        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
+        (!ref($input_format)) or push(@_bad_arguments, "Invalid type for argument 2 \"input_format\" (value was \"$input_format\")");
+        (!ref($comp_structure)) or push(@_bad_arguments, "Invalid type for argument 3 \"comp_structure\" (value was \"$comp_structure\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to structure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'structure_search');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, {
+	method => "mineDatabaseServices.structure_search",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'structure_search',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method structure_search",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'structure_search',
+				       );
+    }
+}
+
+
+
+=head2 substructure_search
+
+  $substructure_search_results = $obj->substructure_search($db, $substructure, $limit)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$substructure is a string
 $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
@@ -285,7 +386,7 @@ object_id is a string
 =begin text
 
 $db is a string
-$smiles is a string
+$substructure is a string
 $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
@@ -301,6 +402,7 @@ object_id is a string
 =item Description
 
 Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
+(as SMILES or molfile)
 
 =back
 
@@ -318,11 +420,11 @@ sub substructure_search
 							       "Invalid argument count for function substructure_search (received $n, expecting 3)");
     }
     {
-	my($db, $smiles, $limit) = @args;
+	my($db, $substructure, $limit) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
-        (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument 2 \"smiles\" (value was \"$smiles\")");
+        (!ref($substructure)) or push(@_bad_arguments, "Invalid type for argument 2 \"substructure\" (value was \"$substructure\")");
         (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument 3 \"limit\" (value was \"$limit\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
@@ -813,130 +915,6 @@ sub get_adducts
 
 
 
-=head2 adduct_db_search
-
-  $output = $obj->adduct_db_search($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
-
-=over 4
-
-=item Parameter and return types
-
-=begin html
-
-<pre>
-$db is a string
-$mz is a float
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$output is a reference to a list where each element is an adduct_result
-bool is an int
-adduct_result is a reference to a hash where the following keys are defined:
-	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
-object_id is a string
-
-</pre>
-
-=end html
-
-=begin text
-
-$db is a string
-$mz is a float
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$output is a reference to a list where each element is an adduct_result
-bool is an int
-adduct_result is a reference to a hash where the following keys are defined:
-	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
-object_id is a string
-
-
-=end text
-
-=item Description
-
-Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
-
-Input parameters for the "mass_adduct_query" function:
-string db - the database in which to search for mass spec matches
-float mz - the experimental mass per charge ratio
-        float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
-        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules. 1 = +, 0 = -
-        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-
-=back
-
-=cut
-
-sub adduct_db_search
-{
-    my($self, @args) = @_;
-
-# Authentication: none
-
-    if ((my $n = @args) != 8)
-    {
-	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function adduct_db_search (received $n, expecting 8)");
-    }
-    {
-	my($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens) = @args;
-
-	my @_bad_arguments;
-        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
-        (!ref($mz)) or push(@_bad_arguments, "Invalid type for argument 2 \"mz\" (value was \"$mz\")");
-        (!ref($tolerance)) or push(@_bad_arguments, "Invalid type for argument 3 \"tolerance\" (value was \"$tolerance\")");
-        (ref($adduct_list) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 4 \"adduct_list\" (value was \"$adduct_list\")");
-        (ref($models) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 5 \"models\" (value was \"$models\")");
-        (!ref($ppm)) or push(@_bad_arguments, "Invalid type for argument 6 \"ppm\" (value was \"$ppm\")");
-        (!ref($charge)) or push(@_bad_arguments, "Invalid type for argument 7 \"charge\" (value was \"$charge\")");
-        (!ref($halogens)) or push(@_bad_arguments, "Invalid type for argument 8 \"halogens\" (value was \"$halogens\")");
-        if (@_bad_arguments) {
-	    my $msg = "Invalid arguments passed to adduct_db_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
-	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-								   method_name => 'adduct_db_search');
-	}
-    }
-
-    my $result = $self->{client}->call($self->{url}, {
-	method => "mineDatabaseServices.adduct_db_search",
-	params => \@args,
-    });
-    if ($result) {
-	if ($result->is_error) {
-	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
-					       code => $result->content->{error}->{code},
-					       method_name => 'adduct_db_search',
-					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
-					      );
-	} else {
-	    return wantarray ? @{$result->result} : $result->result->[0];
-	}
-    } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method adduct_db_search",
-					    status_line => $self->{client}->status_line,
-					    method_name => 'adduct_db_search',
-				       );
-    }
-}
-
-
-
 =head2 batch_ms_adduct_search
 
   $batch_output = $obj->batch_ms_adduct_search($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
@@ -1013,7 +991,7 @@ string text - the user supplied text
 string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
         float tolerance - the desired mass precision
         list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
         bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results

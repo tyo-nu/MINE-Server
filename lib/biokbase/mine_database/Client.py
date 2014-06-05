@@ -187,10 +187,10 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def similarity_search(self, db, smiles, min_tc, fp_type, limit):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit):
 
         arg_hash = {'method': 'mineDatabaseServices.similarity_search',
-                    'params': [db, smiles, min_tc, fp_type, limit],
+                    'params': [db, comp_structure, min_tc, fp_type, limit],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
@@ -222,10 +222,45 @@ class mineDatabaseServices(object):
         else:
             raise ServerError('Unknown', 0, 'An unknown server error occurred')
 
-    def substructure_search(self, db, smiles, limit):
+    def structure_search(self, db, input_format, comp_structure):
+
+        arg_hash = {'method': 'mineDatabaseServices.structure_search',
+                    'params': [db, input_format, comp_structure],
+                    'version': '1.1',
+                    'id': str(random.random())[2:]
+                    }
+
+        body = json.dumps(arg_hash, cls=JSONObjectEncoder)
+        try:
+            request = urllib2.Request(self.url, body, self._headers)
+            ret = urllib2.urlopen(request, timeout=self.timeout)
+        except HTTPError as h:
+            if _CT in h.headers and h.headers[_CT] == _AJ:
+                b = h.read()
+                err = json.loads(b)
+                if 'error' in err:
+                    raise ServerError(**err['error'])
+                else:            # this should never happen... but if it does
+                    se = ServerError('Unknown', 0, b)
+                    se.httpError = h
+                    # h.read() will return '' in the calling code.
+                    raise se
+            else:
+                raise h
+        if ret.code != httplib.OK:
+            raise URLError('Received bad response code from server:' +
+                           ret.code)
+        resp = json.loads(ret.read())
+
+        if 'result' in resp:
+            return resp['result'][0]
+        else:
+            raise ServerError('Unknown', 0, 'An unknown server error occurred')
+
+    def substructure_search(self, db, substructure, limit):
 
         arg_hash = {'method': 'mineDatabaseServices.substructure_search',
-                    'params': [db, smiles, limit],
+                    'params': [db, substructure, limit],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }
@@ -401,41 +436,6 @@ class mineDatabaseServices(object):
 
         arg_hash = {'method': 'mineDatabaseServices.get_adducts',
                     'params': [],
-                    'version': '1.1',
-                    'id': str(random.random())[2:]
-                    }
-
-        body = json.dumps(arg_hash, cls=JSONObjectEncoder)
-        try:
-            request = urllib2.Request(self.url, body, self._headers)
-            ret = urllib2.urlopen(request, timeout=self.timeout)
-        except HTTPError as h:
-            if _CT in h.headers and h.headers[_CT] == _AJ:
-                b = h.read()
-                err = json.loads(b)
-                if 'error' in err:
-                    raise ServerError(**err['error'])
-                else:            # this should never happen... but if it does
-                    se = ServerError('Unknown', 0, b)
-                    se.httpError = h
-                    # h.read() will return '' in the calling code.
-                    raise se
-            else:
-                raise h
-        if ret.code != httplib.OK:
-            raise URLError('Received bad response code from server:' +
-                           ret.code)
-        resp = json.loads(ret.read())
-
-        if 'result' in resp:
-            return resp['result'][0]
-        else:
-            raise ServerError('Unknown', 0, 'An unknown server error occurred')
-
-    def adduct_db_search(self, db, mz, tolerance, adduct_list, models, ppm, charge, halogens):
-
-        arg_hash = {'method': 'mineDatabaseServices.adduct_db_search',
-                    'params': [db, mz, tolerance, adduct_list, models, ppm, charge, halogens],
                     'version': '1.1',
                     'id': str(random.random())[2:]
                     }

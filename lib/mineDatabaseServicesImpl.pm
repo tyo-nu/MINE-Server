@@ -130,7 +130,7 @@ sub quick_search
 
 =head2 similarity_search
 
-  $similarity_search_results = $obj->similarity_search($db, $smiles, $min_tc, $fp_type, $limit)
+  $similarity_search_results = $obj->similarity_search($db, $comp_structure, $min_tc, $fp_type, $limit)
 
 =over 4
 
@@ -140,7 +140,7 @@ sub quick_search
 
 <pre>
 $db is a string
-$smiles is a string
+$comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
@@ -159,7 +159,7 @@ object_id is a string
 =begin text
 
 $db is a string
-$smiles is a string
+$comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
@@ -179,7 +179,8 @@ object_id is a string
 =item Description
 
 Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
-the search smiles is greater that the user set threshold. Uses open babel FP2 or FP4 fingerprints to match.
+the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
+fingerprints to perform the Tannimoto calculation.
 
 =back
 
@@ -188,11 +189,11 @@ the search smiles is greater that the user set threshold. Uses open babel FP2 or
 sub similarity_search
 {
     my $self = shift;
-    my($db, $smiles, $min_tc, $fp_type, $limit) = @_;
+    my($db, $comp_structure, $min_tc, $fp_type, $limit) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
-    (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
+    (!ref($comp_structure)) or push(@_bad_arguments, "Invalid type for argument \"comp_structure\" (value was \"$comp_structure\")");
     (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument \"min_tc\" (value was \"$min_tc\")");
     (!ref($fp_type)) or push(@_bad_arguments, "Invalid type for argument \"fp_type\" (value was \"$fp_type\")");
     (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument \"limit\" (value was \"$limit\")");
@@ -219,9 +220,9 @@ sub similarity_search
 
 
 
-=head2 substructure_search
+=head2 structure_search
 
-  $substructure_search_results = $obj->substructure_search($db, $smiles, $limit)
+  $structure_search_results = $obj->structure_search($db, $input_format, $comp_structure)
 
 =over 4
 
@@ -231,7 +232,92 @@ sub similarity_search
 
 <pre>
 $db is a string
-$smiles is a string
+$input_format is a string
+$comp_structure is a string
+$structure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$input_format is a string
+$comp_structure is a string
+$structure_search_results is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	SEED_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
+comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+
+=back
+
+=cut
+
+sub structure_search
+{
+    my $self = shift;
+    my($db, $input_format, $comp_structure) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($input_format)) or push(@_bad_arguments, "Invalid type for argument \"input_format\" (value was \"$input_format\")");
+    (!ref($comp_structure)) or push(@_bad_arguments, "Invalid type for argument \"comp_structure\" (value was \"$comp_structure\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to structure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'structure_search');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($structure_search_results);
+    #BEGIN structure_search
+    #END structure_search
+    my @_bad_returns;
+    (ref($structure_search_results) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"structure_search_results\" (value was \"$structure_search_results\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to structure_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'structure_search');
+    }
+    return($structure_search_results);
+}
+
+
+
+
+=head2 substructure_search
+
+  $substructure_search_results = $obj->substructure_search($db, $substructure, $limit)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$substructure is a string
 $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
@@ -248,7 +334,7 @@ object_id is a string
 =begin text
 
 $db is a string
-$smiles is a string
+$substructure is a string
 $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
@@ -266,6 +352,7 @@ object_id is a string
 =item Description
 
 Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
+(as SMILES or molfile)
 
 =back
 
@@ -274,11 +361,11 @@ Creates substructure_search_results, a list of comp_stubs under the limit who co
 sub substructure_search
 {
     my $self = shift;
-    my($db, $smiles, $limit) = @_;
+    my($db, $substructure, $limit) = @_;
 
     my @_bad_arguments;
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
-    (!ref($smiles)) or push(@_bad_arguments, "Invalid type for argument \"smiles\" (value was \"$smiles\")");
+    (!ref($substructure)) or push(@_bad_arguments, "Invalid type for argument \"substructure\" (value was \"$substructure\")");
     (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument \"limit\" (value was \"$limit\")");
     if (@_bad_arguments) {
 	my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
@@ -690,115 +777,6 @@ sub get_adducts
 
 
 
-=head2 adduct_db_search
-
-  $output = $obj->adduct_db_search($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
-
-=over 4
-
-=item Parameter and return types
-
-=begin html
-
-<pre>
-$db is a string
-$mz is a float
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$output is a reference to a list where each element is an adduct_result
-bool is an int
-adduct_result is a reference to a hash where the following keys are defined:
-	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
-object_id is a string
-
-</pre>
-
-=end html
-
-=begin text
-
-$db is a string
-$mz is a float
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$output is a reference to a list where each element is an adduct_result
-bool is an int
-adduct_result is a reference to a hash where the following keys are defined:
-	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
-object_id is a string
-
-
-=end text
-
-
-
-=item Description
-
-Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
-
-Input parameters for the "mass_adduct_query" function:
-string db - the database in which to search for mass spec matches
-float mz - the experimental mass per charge ratio
-        float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
-        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules. 1 = +, 0 = -
-        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-
-=back
-
-=cut
-
-sub adduct_db_search
-{
-    my $self = shift;
-    my($db, $mz, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens) = @_;
-
-    my @_bad_arguments;
-    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
-    (!ref($mz)) or push(@_bad_arguments, "Invalid type for argument \"mz\" (value was \"$mz\")");
-    (!ref($tolerance)) or push(@_bad_arguments, "Invalid type for argument \"tolerance\" (value was \"$tolerance\")");
-    (ref($adduct_list) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"adduct_list\" (value was \"$adduct_list\")");
-    (ref($models) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"models\" (value was \"$models\")");
-    (!ref($ppm)) or push(@_bad_arguments, "Invalid type for argument \"ppm\" (value was \"$ppm\")");
-    (!ref($charge)) or push(@_bad_arguments, "Invalid type for argument \"charge\" (value was \"$charge\")");
-    (!ref($halogens)) or push(@_bad_arguments, "Invalid type for argument \"halogens\" (value was \"$halogens\")");
-    if (@_bad_arguments) {
-	my $msg = "Invalid arguments passed to adduct_db_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
-	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'adduct_db_search');
-    }
-
-    my $ctx = $mineDatabaseServicesServer::CallContext;
-    my($output);
-    #BEGIN adduct_db_search
-    #END adduct_db_search
-    my @_bad_returns;
-    (ref($output) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"output\" (value was \"$output\")");
-    if (@_bad_returns) {
-	my $msg = "Invalid returns passed to adduct_db_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
-	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'adduct_db_search');
-    }
-    return($output);
-}
-
-
-
-
 =head2 batch_ms_adduct_search
 
   $batch_output = $obj->batch_ms_adduct_search($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
@@ -877,7 +855,7 @@ string text - the user supplied text
 string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
         float tolerance - the desired mass precision
         list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
         bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results

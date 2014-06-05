@@ -233,6 +233,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.similarity_search,
                              name='mineDatabaseServices.similarity_search',
                              types=[basestring, basestring, float, basestring, int])
+        self.rpc_service.add(impl_mineDatabaseServices.structure_search,
+                             name='mineDatabaseServices.structure_search',
+                             types=[basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.substructure_search,
                              name='mineDatabaseServices.substructure_search',
                              types=[basestring, basestring, int])
@@ -251,9 +254,6 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])
-        self.rpc_service.add(impl_mineDatabaseServices.adduct_db_search,
-                             name='mineDatabaseServices.adduct_db_search',
-                             types=[basestring, float, float, list, list, int, int, int])
         self.rpc_service.add(impl_mineDatabaseServices.batch_ms_adduct_search,
                              name='mineDatabaseServices.batch_ms_adduct_search',
                              types=[basestring, basestring, basestring, float, list, list, int, int, int])
