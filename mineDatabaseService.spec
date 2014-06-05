@@ -139,16 +139,16 @@ module mineDatabaseServices {
 
 	/*
 		Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
-		the search structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
+		the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
 		fingerprints to perform the Tannimoto calculation.
 	*/
-	funcdef similarity_search(string db, string structure, float min_tc, string fp_type, int limit)
+	funcdef similarity_search(string db, string comp_structure, float min_tc, string fp_type, int limit)
 	returns (list<comp_stub> similarity_search_results);
 	/*
 		Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
-		structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+		comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
 	*/
-	funcdef structure_search(string db,string input_format, string structure)
+	funcdef structure_search(string db, string input_format, string comp_structure)
 	returns (list<comp_stub> structure_search_results);
 
 	/*
