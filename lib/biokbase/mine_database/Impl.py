@@ -129,7 +129,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: structure_search_results
         #BEGIN structure_search
         db = self.db_client[db]
-        mol = pybel.readstring(input_format, str(comp_structure))
+        mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
         structure_search_results = Utils.quick_search(db, inchi_key)
         #END structure_search

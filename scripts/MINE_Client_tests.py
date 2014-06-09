@@ -71,12 +71,6 @@ def test_get_adducts():
     assert meh[0][2] == 'M+Na'
 
 
-def test_adduct_db_search():
-    meh = services.adduct_db_search(test_db, 164.0937301, 0.002, ['M+H'], [], False, True, False)
-    assert len(meh) == 3
-    assert isinstance(meh[1]['isomers'], list)
-
-
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)
     assert len(result) == 2
@@ -98,7 +92,7 @@ def test_pathway_search():
 
 def test_similarity_search():
     assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
-    assert len(services.similarity_search('EcoCycexp', test_molfile, 0.8, 'FP4', 100)) == 3
+    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100)) == 9
 
 def test_substructure_search():
     assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
