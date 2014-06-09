@@ -88,8 +88,6 @@ def test_batch_ms_adduct_search():
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
 
-def test_timeout():
-    print services.substructure_search('KEGGexp', 'CCC', 10000)
 
 """
 #positive

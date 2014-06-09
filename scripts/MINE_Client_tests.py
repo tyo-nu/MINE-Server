@@ -1,6 +1,5 @@
 __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Client import mineDatabaseServices
-from lib.biokbase.mine_database.Server import ServerError
 
 #services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 services = mineDatabaseServices('http://branch.mcs.anl.gov:7074')
@@ -105,5 +104,3 @@ def test_structure_search():
     assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
     assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
 
-def test_timeout(self):
-    self.assertRaises(ServerError, services.substructure_search, ('KEGGexp', 'CCC', 10000))
