@@ -99,5 +99,5 @@ def test_substructure_search():
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
 
 def test_structure_search():
-    assert services.structure_search("EcoCycexp", "mol", test_molfile)[0][u'_id'] == u'Cec9b19cc3c494302248fe562c7853bc138355665'
-    assert services.structure_search("EcoCycexp", "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
+    assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
+    assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
