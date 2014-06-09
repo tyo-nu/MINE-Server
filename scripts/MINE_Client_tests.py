@@ -1,16 +1,17 @@
 __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Client import mineDatabaseServices
 
-services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
+#services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
+services = mineDatabaseServices('http://branch.mcs.anl.gov:7074')
 test_db = 'EcoCycexp'
-glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'Names':
-    [u'D-Gulose', u'D-gulo-Hexose', u'beta-D-Glucose', u'alpha-D-Galactose', u'D-Hexose', u'Hexose', u'D-Allose',
-     u'L-Galactose', u'beta-D-Mannose', u'1,4-beta-D-Mannooligosaccharide', u'alpha-D-Mannose', u'beta-D-Galactose',
-     u'D-galactopyranose', u'D-Aldose', u'D-Aldose1', u'D-Aldose2', u'D-Idose', u'D-ido-Hexose', u'D-Galactose',
-     u'D-Talose', u'D-talo-Hexose', u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose', u'alpha-D-Glucose',
-     u'D-glucopyranose', u'L-Gulose', u'D-Mannose', u'Mannose', u'Seminose', u'Carubinose', u'D-Altrose',
-     u'D-altro-Hexose'], u'Model_SEED': 17398}
-
+test_molfile = open("./scripts/xanthine.mol", "r").read()
+glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
+           u'Names': [u'Glucose', u'beta-D-Galactose', u'D-gulo-Hexose', u'D-Mannose', u'D-Idose', u'D-talo-Hexose',
+                      u'D-Gulose', u'1,4-beta-D-Mannooligosaccharide', u'beta-D-Mannose', u'D-Aldose2', u'D-Allose',
+                      u'D-Aldose1', u'D-Hexose', u'alpha-D-Glucose', u'D-Glucose', u'beta-D-Glucose', u'Grape sugar',
+                      u'Mannose', u'Dextrose', u'D-Altrose', u'Seminose', u'D-ido-Hexose', u'alpha-D-Galactose',
+                      u'D-altro-Hexose', u'Carubinose', u'L-Galactose', u'L-Gulose', u'D-galactopyranose', u'D-Talose',
+                      u'alpha-D-Mannose', u'D-glucopyranose', u'Hexose', u'D-Aldose', u'D-Galactose'], u'Model_SEED': 17398}
 
 class Adduct_search_params():
     def __init__(self, db, mz, tolerance, adducts, charge):
@@ -97,8 +98,12 @@ def test_pathway_search():
 
 def test_similarity_search():
     assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
-    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP4", 100)) == 46
+    assert len(services.similarity_search('EcoCycexp', test_molfile, 0.8, 'FP4', 100)) == 3
 
 def test_substructure_search():
     assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
+
+def test_structure_search():
+    assert services.structure_search("EcoCycexp", "mol", test_molfile)[0][u'_id'] == u'Cec9b19cc3c494302248fe562c7853bc138355665'
+    assert services.structure_search("EcoCycexp", "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]

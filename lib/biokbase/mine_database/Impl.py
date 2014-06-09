@@ -5,7 +5,6 @@ import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
-from collections import defaultdict
 
 
 class Pathway_query_params():
@@ -78,8 +77,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
-        mdb = self.db_client[db]
-        quick_search_results = Utils.quick_search(mdb, query)
+        db = self.db_client[db]
+        quick_search_results = Utils.quick_search(db, query)
         for x in quick_search_results:
             if not isinstance(x['_id'], unicode):
                 x['_id'] = unicode(x['_id'])
@@ -99,7 +98,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         similarity_search_results = []
         fp_type = str(fp_type)
         db = self.db_client[db]
-        mol = pybel.readstring('smi', str(smiles))
+        if "\n" in comp_structure:
+            mol = pybel.readstring('mol', str(comp_structure))
+        else:
+            mol = pybel.readstring('smi', str(comp_structure))
         query_fp = set(mol.calcfp(fp_type).bits)
         len_fp = len(query_fp)
         for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
@@ -126,6 +128,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: structure_search_results
         #BEGIN structure_search
+        db = self.db_client[db]
+        mol = pybel.readstring(input_format, str(comp_structure))
+        inchi_key = mol.write("inchikey").strip()
+        structure_search_results = Utils.quick_search(db, inchi_key)
         #END structure_search
 
         #At some point might do deeper type checking...
@@ -141,9 +147,12 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN substructure_search
         substructure_search_results = []
         db = self.db_client[db]
-        query_mol = pybel.readstring('smi', str(smiles))
+        if "\n" in substructure:
+            query_mol = pybel.readstring('mol', str(substructure))
+        else:
+            query_mol = pybel.readstring('smi', str(substructure))
         query_fp = query_mol.calcfp("FP4").bits
-        smarts = pybel.Smarts(str(smiles))
+        smarts = pybel.Smarts(query_mol.write('smi').strip())
         for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]

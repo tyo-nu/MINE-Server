@@ -5,6 +5,7 @@ import Utils
 test_db = '1GenEcoCyc'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
+test_molfile = open("./scripts/xanthine.mol", "r").read()
 
 class Options():
     def __init__(self):
@@ -69,12 +70,16 @@ def test_pathway_search():
                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 9
 
 def test_similarity_search():
-    meh = services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2')
-    print meh
+    print services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100)
+    print services.similarity_search('EcoCycexp', test_molfile, 0.8, 'FP4', 100)
+
+def test_structure_search():
+    print services.structure_search("EcoCycexp", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O')
+    print services.structure_search("EcoCycexp", "mol", test_molfile)
 
 def test_substructure_search():
-    meh = services.substructure_search('EcoCycexp', 'CCO')
-    print len(meh[0])
+    print services.substructure_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
+    print services.substructure_search('KEGGexp', test_molfile, 20)
 
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)[0]
@@ -82,3 +87,38 @@ def test_batch_ms_adduct_search():
     meh = result[0]['adducts']
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
+"""
+#positive
+up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
+down_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Down_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
+
+#negative
+#up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Neg").read(), "form", 0.003, ['M-', 'M+CH3COO'], [], False, True, False)[0]
+#down_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Down_mz_Neg").read(), "form", 0.003, ['M-', 'M+CH3COO'], [], False, False, False)[0]
+
+
+in_sillico_confidence = 0
+
+up_maps = []
+down_maps = []
+for key in set(up_result[0].keys() + up_result[1].keys()):
+    meh = len(up_result[0][key]) - len(down_result[0][key]) + in_sillico_confidence * (len(up_result[1][key]) - len(down_result[1][key]))
+    if meh >= 1:
+        up_maps.append((key, meh))
+
+for key in set(down_result[0].keys() + down_result[1].keys()):
+    meh = len(down_result[0][key]) - len(up_result[0][key]) + in_sillico_confidence * (len(down_result[1][key]) - len(up_result[1][key]))
+    if meh >= 1:
+        down_maps.append((key, meh))
+print "Up Maps"
+for x in sorted(up_maps, key=lambda x: -x[1]):
+    print x
+print "Down maps"
+for x in sorted(down_maps, key=lambda x: -x[1]):
+    print x
+map = "map00340"
+for comp in up_result[0][map]+up_result[1][map]:
+    print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
+    """
+
+test_structure_search()
