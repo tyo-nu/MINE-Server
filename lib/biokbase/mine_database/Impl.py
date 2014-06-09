@@ -2,10 +2,25 @@
 import pybel
 import time
 import Utils
+import signal
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
 
+class TimeoutException(Exception):
+    pass
+
+class timeout:
+    def __init__(self, seconds=10, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutException(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
 
 class Pathway_query_params():
     def __init__(self, db, start, end, length, all_path):
@@ -153,12 +168,13 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             query_mol = pybel.readstring('smi', str(substructure))
         query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(query_mol.write('smi').strip())
-        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
-            if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
-                del x["SMILES"]
-                substructure_search_results.append(x)
-                if len(substructure_search_results) == limit:
-                    break
+        with timeout():
+            for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'Model_SEED': 1, 'Names': 1}):
+                if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
+                    del x["SMILES"]
+                    substructure_search_results.append(x)
+                    if len(substructure_search_results) == limit:
+                        break
         #END substructure_search
 
         #At some point might do deeper type checking...
@@ -298,10 +314,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN pathway_search
         params = Pathway_query_params(db, start_comp, end_comp, len_limit, all_paths)
         pathsearch = PathwaySearch(params)
-        if params.all_paths:
-            pathway_query_results = pathsearch.dfs()
-        else:
-            pathway_query_results = pathsearch.bfs()
+        with timeout():
+            if params.all_paths:
+                pathway_query_results = pathsearch.dfs()
+            else:
+                pathway_query_results = pathsearch.bfs()
         #END pathway_search
 
         #At some point might do deeper type checking...

@@ -87,6 +87,10 @@ def test_batch_ms_adduct_search():
     meh = result[0]['adducts']
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
+
+def test_timeout():
+    print services.substructure_search('KEGGexp', 'CCC', 10000)
+
 """
 #positive
 up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
@@ -120,5 +124,3 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
-
-test_structure_search()
