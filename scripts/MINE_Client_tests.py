@@ -71,11 +71,14 @@ def test_get_adducts():
 
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)
+    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 0.002, ['M+H'], ['kb|fm.2944'], False,
+                                             True, False)
     assert len(result) == 2
     meh = result[0]['adducts']
-    assert len(meh) == 3
+    assert len(meh) == 2
     assert isinstance(meh[1]['isomers'], list)
+    assert result[0]['native_hit'] is False
+    assert result[0]['min_steps'] == 0
 
 
 def test_pathway_search():
