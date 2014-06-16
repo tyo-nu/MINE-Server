@@ -73,11 +73,13 @@ class Dataset():
                     if re.search('F[^e]|Cl|Br', compound['Formula']):
                         continue
 
-                #update the total hits for the peak and make a not if the compound is in the native_set
+                #update the total hits for the peak and make a note if the compound is in the native_set
                 peak.total_hits += 1
                 self.record_pathway_counts(compound)
                 if compound['_id'] in self.native_set:
                     peak.native_hit = True
+                if compound['steps_from_source'] < peak.min_steps:
+                    peak.min_steps = compound['steps_from_source']
 
                 #create a dictionary of formulas keyed by the adduct that produces them
                 try:
@@ -418,6 +420,7 @@ class Peak:
         self.total_formulas = 0
         self.total_hits = 0
         self.native_hit = False
+        self.min_steps = 99
 
     def __str__(self):
         return self.name
@@ -521,8 +524,6 @@ if __name__ == '__main__':
         data.unk_peaks = read_mgf(unknowns_file)
     elif '.mzXML' in unknowns_file:
         data.unk_peaks = read_mzXML(unknowns_file)
-    elif ('.xls' or '.xlsx') in unknowns_file:
-        data.unk_peaks = read_excel(unknowns_file)
     else:
         sys.exit("Unknown file type not recognised. Please use .mgf, .xlsx, .txt or .csv file")
 
