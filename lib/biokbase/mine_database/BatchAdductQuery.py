@@ -64,8 +64,8 @@ class Dataset():
         hits = {}
         for i, adduct in enumerate(adducts):
             hits[adduct['f0']] = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": float(lower_bounds[i])}},
-                                                            {"Mass": {"$lte": float(upper_bounds[i])}}, {'Charge': 0}]},
-                                                            {"FP2": 0, "Reactant in": 0, "Product of": 0})]
+                                                               {"Mass": {"$lte": float(upper_bounds[i])}}, {'Charge': 0}]},
+                                                               {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
             for compound in hits[adduct['f0']]:
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
                 # is counted or stored.
@@ -107,7 +107,7 @@ class Dataset():
         lower_bound = peak.mz - precision
         #search database for hits in the mass range that have an innate positive charge.
         hits = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": lower_bound}}, {"Mass": {"$lte": upper_bound}},
-                                            {'Charge': 1}]}, {"FP2": 0, "Reactant in": 0, "Product of": 0})]
+                                            {'Charge': 1}]}, {'Formula': 1, 'Model_SEED': 1, 'Names': 1})]
         for compound in hits:
             #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
             # is counted or stored.

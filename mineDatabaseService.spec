@@ -52,7 +52,7 @@ module mineDatabaseServices {
     typedef structure {
         string adduct;
         string formula;
-        list<object_id> isomers;
+        list<comp_stub> isomers;
     } adduct_result;
 
     /* An annotated ms peak output by a batch mass adduct query

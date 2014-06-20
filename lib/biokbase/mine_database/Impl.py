@@ -270,9 +270,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             peak.adducts = []
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
-                    peak.adducts.append({'adduct': adduct, 'formula': formula, 'isomers':
-                                        [unicode(x['_id']) for x in
-                                         dataset.isomers[formula]]})
+                    peak.adducts.append({'adduct': adduct, 'formula': formula,
+                                         'isomers': dataset.isomers[formula].values()})
                     #dataset.record_pathway_counts(x for x in dataset.isomers[formula])
 
             del peak.formulas, peak.inchi_key
