@@ -268,7 +268,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
             peak.adducts = []
-            for adduct in sorted(peak.formulas, key=lambda x: x['min_steps']):
+            for adduct in sorted(peak, key=lambda x: x['min_steps']).formulas:
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append({'adduct': adduct, 'formula': formula,
                                          'isomers': sorted(dataset.isomers[formula], key=lambda x: x['steps_from_source'])})
