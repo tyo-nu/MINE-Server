@@ -71,7 +71,7 @@ def test_get_adducts():
 
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 0.002, ['M+H'], ['kb|fm.2944'], False,
+    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['M+H'], ['kb|fm.2944'], False,
                                              True, False)
     assert len(result) == 2
     meh = result[0]['adducts']

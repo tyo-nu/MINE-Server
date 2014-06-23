@@ -16,7 +16,7 @@ class Options():
         self.positive_adduct_file = "lib/Positive Adducts full.txt"
         self.negative_adduct_file = "lib/Negative Adducts full.txt"
         self.adduct_list = ['M+H', 'M-H']
-        self.tolerance = 0.002
+        self.tolerance = 2
         self.ppm = False
         self.ms_file = "lib/Unknowns.txt"
         self.halogens = True
@@ -54,7 +54,7 @@ def test_get_adducts():
 
 
 def test_adduct_db_search():
-    meh = services.adduct_db_search(test_db, 164.0937301, 0.002, ['M+H'], [], False, True, False)
+    meh = services.adduct_db_search(test_db, 164.0937301, 2, ['M+H'], [], False, True, False)
     assert len(meh) == 4
     assert len(meh[1]) == 3
 
@@ -82,8 +82,8 @@ def test_substructure_search():
     print services.substructure_search('KEGGexp', test_molfile, 20)
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 0.002, ['M+H'], [], False, True, False)[0]
-    assert len(result) == 2
+    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 2, ['M+H'], [], False, True, False)[0]
+    print len(result)
     meh = result[0]['adducts']
     assert len(meh) == 3
     assert isinstance(meh[1]['isomers'], list)
@@ -122,3 +122,4 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
+

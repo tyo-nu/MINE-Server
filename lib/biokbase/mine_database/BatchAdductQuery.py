@@ -56,7 +56,7 @@ class Dataset():
         if self.options.ppm:
             precision = (self.options.tolerance/100000.)*potential_masses
         else:
-            precision = self.options.tolerance/1000.0
+            precision = self.options.tolerance/float(1000)
         upper_bounds = potential_masses + precision
         lower_bounds = potential_masses - precision
 
