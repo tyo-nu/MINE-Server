@@ -266,7 +266,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_modelSEED_comps(self.kbase_db, models)
         dataset.annotate_peaks(db)
-        for peak in sorted(dataset.unk_peaks, key=lambda x: x['min_steps']):
+        for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
             peak.adducts = []
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
