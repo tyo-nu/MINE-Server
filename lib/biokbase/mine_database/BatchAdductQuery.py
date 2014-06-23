@@ -56,7 +56,7 @@ class Dataset():
         if self.options.ppm:
             precision = (self.options.tolerance/100000.)*potential_masses
         else:
-            precision = self.options.tolerance/float(1000)
+            precision = self.options.tolerance*0.001
         upper_bounds = potential_masses + precision
         lower_bounds = potential_masses - precision
 
@@ -102,7 +102,7 @@ class Dataset():
         if self.options.ppm:
             precision = (self.options.tolerance/100000.)*peak.mz
         else:
-            precision = self.options.tolerance
+            precision = self.options.tolerance*0.001
         upper_bound = peak.mz + precision
         lower_bound = peak.mz - precision
         #search database for hits in the mass range that have an innate positive charge.

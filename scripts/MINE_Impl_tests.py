@@ -2,7 +2,7 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
 import Utils
 
-test_db = '1GenEcoCyc'
+test_db = 'KEGGexp'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
 test_molfile = open("./scripts/xanthine.mol", "r").read()
@@ -83,9 +83,9 @@ def test_substructure_search():
 
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 2, ['M+H'], [], False, True, False)[0]
-    print len(result)
+    assert len(result) == 2
     meh = result[0]['adducts']
-    assert len(meh) == 3
+    assert len(meh) == 4
     assert isinstance(meh[1]['isomers'], list)
 
 
@@ -123,3 +123,4 @@ for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
 
+test_batch_ms_adduct_search()
