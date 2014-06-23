@@ -56,7 +56,7 @@ class Dataset():
         if self.options.ppm:
             precision = (self.options.tolerance/100000.)*potential_masses
         else:
-            precision = self.options.tolerance
+            precision = self.options.tolerance/1000.0
         upper_bounds = potential_masses + precision
         lower_bounds = potential_masses - precision
 
@@ -491,7 +491,7 @@ if __name__ == '__main__':
                       help="The model SEED id of the organism for the data set")
     parser.add_option("-k", "--known", dest="known_file", default="null",
                       help="The path to a file containing known or targeted peaks")
-    parser.add_option("-t", "--tolerance", dest="tolerance", type="float", default=0.002,
+    parser.add_option("-t", "--tolerance", dest="tolerance", type="float", default=2,
                       help="The m/z tolerance(precision) for peak searching")
     parser.add_option("-c", "--cluster", dest="cluster", type="float", default=-1, help="Sort peaks by retention time "
                       "and search for common formulas. The maximum spread for a cluster must be input as a float")
