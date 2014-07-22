@@ -26,13 +26,13 @@ module mineDatabaseServices {
 	/* A summery of a compound object which is returned from compound query
 
         object_id _id - unique ID of a compound
-        string SEED_id - The model SEED id of a compound, if id < 100000 then the compound is computationally generated
+        string MINE_id - The a unique numerical id of a compound
         list<string> Names - common name for the compound
         string Formula - molecular formula of the compound
     */
     typedef structure {
         object_id id;
-        string SEED_id;
+        string MINE_id;
         list<string> Names;
         string Formula;
     } comp_stub;
@@ -85,7 +85,6 @@ module mineDatabaseServices {
 		int Charge - The total charge of the compound as calculated by ChemAxon
 
 		Optionally:
-		list<string> KEGG_Code - KEGG compound codes
         list<string> DB_links - links to the same compound in other databases
         list<object_id> Reactant_in - Reactions in which the compound is a reactant
         list<object_id> Product_of - Reactions in which the compound is a product
@@ -98,7 +97,6 @@ module mineDatabaseServices {
 		string Stringcode;
 		float Mass;
 		int Charge;
-		list<string> KEGG_Code;
         list<string> DB_links;
         list<object_id> Reactant_in;
         list<object_id> Product_of;

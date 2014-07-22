@@ -37,7 +37,7 @@ def quick_search(db, comp_data):
     elif (len(comp_data) == 6) and (comp_data[0] == 'C'):
         query_field = 'DB_links.KEGG'
     elif (len(comp_data) == 8) and (comp_data[0:2] == 'cpd'):
-        query_field = 'Model_SEED'
+        query_field = 'DB_links.Model_SEED'
     elif (len(comp_data.split('-')) == 3) or (len(comp_data) == 14):
         query_field = 'Inchikey'
         comp_data = comp_data.split('-')[0]
@@ -46,14 +46,14 @@ def quick_search(db, comp_data):
 
     if query_field == 'Inchikey':
         results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}},
-                                                {'Formula': 1, 'Model_SEED': 1, 'Names': 1}) if x['_id'][0] == "C"]
+                                                {'Formula': 1, 'MINE_id': 1, 'Names': 1}) if x['_id'][0] == "C"]
     elif query_field == 'Names':
         results = [x['obj'] for x in db.command("text", "compounds", search=comp_data,
-                                                   project={'Formula': 1, 'Model_SEED': 1, 'Names': 1})['results']
+                                                   project={'Formula': 1, 'MINE_id': 1, 'Names': 1})['results']
                    if x['obj']['_id'][0] == "C"]
     else:
         results = [x for x in db.compounds.find({query_field: comp_data},
-                                                {'Formula': 1, 'Model_SEED': 1, 'Names': 1}) if x['_id'][0] == "C"]
+                                                {'Formula': 1, 'MINE_id': 1, 'Names': 1}) if x['_id'][0] == "C"]
     if not results:
         raise ValueError("%s was not found in the database." % comp_data)
 

@@ -2,7 +2,7 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-test_db = 'EcoCycexp'
+test_db = 'EcoCycexp2'
 test_molfile = open("./scripts/xanthine.mol", "r").read()
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'Glucose', u'beta-D-Galactose', u'D-gulo-Hexose', u'D-Mannose', u'D-Idose', u'D-talo-Hexose',
