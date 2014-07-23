@@ -2,7 +2,7 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
 import Utils
 
-test_db = 'KEGGexp'
+test_db = 'EcoCycexp2'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
 test_molfile = open("./scripts/xanthine.mol", "r").read()
@@ -25,15 +25,15 @@ config = Options()
 services = mineDatabaseServices(None)
 
 def test_quick_search():
-    #assert services.quick_search(config.test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
+    #print services.quick_search(config.test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')
     #assert services.quick_search(config.test_db, 'C00031') == ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
     assert glucose in services.quick_search(test_db, 'Glucose')[0]
 
 
 def test_database_query():
-    assert services.database_query('admin', '', '', False) == ['Illegal query']
-    assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
-    assert services.database_query(test_db, 'Names', 'Grape', True) == [glucose]
+    #assert services.database_query('admin', '', '', False) == ['Illegal query']
+    #assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
+    print services.database_query(test_db, "{'Names': 'Glucose'}")
 
 
 def test_get_comps():
@@ -123,4 +123,4 @@ for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
 
-test_batch_ms_adduct_search()
+test_database_query()

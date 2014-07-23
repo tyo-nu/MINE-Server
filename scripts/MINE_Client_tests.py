@@ -4,13 +4,14 @@ from lib.biokbase.mine_database.Client import mineDatabaseServices
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp2'
 test_molfile = open("./scripts/xanthine.mol", "r").read()
-glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
-           u'Names': [u'Glucose', u'beta-D-Galactose', u'D-gulo-Hexose', u'D-Mannose', u'D-Idose', u'D-talo-Hexose',
-                      u'D-Gulose', u'1,4-beta-D-Mannooligosaccharide', u'beta-D-Mannose', u'D-Aldose2', u'D-Allose',
-                      u'D-Aldose1', u'D-Hexose', u'alpha-D-Glucose', u'D-Glucose', u'beta-D-Glucose', u'Grape sugar',
-                      u'Mannose', u'Dextrose', u'D-Altrose', u'Seminose', u'D-ido-Hexose', u'alpha-D-Galactose',
-                      u'D-altro-Hexose', u'Carubinose', u'L-Galactose', u'L-Gulose', u'D-galactopyranose', u'D-Talose',
-                      u'alpha-D-Mannose', u'D-glucopyranose', u'Hexose', u'D-Aldose', u'D-Galactose'], u'Model_SEED': 17398}
+glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
+           u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
+                      u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
+                      u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar', u'L-Galactose', u'D-Galactose',
+                      u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
+                      u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
+                      u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
+                      u'1,4-beta-D-Mannooligosaccharide']}
 
 class Adduct_search_params():
     def __init__(self, db, mz, tolerance, adducts, charge):
@@ -40,6 +41,7 @@ def test_quick_search():
 
 
 def test_database_query():
+    print services.database_query(test_db, "{'Names': 'Glucose'}")
     assert services.database_query('admin', '') == ['Illegal query']
     assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}") == [glucose]
     assert services.database_query(test_db, "{'Names': 'Glucose'}") == [glucose]
