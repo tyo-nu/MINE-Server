@@ -5,6 +5,7 @@ import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
+import subprocess32
 
 
 class Pathway_query_params():
@@ -147,23 +148,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: substructure_search_results
         #BEGIN substructure_search
         substructure_search_results = []
-        try:
-            with Utils.Timeout(self.timeout):
-                db = self.db_client[db]
-                if "\n" in substructure:
-                    query_mol = pybel.readstring('mol', str(substructure))
-                else:
-                    query_mol = pybel.readstring('smi', str(substructure))
-                query_fp = query_mol.calcfp("FP4").bits
-                smarts = pybel.Smarts(query_mol.write('smi').strip())
-                for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1}):
-                    if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
-                        del x["SMILES"]
-                        substructure_search_results.append(x)
-                        if len(substructure_search_results) == limit:
-                            break
-        except Utils.Timeout.Timeout:
-            pass
+        db = self.db_client[db]
+        if "\n" in substructure:
+            query_mol = pybel.readstring('mol', str(substructure))
+        else:
+            query_mol = pybel.readstring('smi', str(substructure))
+        query_fp = query_mol.calcfp("FP4").bits
+        smarts = pybel.Smarts(query_mol.write('smi').strip())
+        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1}):
+            if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
+                del x["SMILES"]
+                substructure_search_results.append(x)
+                if len(substructure_search_results) == limit:
+                    break
         #END substructure_search
 
         #At some point might do deeper type checking...
@@ -232,6 +229,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: models
         #BEGIN get_models
         models = self.models
+        models = subprocess32.check_output(['ls -l'])
         #END get_models
 
         #At some point might do deeper type checking...

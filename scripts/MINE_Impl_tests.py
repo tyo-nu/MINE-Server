@@ -1,6 +1,6 @@
 __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
-import Utils
+import time
 
 test_db = 'EcoCycexp2'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
@@ -123,4 +123,6 @@ for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
 
-test_database_query()
+t1 = time.time()
+test_substructure_search()
+print "%s" % (time.time()-t1)
