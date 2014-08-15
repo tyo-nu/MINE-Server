@@ -89,6 +89,12 @@ def test_batch_ms_adduct_search():
     assert isinstance(meh[1]['isomers'], list)
 
 
+def test_model_search():
+    print services.model_search("human")
+
+test_model_search()
+
+
 """
 #positive
 up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
@@ -122,7 +128,3 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
-
-t1 = time.time()
-test_substructure_search()
-print "%s" % (time.time()-t1)

@@ -41,7 +41,6 @@ def test_quick_search():
 
 
 def test_database_query():
-    print services.database_query(test_db, "{'Names': 'Glucose'}")
     assert services.database_query('admin', '') == ['Illegal query']
     assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}") == [glucose]
     assert services.database_query(test_db, "{'Names': 'Glucose'}") == [glucose]
@@ -108,3 +107,6 @@ def test_structure_search():
     assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
     assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
 
+
+def test_model_search():
+    assert services.model_search("human") == [[u'Eukaryotes', u'Animals', u'hsa', u'Mammals', u'Vertebrates', u'Arthropods', u'Insects', u'phu']]

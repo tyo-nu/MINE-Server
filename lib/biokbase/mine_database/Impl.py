@@ -6,10 +6,6 @@ import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
 import subprocess32
-<<<<<<< local
-=======
-
->>>>>>> other
 
 class Pathway_query_params():
     def __init__(self, db, start, end, length, all_path):
@@ -82,6 +78,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: models
         #BEGIN model_search
+        db = self.db_client['KEGGdb']
+        models = [x['obj']['_id'] for x in db.command("text", "models", search=query, project={"_id": 1})['results']]
         #END model_search
 
         #At some point might do deeper type checking...
@@ -245,7 +243,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: models
         #BEGIN get_models
         models = self.models
-<<<<<<< local
         #END get_models
 
         #At some point might do deeper type checking...
