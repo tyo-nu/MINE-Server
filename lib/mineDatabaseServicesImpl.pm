@@ -46,6 +46,72 @@ sub new
 
 
 
+=head2 model_search
+
+  $models = $obj->model_search($query)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$query is a string
+$models is a reference to a list where each element is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$query is a string
+$models is a reference to a list where each element is a string
+
+
+=end text
+
+
+
+=item Description
+
+Returns a list of metabolic models that match the entered string
+
+=back
+
+=cut
+
+sub model_search
+{
+    my $self = shift;
+    my($query) = @_;
+
+    my @_bad_arguments;
+    (!ref($query)) or push(@_bad_arguments, "Invalid type for argument \"query\" (value was \"$query\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to model_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'model_search');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($models);
+    #BEGIN model_search
+    #END model_search
+    my @_bad_returns;
+    (ref($models) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"models\" (value was \"$models\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to model_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'model_search');
+    }
+    return($models);
+}
+
+
+
+
 =head2 quick_search
 
   $quick_search_results = $obj->quick_search($db, $query)
@@ -62,7 +128,7 @@ $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -78,7 +144,7 @@ $query is a string
 $quick_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -147,7 +213,7 @@ $limit is an int
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -166,7 +232,7 @@ $limit is an int
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -237,7 +303,7 @@ $comp_structure is a string
 $structure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -254,7 +320,7 @@ $comp_structure is a string
 $structure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -322,7 +388,7 @@ $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -339,7 +405,7 @@ $limit is an int
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -406,7 +472,7 @@ $mongo_query is a string
 $database_query_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -422,7 +488,7 @@ $mongo_query is a string
 $database_query_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	SEED_id has a value which is a string
+	MINE_id has a value which is a string
 	Names has a value which is a reference to a list where each element is a string
 	Formula has a value which is a string
 object_id is a string
@@ -497,7 +563,6 @@ CompoundObject is a reference to a hash where the following keys are defined:
 	Stringcode has a value which is a string
 	Mass has a value which is a float
 	Charge has a value which is an int
-	KEGG_Code has a value which is a reference to a list where each element is a string
 	DB_links has a value which is a reference to a list where each element is a string
 	Reactant_in has a value which is a reference to a list where each element is an object_id
 	Product_of has a value which is a reference to a list where each element is an object_id
@@ -519,7 +584,6 @@ CompoundObject is a reference to a hash where the following keys are defined:
 	Stringcode has a value which is a string
 	Mass has a value which is a float
 	Charge has a value which is an int
-	KEGG_Code has a value which is a reference to a list where each element is a string
 	DB_links has a value which is a reference to a list where each element is a string
 	Reactant_in has a value which is a reference to a list where each element is an object_id
 	Product_of has a value which is a reference to a list where each element is an object_id
@@ -808,7 +872,12 @@ peak is a reference to a hash where the following keys are defined:
 adduct_result is a reference to a hash where the following keys are defined:
 	adduct has a value which is a string
 	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
 object_id is a string
 
 </pre>
@@ -837,7 +906,12 @@ peak is a reference to a hash where the following keys are defined:
 adduct_result is a reference to a hash where the following keys are defined:
 	adduct has a value which is a string
 	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is an object_id
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
 object_id is a string
 
 
@@ -1105,7 +1179,7 @@ a string
 A summery of a compound object which is returned from compound query
 
         object_id _id - unique ID of a compound
-        string SEED_id - The model SEED id of a compound, if id < 100000 then the compound is computationally generated
+        string MINE_id - The a unique numerical id of a compound
         list<string> Names - common name for the compound
         string Formula - molecular formula of the compound
 
@@ -1117,7 +1191,7 @@ A summery of a compound object which is returned from compound query
 <pre>
 a reference to a hash where the following keys are defined:
 id has a value which is an object_id
-SEED_id has a value which is a string
+MINE_id has a value which is a string
 Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
 
@@ -1129,7 +1203,7 @@ Formula has a value which is a string
 
 a reference to a hash where the following keys are defined:
 id has a value which is an object_id
-SEED_id has a value which is a string
+MINE_id has a value which is a string
 Names has a value which is a reference to a list where each element is a string
 Formula has a value which is a string
 
@@ -1231,7 +1305,7 @@ The result of a single adduct query on the database
 a reference to a hash where the following keys are defined:
 adduct has a value which is a string
 formula has a value which is a string
-isomers has a value which is a reference to a list where each element is an object_id
+isomers has a value which is a reference to a list where each element is a comp_stub
 
 </pre>
 
@@ -1242,7 +1316,7 @@ isomers has a value which is a reference to a list where each element is an obje
 a reference to a hash where the following keys are defined:
 adduct has a value which is a string
 formula has a value which is a string
-isomers has a value which is a reference to a list where each element is an object_id
+isomers has a value which is a reference to a list where each element is a comp_stub
 
 
 =end text
@@ -1322,7 +1396,6 @@ Data structures for a compound object
                 int Charge - The total charge of the compound as calculated by ChemAxon
 
                 Optionally:
-                list<string> KEGG_Code - KEGG compound codes
         list<string> DB_links - links to the same compound in other databases
         list<object_id> Reactant_in - Reactions in which the compound is a reactant
         list<object_id> Product_of - Reactions in which the compound is a product
@@ -1340,7 +1413,6 @@ Formula has a value which is a string
 Stringcode has a value which is a string
 Mass has a value which is a float
 Charge has a value which is an int
-KEGG_Code has a value which is a reference to a list where each element is a string
 DB_links has a value which is a reference to a list where each element is a string
 Reactant_in has a value which is a reference to a list where each element is an object_id
 Product_of has a value which is a reference to a list where each element is an object_id
@@ -1358,7 +1430,6 @@ Formula has a value which is a string
 Stringcode has a value which is a string
 Mass has a value which is a float
 Charge has a value which is an int
-KEGG_Code has a value which is a reference to a list where each element is a string
 DB_links has a value which is a reference to a list where each element is a string
 Reactant_in has a value which is a reference to a list where each element is an object_id
 Product_of has a value which is a reference to a list where each element is an object_id

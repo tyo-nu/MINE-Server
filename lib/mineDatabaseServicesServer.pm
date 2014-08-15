@@ -16,6 +16,7 @@ has 'loggers' => (is => 'ro', required => 1, builder => '_build_loggers');
 our $CallContext;
 
 our %return_counts = (
+        'model_search' => 1,
         'quick_search' => 1,
         'similarity_search' => 1,
         'structure_search' => 1,
@@ -36,6 +37,7 @@ sub _build_valid_methods
 {
     my($self) = @_;
     my $methods = {
+        'model_search' => 1,
         'quick_search' => 1,
         'similarity_search' => 1,
         'structure_search' => 1,

@@ -227,6 +227,9 @@ class Application(object):
             call_id=True, logfile=self.userlog.get_log_file())
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
+        self.rpc_service.add(impl_mineDatabaseServices.model_search,
+                             name='mineDatabaseServices.model_search',
+                             types=[basestring])
         self.rpc_service.add(impl_mineDatabaseServices.quick_search,
                              name='mineDatabaseServices.quick_search',
                              types=[basestring, basestring])

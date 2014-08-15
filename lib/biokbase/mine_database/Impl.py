@@ -6,7 +6,10 @@ import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
 import subprocess32
+<<<<<<< local
+=======
 
+>>>>>>> other
 
 class Pathway_query_params():
     def __init__(self, db, start, end, length, all_path):
@@ -74,6 +77,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         self.timeout = 10
         #END_CONSTRUCTOR
         pass
+
+    def model_search(self, query):
+        # self.ctx is set by the wsgi application class
+        # return variables are: models
+        #BEGIN model_search
+        #END model_search
+
+        #At some point might do deeper type checking...
+        if not isinstance(models, list):
+            raise ValueError('Method model_search return value ' +
+                             'models is not type list as required.')
+        # return the results
+        return [models]
 
     def quick_search(self, db, query):
         # self.ctx is set by the wsgi application class
@@ -229,7 +245,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: models
         #BEGIN get_models
         models = self.models
-        models = subprocess32.check_output(['ls -l'])
+<<<<<<< local
         #END get_models
 
         #At some point might do deeper type checking...
