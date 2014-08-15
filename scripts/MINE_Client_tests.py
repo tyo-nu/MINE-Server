@@ -72,7 +72,7 @@ def test_get_adducts():
 
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['M+H'], ['kb|fm.2944'], False,
+    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['M+H'], ['eco'], False,
                                              True, False)
     assert len(result) == 2
     meh = result[0]['adducts']
@@ -103,10 +103,12 @@ def test_substructure_search():
     assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
 
 
+def test_model_search():
+    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
+
+
 def test_structure_search():
     assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
     assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
 
-
-def test_model_search():
-    assert services.model_search("human") == [[u'Eukaryotes', u'Animals', u'hsa', u'Mammals', u'Vertebrates', u'Arthropods', u'Insects', u'phu']]
+test_batch_ms_adduct_search()

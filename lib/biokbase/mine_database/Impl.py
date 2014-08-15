@@ -64,6 +64,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         self.models = []
         self.db_client = Utils.establish_db_client()
         self.kbase_db = self.db_client['KBase']
+        self.keggdb = self.db_client['KEGGdb']
         for model in self.kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
@@ -280,7 +281,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False"))
         else:
             raise IOError('%s files not supported' % text_type)
-        dataset.native_set = BatchAdductQuery.get_modelSEED_comps(self.kbase_db, models)
+        dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, models)
         dataset.annotate_peaks(db)
         for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
             peak.adducts = []

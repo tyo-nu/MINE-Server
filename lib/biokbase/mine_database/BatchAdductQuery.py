@@ -315,6 +315,17 @@ def get_modelSEED_comps(kb_db, models):
     return _ids
 
 
+def get_KEGG_comps(db, kegg_db, models):
+    kegg_ids, _ids = set(), set()
+    for x in models:
+        for z in kegg_db.models.find_one({'_id': x}, {'Compounds': 1})['Compounds']:
+            kegg_ids.add(z)
+    for y in kegg_ids:
+        for w in db.compounds.find({'DB_links.KEGG': y}, {'_id': 1}):
+            _ids.add(w['_id'])
+    return _ids
+
+
 def sort_NPLike(dic_list):
     return sorted(dic_list, key=lambda x: float(x['NP_likeness']), reverse=True)
 

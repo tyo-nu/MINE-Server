@@ -82,18 +82,14 @@ def test_substructure_search():
     print services.substructure_search('KEGGexp', test_molfile, 20)
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "164.0937301\n0.0", "form", 2, ['M+H'], [], False, True, False)[0]
-    assert len(result) == 2
+    result = services.batch_ms_adduct_search('KEGGexp', "181.071188116\n0.0", "form", 2.0, ['M+H'], ['eco'], False, True, False)
+    #assert len(result) == 2
+    print result
     meh = result[0]['adducts']
     assert len(meh) == 4
     assert isinstance(meh[1]['isomers'], list)
 
-
-def test_model_search():
-    print services.model_search("human")
-
-test_model_search()
-
+test_batch_ms_adduct_search()
 
 """
 #positive
