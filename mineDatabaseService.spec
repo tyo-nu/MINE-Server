@@ -128,7 +128,12 @@ module mineDatabaseServices {
     /* ************************************************************************************************************** */
 	/* MINE FUNCTIONS */
 	/* ************************************************************************************************************** */
-    
+
+    /*
+		Returns a list of metabolic models that match the entered string
+	*/
+	funcdef model_search(string query) returns (list<string> models);
+
     /*
 		Creates quick_search_results, a list of comp_stubs which match the query string. Searches for matches to KEGG
 		Codes, Inchi Keys, Brenda IDs and Names.
