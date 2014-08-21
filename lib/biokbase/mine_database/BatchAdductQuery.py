@@ -117,7 +117,8 @@ class Dataset():
                     continue
             peak.total_hits += 1
             if compound['_id'] in self.native_set:
-                    peak.native_hit = True
+                peak.native_hit = True
+                compound['native_hit'] = True
             self.record_pathway_counts(compound)
 
             #create a dictionary of formulas keyed by the adduct that produces them

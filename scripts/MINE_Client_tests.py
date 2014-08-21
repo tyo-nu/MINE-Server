@@ -80,7 +80,7 @@ def test_batch_ms_adduct_search():
     assert isinstance(meh[1]['isomers'], list)
     assert result[0]['native_hit'] is True
     assert result[0]['min_steps'] == 0
-    print meh[1]['isomers']
+    print meh
 
 
 def test_pathway_search():
