@@ -78,6 +78,7 @@ class Dataset():
                 self.record_pathway_counts(compound)
                 if compound['_id'] in self.native_set:
                     peak.native_hit = True
+                    compound['native_hit'] = True
                 if compound['steps_from_source'] < peak.min_steps:
                     peak.min_steps = compound['steps_from_source']
 
