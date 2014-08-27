@@ -35,9 +35,12 @@ def quick_search(db, comp_data):
         query_field = 'DB_links.KEGG'
     elif (len(comp_data) == 8) and (comp_data[0:2] == 'cpd'):
         query_field = 'DB_links.Model_SEED'
-    elif (len(comp_data.split('-')) == 3) or (len(comp_data) == 14):
+    elif len(comp_data.split('-')[0]) == 14 and comp_data.isupper():
         query_field = 'Inchikey'
         comp_data = comp_data.split('-')[0]
+    elif comp_data.isdigit():
+        query_field = "MINE_id"
+        comp_data = int(comp_data)
     else:
         query_field = 'Names'
 
