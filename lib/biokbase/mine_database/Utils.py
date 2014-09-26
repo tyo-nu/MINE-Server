@@ -60,14 +60,6 @@ def quick_search(db, comp_data):
     return results
 
 
-def dict_push(dict, key, value):
-    """This is a convenient way to build dictionaries of lists"""
-    if not key in dict:
-            dict[key] = [value]
-    else:
-        dict[key].append(value)
-
-
 def print_sorted_dict(dict):
     list = [x for x in dict]
     for x in sorted(list, key=lambda x: dict[x], reverse=True):
