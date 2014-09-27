@@ -50,6 +50,9 @@ def test_get_comps():
     meh = services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
     assert len(meh) == 1
     assert 'Reactant_in' in meh[0].keys()
+    meh = services.get_comps(test_db, ['19160'])
+    assert len(meh) == 1
+    assert 'Reactant_in' in meh[0].keys()
 
 
 def test_get_rxns():
@@ -68,11 +71,11 @@ def test_get_adducts():
     meh = services.get_adducts()
     assert len(meh[0]) == 32
     assert len(meh[1]) == 15
-    assert meh[0][2] == 'M+Na'
+    assert meh[0][2] == '[M+Na]+'
 
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['M+H'], ['Bacteria'], False,
+    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['[M+H]+'], ['Bacteria'], False,
                                              True, False)
     assert len(result) == 2
     meh = result[0]['adducts']
