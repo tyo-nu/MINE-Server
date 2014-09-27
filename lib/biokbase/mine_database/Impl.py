@@ -211,10 +211,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         objects = []
         db = self.db_client[db]
         for x in ids:
-            if x[0] == "C":
-                meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
-            else:
+            if isinstance(x, int):
                 meh = db.compounds.find_one({'MINE_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
+            else:
+                meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
+
             objects.append(meh)
         #END get_comps
 
