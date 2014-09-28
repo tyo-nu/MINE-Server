@@ -50,7 +50,7 @@ def test_get_comps():
     meh = services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
     assert len(meh) == 1
     assert 'Reactant_in' in meh[0].keys()
-    meh = services.get_comps(test_db, ['19160'])
+    meh = services.get_comps(test_db, [19160])
     assert len(meh) == 1
     assert 'Reactant_in' in meh[0].keys()
 
