@@ -215,7 +215,7 @@ module mineDatabaseServices {
 		Input parameters for the "mass_adduct_query" function:
 		string db - the database in which to search for M/S matches
         float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
+        list<string> adduct_list - the adducts to consider in the query.
         list<string> models - the models in SEED that will be considered native metabolites(can be empty)
         tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
         tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
@@ -227,7 +227,7 @@ module mineDatabaseServices {
     typedef structure {
 		string db;
         float tolerance;
-        list<adduct> adducts;
+        list<string> adducts;
         list<string> models;
         tuple<float,float> logP;
         tuple<float,float> kovats;
