@@ -225,15 +225,15 @@ module mineDatabaseServices {
     */
 
     typedef structure {
-		string db,
-        float tolerance,
-        list<adduct> adducts,
-        list<string> models,
-        tuple<float,float> logP,
-        tuple<float,float> kovats,
-        bool ppm,
-        bool charge,
-        bool halogens
+		string db;
+        float tolerance;
+        list<adduct> adducts;
+        list<string> models;
+        tuple<float,float> logP;
+        tuple<float,float> kovats;
+        bool ppm;
+        bool charge;
+        bool halogen;
     } mzParams;
 
     /*  New function replacing batch_ms_adduct_search */
