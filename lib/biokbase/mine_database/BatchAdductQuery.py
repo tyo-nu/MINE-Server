@@ -24,15 +24,32 @@ class Dataset():
         self.name = name
         self.options = options  # Object containing all options from the optparser
         dtype = numpy.dtype("S20, f8, f8")
+        all_pos_adducts = numpy.loadtxt('./lib/biokbase/mine_database/Positive Adducts full.txt', dtype=dtype)
+        all_neg_adducts = numpy.loadtxt('./lib/biokbase/mine_database/Negative Adducts full.txt', dtype=dtype)
         if hasattr(options, 'adducts'):
-            all_pos_adducts = numpy.loadtxt('./lib/biokbase/mine_database/Positive Adducts full.txt', dtype=dtype)
             self.pos_adducts = numpy.array(filter(lambda x: x[0] in options.adducts, all_pos_adducts), dtype=dtype)
-            all_neg_adducts = numpy.loadtxt('./lib/biokbase/mine_database/Negative Adducts full.txt', dtype=dtype)
             self.neg_adducts = numpy.array(filter(lambda x: x[0] in options.adducts, all_neg_adducts), dtype=dtype)
-        if hasattr(options, 'positive_adduct_file'):
-            self.pos_adducts = numpy.loadtxt(options.positive_adduct_file, dtype=dtype)
-        if hasattr(options, 'negative_adduct_file'):
-            self.neg_adducts = numpy.loadtxt(options.negative_adduct_file, dtype=dtype)
+        else:
+            if hasattr(options, 'positive_adduct_file'):
+                self.pos_adducts = numpy.loadtxt(options.positive_adduct_file, dtype=dtype)
+            else:
+                self.pos_adducts = all_pos_adducts
+            if hasattr(options, 'negative_adduct_file'):
+                self.neg_adducts = numpy.loadtxt(options.negative_adduct_file, dtype=dtype)
+            else:
+                self.neg_adducts = all_neg_adducts
+        if hasattr(options, 'kovats'):
+            self.min_kovats = options.kovats[0]
+            self.max_kovats = options.kovats[1]
+        else:
+            self.min_kovats = 0.0
+            self.max_kovats = 20500.0
+        if hasattr(options, 'logP'):
+            self.min_logP = options.logP[0]
+            self.max_logP = options.logP[1]
+        else:
+            self.min_logP = 0.0
+            self.max_logP = 40.0
         self.known_peaks = []  # contains Peak objects for knowns
         self.unk_peaks = []  # contains Peak objects for unknowns
         self.clusters = []  # contains tuples of formula and list of matching peaks
@@ -64,9 +81,11 @@ class Dataset():
         hits = {}
         for i, adduct in enumerate(adducts):
             hits[adduct['f0']] = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": float(lower_bounds[i])}},
-                                                               {"Mass": {"$lte": float(upper_bounds[i])}}, {'Charge': 0}]},
-                                                               {'Formula': 1, 'MINE_id': 1, 'Names': 1, 'SMILES': 1,
-                                                                'Inchikey': 1, 'steps_from_source': 1})]
+                                    {"Mass": {"$lte": float(upper_bounds[i])}}, {"logP": {"$gte": self.min_logP}},
+                                    {"logP": {"$lte": self.max_logP}}, {"maxKovatsRI": {"$gte": self.min_kovats}},
+                                    {"minKovatsRI": {"$lte": self.max_kovats}}, {'Charge': 0}]},{'Formula': 1,
+                                        'MINE_id': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
+
             for compound in hits[adduct['f0']]:
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
                 # is counted or stored.
@@ -108,9 +127,11 @@ class Dataset():
         upper_bound = peak.mz + precision
         lower_bound = peak.mz - precision
         #search database for hits in the mass range that have an innate positive charge.
-        hits = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": lower_bound}}, {"Mass": {"$lte": upper_bound}},
-                                            {'Charge': 1}]}, {'Formula': 1, 'MINE_id': 1, 'Names': 1,
-                                                              'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
+        hits = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": float(lower_bound)}},
+                                {"Mass": {"$lte": float(upper_bound)}}, {"logP": {"$gte": self.min_logP}},
+                                {"logP": {"$lte": self.max_logP}}, {"maxKovatsRI": {"$gte": self.min_kovats}},
+                                {"minKovatsRI": {"$lte": self.max_kovats}}, {'Charge': 1}]},{'Formula': 1,
+                                    'MINE_id': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
         for compound in hits:
             #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
             # is counted or stored.

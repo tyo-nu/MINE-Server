@@ -46,10 +46,6 @@ class mz_test():
         self.halogens = False
 
 
-class Struct:
-    def __init__(self, **entries):
-        self.__dict__.update(entries)
-
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
     assert services.quick_search(test_db, 'C00031') == [glucose]
@@ -104,8 +100,7 @@ def test_batch_ms_adduct_search():
 
 def test_mz_search():
     params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
-                     'charge': True, 'halogens': False}
-    meh = Struct(**params)
+              'charge': True, 'halogens': False}
     result = services.mz_search("181.071188116\n0.0", "form", params)
     assert len(result) == 2
     meh = result[0]['adducts']
