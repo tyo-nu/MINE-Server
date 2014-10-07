@@ -921,6 +921,8 @@ object_id is a string
 
 =item Description
 
+DEPRECATED - Use mz_search
+
 Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
 
 Input parameters for the "mass_adduct_query" function:
@@ -969,6 +971,144 @@ sub batch_ms_adduct_search
 	my $msg = "Invalid returns passed to batch_ms_adduct_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
 							       method_name => 'batch_ms_adduct_search');
+    }
+    return($batch_output);
+}
+
+
+
+
+=head2 mz_search
+
+  $batch_output = $obj->mz_search($text, $text_type, $mz_params)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$text is a string
+$text_type is a string
+$mz_params is a mzParams
+$batch_output is a reference to a list where each element is a peak
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$text is a string
+$text_type is a string
+$mz_params is a mzParams
+$batch_output is a reference to a list where each element is a peak
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+New function replacing batch_ms_adduct_search
+
+=back
+
+=cut
+
+sub mz_search
+{
+    my $self = shift;
+    my($text, $text_type, $mz_params) = @_;
+
+    my @_bad_arguments;
+    (!ref($text)) or push(@_bad_arguments, "Invalid type for argument \"text\" (value was \"$text\")");
+    (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument \"text_type\" (value was \"$text_type\")");
+    (ref($mz_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument \"mz_params\" (value was \"$mz_params\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to mz_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'mz_search');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($batch_output);
+    #BEGIN mz_search
+    #END mz_search
+    my @_bad_returns;
+    (ref($batch_output) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"batch_output\" (value was \"$batch_output\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to mz_search:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'mz_search');
     }
     return($batch_output);
 }
@@ -1488,6 +1628,80 @@ Reactants has a value which is a reference to a list where each element is a rxn
 Products has a value which is a reference to a list where each element is a rxn_comp
 Energy has a value which is a float
 Error has a value which is a float
+
+
+=end text
+
+=back
+
+
+
+=head2 mzParams
+
+=over 4
+
+
+
+=item Description
+
+Parameters for the mz search function:
+
+Input parameters for the "mass_adduct_query" function:
+string db - the database in which to search for M/S matches
+        float tolerance - the desired mass precision
+        list<string> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
+        tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
+        tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
 
 
 =end text

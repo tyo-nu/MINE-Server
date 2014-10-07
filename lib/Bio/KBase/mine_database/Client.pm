@@ -1,10 +1,17 @@
 package Bio::KBase::mine_database::Client;
 
 use JSON::RPC::Client;
+use POSIX;
 use strict;
 use Data::Dumper;
 use URI;
 use Bio::KBase::Exceptions;
+my $get_time = sub { time, 0 };
+eval {
+    require Time::HiRes;
+    $get_time = sub { Time::HiRes::gettimeofday() };
+};
+
 
 # Client version should match Impl version
 # This is a Semantic Version number,
@@ -39,7 +46,41 @@ sub new
     my $self = {
 	client => Bio::KBase::mine_database::Client::RpcClient->new,
 	url => $url,
+	headers => [],
     };
+
+    chomp($self->{hostname} = `hostname`);
+    $self->{hostname} ||= 'unknown-host';
+
+    #
+    # Set up for propagating KBRPC_TAG and KBRPC_METADATA environment variables through
+    # to invoked services. If these values are not set, we create a new tag
+    # and a metadata field with basic information about the invoking script.
+    #
+    if ($ENV{KBRPC_TAG})
+    {
+	$self->{kbrpc_tag} = $ENV{KBRPC_TAG};
+    }
+    else
+    {
+	my ($t, $us) = &$get_time();
+	$us = sprintf("%06d", $us);
+	my $ts = strftime("%Y-%m-%dT%H:%M:%S.${us}Z", gmtime $t);
+	$self->{kbrpc_tag} = "C:$0:$self->{hostname}:$$:$ts";
+    }
+    push(@{$self->{headers}}, 'Kbrpc-Tag', $self->{kbrpc_tag});
+
+    if ($ENV{KBRPC_METADATA})
+    {
+	$self->{kbrpc_metadata} = $ENV{KBRPC_METADATA};
+	push(@{$self->{headers}}, 'Kbrpc-Metadata', $self->{kbrpc_metadata});
+    }
+
+    if ($ENV{KBRPC_ERROR_DEST})
+    {
+	$self->{kbrpc_error_dest} = $ENV{KBRPC_ERROR_DEST};
+	push(@{$self->{headers}}, 'Kbrpc-Errordest', $self->{kbrpc_error_dest});
+    }
 
 
     my $ua = $self->{client}->ua;	 
@@ -110,7 +151,7 @@ sub model_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.model_search",
 	params => \@args,
     });
@@ -207,7 +248,7 @@ sub quick_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.quick_search",
 	params => \@args,
     });
@@ -314,7 +355,7 @@ sub similarity_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.similarity_search",
 	params => \@args,
     });
@@ -414,7 +455,7 @@ sub structure_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.structure_search",
 	params => \@args,
     });
@@ -514,7 +555,7 @@ sub substructure_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.substructure_search",
 	params => \@args,
     });
@@ -614,7 +655,7 @@ sub database_query
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.database_query",
 	params => \@args,
     });
@@ -720,7 +761,7 @@ sub get_comps
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.get_comps",
 	params => \@args,
     });
@@ -826,7 +867,7 @@ sub get_rxns
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.get_rxns",
 	params => \@args,
     });
@@ -898,7 +939,7 @@ sub get_models
 							       "Invalid argument count for function get_models (received $n, expecting 0)");
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.get_models",
 	params => \@args,
     });
@@ -970,7 +1011,7 @@ sub get_adducts
 							       "Invalid argument count for function get_adducts (received $n, expecting 0)");
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.get_adducts",
 	params => \@args,
     });
@@ -1072,6 +1113,8 @@ object_id is a string
 
 =item Description
 
+DEPRECATED - Use mz_search
+
 Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
 
 Input parameters for the "mass_adduct_query" function:
@@ -1120,7 +1163,7 @@ sub batch_ms_adduct_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.batch_ms_adduct_search",
 	params => \@args,
     });
@@ -1138,6 +1181,159 @@ sub batch_ms_adduct_search
         Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method batch_ms_adduct_search",
 					    status_line => $self->{client}->status_line,
 					    method_name => 'batch_ms_adduct_search',
+				       );
+    }
+}
+
+
+
+=head2 mz_search
+
+  $batch_output = $obj->mz_search($text, $text_type, $mz_params)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$text is a string
+$text_type is a string
+$mz_params is a mzParams
+$batch_output is a reference to a list where each element is a peak
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$text is a string
+$text_type is a string
+$mz_params is a mzParams
+$batch_output is a reference to a list where each element is a peak
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
+bool is an int
+peak is a reference to a hash where the following keys are defined:
+	name has a value which is a string
+	num_forms has a value which is an int
+	num_hits has a value which is an int
+	native_hit has a value which is a bool
+	adducts has a value which is a reference to a list where each element is an adduct_result
+adduct_result is a reference to a hash where the following keys are defined:
+	adduct has a value which is a string
+	formula has a value which is a string
+	isomers has a value which is a reference to a list where each element is a comp_stub
+comp_stub is a reference to a hash where the following keys are defined:
+	id has a value which is an object_id
+	MINE_id has a value which is a string
+	Names has a value which is a reference to a list where each element is a string
+	Formula has a value which is a string
+object_id is a string
+
+
+=end text
+
+=item Description
+
+New function replacing batch_ms_adduct_search
+
+=back
+
+=cut
+
+sub mz_search
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 3)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function mz_search (received $n, expecting 3)");
+    }
+    {
+	my($text, $text_type, $mz_params) = @args;
+
+	my @_bad_arguments;
+        (!ref($text)) or push(@_bad_arguments, "Invalid type for argument 1 \"text\" (value was \"$text\")");
+        (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument 2 \"text_type\" (value was \"$text_type\")");
+        (ref($mz_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 3 \"mz_params\" (value was \"$mz_params\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to mz_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'mz_search');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
+	method => "mineDatabaseServices.mz_search",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'mz_search',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method mz_search",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'mz_search',
 				       );
     }
 }
@@ -1226,7 +1422,7 @@ sub pathway_search
 	}
     }
 
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
 	method => "mineDatabaseServices.pathway_search",
 	params => \@args,
     });
@@ -1252,7 +1448,7 @@ sub pathway_search
 
 sub version {
     my ($self) = @_;
-    my $result = $self->{client}->call($self->{url}, {
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
         method => "mineDatabaseServices.version",
         params => [],
     });
@@ -1698,6 +1894,80 @@ Error has a value which is a float
 
 
 
+=head2 mzParams
+
+=over 4
+
+
+
+=item Description
+
+Parameters for the mz search function:
+
+Input parameters for the "mass_adduct_query" function:
+string db - the database in which to search for M/S matches
+        float tolerance - the desired mass precision
+        list<string> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
+        tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
+        tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
+
+
+=end text
+
+=back
+
+
+
 =cut
 
 package Bio::KBase::mine_database::Client::RpcClient;
@@ -1710,7 +1980,7 @@ use strict;
 #
 
 sub call {
-    my ($self, $uri, $obj) = @_;
+    my ($self, $uri, $headers, $obj) = @_;
     my $result;
 
 
@@ -1720,7 +1990,7 @@ sub call {
 	}
 	else {
 	    Carp::croak "not hashref." unless (ref $obj eq 'HASH');
-	    $result = $self->_post($uri, $obj);
+	    $result = $self->_post($uri, $headers, $obj);
 	}
 
     }
@@ -1750,7 +2020,7 @@ sub call {
 
 
 sub _post {
-    my ($self, $uri, $obj) = @_;
+    my ($self, $uri, $headers, $obj) = @_;
     my $json = $self->json;
 
     $obj->{version} ||= $self->{version} || '1.1';
@@ -1777,6 +2047,7 @@ sub _post {
         Content_Type   => $self->{content_type},
         Content        => $content,
         Accept         => 'application/json',
+	@$headers,
 	($self->{token} ? (Authorization => $self->{token}) : ()),
     );
 }
