@@ -191,6 +191,8 @@ module mineDatabaseServices {
     funcdef get_adducts() returns (tuple<list<string>, list<string>> adducts);
 
 	/*
+		DEPRECATED - Use mz_search
+
 		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
 
 		Input parameters for the "mass_adduct_query" function:
@@ -206,6 +208,37 @@ module mineDatabaseServices {
     */
 	funcdef batch_ms_adduct_search(string db, string text, string text_type, float tolerance, list<string> adduct_list,
 	                    list<string> models, bool ppm, bool charge, bool halogens) returns (list<peak> batch_output);
+
+	/*
+		Parameters for the mz search function:
+
+		Input parameters for the "mass_adduct_query" function:
+		string db - the database in which to search for M/S matches
+        float tolerance - the desired mass precision
+        list<adduct> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
+        tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
+        tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+    */
+
+    typedef structure {
+		string db,
+        float tolerance,
+        list<adduct> adducts,
+        list<string> models,
+        tuple<float,float> logP,
+        tuple<float,float> kovats,
+        bool ppm,
+        bool charge,
+        bool halogens
+    } mzParams;
+
+    /*  New function replacing batch_ms_adduct_search */
+
+	funcdef mz_search(string text, string text_type, mzParams mz_params) returns (list<peak> batch_output);
 
     /*
 		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
