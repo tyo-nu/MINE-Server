@@ -24,7 +24,7 @@ class Adduct_search_params():
     def __init__(self, db, tolerance, adducts, charge, models, ppm, halogens):
         self.db = db
         self.tolerance = tolerance
-        self.adduct_list = adducts
+        self.adducts = adducts
         self.models = models
         self.ppm = ppm
         self.charge = charge
