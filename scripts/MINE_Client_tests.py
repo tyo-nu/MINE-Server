@@ -3,7 +3,7 @@ from lib.biokbase.mine_database.Client import mineDatabaseServices
 
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp2'
-test_molfile = open("./scripts/xanthine.mol", "r").read()
+test_molfile = open("scripts/xanthine.mol", "r").read()
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
            u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
                       u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
@@ -12,6 +12,7 @@ glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929a
                       u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
                       u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
                       u'1,4-beta-D-Mannooligosaccharide']}
+
 
 class Adduct_search_params():
     def __init__(self, db, mz, tolerance, adducts, charge):
@@ -24,6 +25,7 @@ class Adduct_search_params():
         self.charge = charge
         self.halogens = False
 
+
 class Pathway_query_params():
     def __init__(self, db, start, end, length, all_path):
         self.db = db
@@ -33,6 +35,20 @@ class Pathway_query_params():
         self.all_paths = all_path
         self.np_min = -3
         self.gibbs_cap = 100
+
+
+class mz_test():
+    def __init__(self):
+        self.db = test_db
+        self.tolerance = 2.0
+        self.ppm = False
+        self.charge = True
+        self.halogens = False
+
+
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
 
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
@@ -77,6 +93,20 @@ def test_get_adducts():
 def test_batch_ms_adduct_search():
     result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['[M+H]+'], ['Bacteria'], False,
                                              True, False)
+    assert len(result) == 2
+    meh = result[0]['adducts']
+    assert len(meh) == 2
+    assert isinstance(meh[1]['isomers'], list)
+    assert result[0]['native_hit'] is True
+    assert result[0]['min_steps'] == 0
+    print meh
+
+
+def test_mz_search():
+    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+                     'charge': True, 'halogens': False}
+    meh = Struct(**params)
+    result = services.mz_search("181.071188116\n0.0", "form", params)
     assert len(result) == 2
     meh = result[0]['adducts']
     assert len(meh) == 2
