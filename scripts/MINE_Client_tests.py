@@ -19,7 +19,7 @@ class Adduct_search_params():
         self.db = db
         self.mz = mz
         self.tolerance = tolerance
-        self.adduct_list = adducts
+        self.adducts = adducts
         self.models = []
         self.ppm = False
         self.charge = charge
