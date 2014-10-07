@@ -29,6 +29,10 @@ class Adduct_search_params():
         self.ppm = ppm
         self.charge = charge
         self.halogens = halogens
+
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
 #END_HEADER
 
 
@@ -313,6 +317,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: batch_output
         #BEGIN mz_search
         name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
+        if isinstance(mz_params, dict):
+            mz_params = Struct(**mz_params)
         db = self.db_client[mz_params.db]
         dataset = BatchAdductQuery.Dataset(name, mz_params)
         batch_output = []
