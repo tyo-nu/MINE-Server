@@ -41,15 +41,9 @@ class Dataset():
         if hasattr(options, 'kovats'):
             self.min_kovats = options.kovats[0]
             self.max_kovats = options.kovats[1]
-        else:
-            self.min_kovats = 0.0
-            self.max_kovats = 20500.0
         if hasattr(options, 'logP'):
             self.min_logP = options.logP[0]
             self.max_logP = options.logP[1]
-        else:
-            self.min_logP = 0.0
-            self.max_logP = 40.0
         self.known_peaks = []  # contains Peak objects for knowns
         self.unk_peaks = []  # contains Peak objects for unknowns
         self.clusters = []  # contains tuples of formula and list of matching peaks
@@ -79,12 +73,17 @@ class Dataset():
 
         #search database for hits in the each adducts mass range that have no innate charge.
         hits = {}
+
         for i, adduct in enumerate(adducts):
-            hits[adduct['f0']] = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": float(lower_bounds[i])}},
-                                    {"Mass": {"$lte": float(upper_bounds[i])}}, {"logP": {"$gte": self.min_logP}},
-                                    {"logP": {"$lte": self.max_logP}}, {"maxKovatsRI": {"$gte": self.min_kovats}},
-                                    {"minKovatsRI": {"$lte": self.max_kovats}}, {'Charge': 0}]},{'Formula': 1,
-                                        'MINE_id': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
+            # build the query by adding the optional terms
+            query_terms = [{'Charge': 0}, {"Mass": {"$gte": float(lower_bounds[i])}},
+                           {"Mass": {"$lte": float(upper_bounds[i])}}]
+            if hasattr(self, 'min_logP'):
+                query_terms +=[{"logP": {"$gte": self.min_logP}}, {"logP": {"$lte": self.max_logP}}]
+            if hasattr(self, 'min_kovats'):
+                query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
+            hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1,'MINE_id': 1,
+                                                    'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
 
             for compound in hits[adduct['f0']]:
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
@@ -166,7 +165,7 @@ class Dataset():
         for i, peak in enumerate(self.unk_peaks):
             if peak.charge == '+' or peak.charge == 'Positive' or peak.charge:
                 self.find_db_hits(peak, db, self.pos_adducts)
-                self.find_M_hits(peak, db)
+                #self.find_M_hits(peak, db)
 
             elif peak.charge == '-' or peak.charge == 'Negative' or not peak.charge:
                 self.find_db_hits(peak, db, self.neg_adducts)

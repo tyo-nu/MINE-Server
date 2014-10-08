@@ -91,8 +91,7 @@ def test_batch_ms_adduct_search():
                                              True, False)
     assert len(result) == 2
     meh = result[0]['adducts']
-    assert len(meh) == 2
-    assert isinstance(meh[1]['isomers'], list)
+    assert isinstance(meh[0]['isomers'], list)
     assert result[0]['native_hit'] is True
     assert result[0]['min_steps'] == 0
     print meh
@@ -104,8 +103,7 @@ def test_mz_search():
     result = services.mz_search("181.071188116\n0.0", "form", params)
     assert len(result) == 2
     meh = result[0]['adducts']
-    assert len(meh) == 2
-    assert isinstance(meh[1]['isomers'], list)
+    assert isinstance(meh[0]['isomers'], list)
     assert result[0]['native_hit'] is True
     assert result[0]['min_steps'] == 0
     print meh
@@ -139,5 +137,3 @@ def test_model_search():
 def test_structure_search():
     assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
     assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
-
-test_batch_ms_adduct_search()
