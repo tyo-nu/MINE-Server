@@ -82,7 +82,7 @@ def test_substructure_search():
     print services.substructure_search('KEGGexp', test_molfile, 20)
 
 def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search('KEGGexp', "181.071188116\n0.0", "form", 2.0, ['M+H'], ['eco'], False, True, False)
+    result = services.batch_ms_adduct_search('KEGGexp', "181.071188116\n0.0", "form", 2.0, ['[M+H]+'], ['eco'], False, True, False)
     #assert len(result) == 2
     print result
     meh = result[0]['adducts']
