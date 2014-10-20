@@ -84,8 +84,9 @@ class Dataset():
                 query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
             if adduct['f0'] == '[M]+':
                 query_terms[0] = {'Charge': 1}
-            hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1,'MINE_id': 1,
-                                                    'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
+            hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
+                                    'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
+                                    'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
 
             for compound in hits[adduct['f0']]:
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
@@ -118,56 +119,12 @@ class Dataset():
                 except KeyError:
                     self.isomers[compound['Formula']] = [compound]
 
-
-    def find_M_hits(self, peak, db):
-        """This function finds compounds that have a natural positive charge (M+)"""
-        if self.options.ppm:
-            precision = (self.options.tolerance/100000.)*peak.mz
-        else:
-            precision = self.options.tolerance*0.001
-        upper_bound = peak.mz + precision
-        lower_bound = peak.mz - precision
-        #search database for hits in the mass range that have an innate positive charge.
-        hits = [x for x in db.compounds.find({"$and": [{"Mass": {"$gte": float(lower_bound)}},
-                                {"Mass": {"$lte": float(upper_bound)}}, {"logP": {"$gte": self.min_logP}},
-                                {"logP": {"$lte": self.max_logP}}, {"maxKovatsRI": {"$gte": self.min_kovats}},
-                                {"minKovatsRI": {"$lte": self.max_kovats}}, {'Charge': 1}]},{'Formula': 1,
-                                    'MINE_id': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
-        for compound in hits:
-            #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
-            # is counted or stored.
-            if not self.options.halogens:
-                if re.search('F[^e]|Cl|Br', compound['Formula']):
-                    continue
-            peak.total_hits += 1
-            if compound['_id'] in self.native_set:
-                peak.native_hit = True
-                compound['native_hit'] = True
-            self.record_pathway_counts(compound)
-
-            #create a dictionary of formulas keyed by the adduct that produces them
-            try:
-                if not compound['Formula'] in peak.formulas['M+']:
-                    peak.formulas['M+'].append(compound['Formula'])
-                    peak.total_formulas += 1
-            except KeyError:
-                peak.formulas['M+'] = [compound['Formula']]
-                peak.total_formulas += 1
-
-            #if the compound is not in the dictionary of compounds that are isomers of a formula, add it
-            try:
-                if not compound in self.isomers[compound['Formula']]:
-                    self.isomers[compound['Formula']].append(compound)
-            except KeyError:
-                self.isomers[compound['Formula']] = [compound]
-
     def annotate_peaks(self, db):
         """ This function iterates the through the unknown peaks in the data set searches the database for compounds
             that match a peak m/z given the adducts permitted. Statistics on the annotated data set are printed"""
         for i, peak in enumerate(self.unk_peaks):
             if peak.charge == '+' or peak.charge == 'Positive' or peak.charge:
                 self.find_db_hits(peak, db, self.pos_adducts)
-                #self.find_M_hits(peak, db)
 
             elif peak.charge == '-' or peak.charge == 'Negative' or not peak.charge:
                 self.find_db_hits(peak, db, self.neg_adducts)
