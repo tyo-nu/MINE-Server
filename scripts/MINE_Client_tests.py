@@ -12,6 +12,14 @@ glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929a
                       u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
                       u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
                       u'1,4-beta-D-Mannooligosaccharide']}
+glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
+        u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
+                   u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
+                   u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar', u'L-Galactose', u'D-Galactose',
+                   u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
+                   u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
+                   u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
+                   u'1,4-beta-D-Mannooligosaccharide'], u'score': 3.083333333333333}
 
 
 class Adduct_search_params():
@@ -47,9 +55,9 @@ class mz_test():
 
 
 def test_quick_search():
-    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
-    assert services.quick_search(test_db, 'C00031') == [glucose]
-    assert glucose in services.quick_search(test_db, 'Glucose')
+    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glu2]
+    assert services.quick_search(test_db, 'C00031') == [glu2]
+    assert glu2 in services.quick_search(test_db, 'Glucose')
 
 
 def test_database_query():

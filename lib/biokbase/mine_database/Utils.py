@@ -48,9 +48,8 @@ def quick_search(db, comp_data):
         results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}},
                                                 {'Formula': 1, 'MINE_id': 1, 'Names': 1}) if x['_id'][0] == "C"]
     elif query_field == 'Names':
-        results = [x['obj'] for x in db.command("text", "compounds", search=comp_data,
-                                                   project={'Formula': 1, 'MINE_id': 1, 'Names': 1})['results']
-                   if x['obj']['_id'][0] == "C"]
+        cursor = db.compounds.find({"$text": {"$search": comp_data}}, {"score": {"$meta": "textScore"}, 'Formula': 1, 'MINE_id': 1, 'Names': 1})
+        results = [x for x in cursor.sort([("score", {"$meta": "textScore"})]) if x['_id'][0] == "C"]
     else:
         results = [x for x in db.compounds.find({query_field: comp_data},
                                                 {'Formula': 1, 'MINE_id': 1, 'Names': 1}) if x['_id'][0] == "C"]

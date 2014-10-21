@@ -27,7 +27,7 @@ services = mineDatabaseServices(None)
 def test_quick_search():
     #print services.quick_search(config.test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')
     #assert services.quick_search(config.test_db, 'C00031') == ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
-    assert glucose in services.quick_search(test_db, 'Glucose')[0]
+    print services.quick_search(test_db, 'Glucose')[0]
 
 
 def test_database_query():
@@ -89,7 +89,7 @@ def test_batch_ms_adduct_search():
     assert len(meh) == 4
     assert isinstance(meh[1]['isomers'], list)
 
-test_batch_ms_adduct_search()
+test_quick_search()
 
 """
 #positive
