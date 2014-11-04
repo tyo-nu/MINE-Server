@@ -55,8 +55,8 @@ class mz_test():
 
 
 def test_quick_search():
-    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glu2]
-    assert services.quick_search(test_db, 'C00031') == [glu2]
+    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
+    assert services.quick_search(test_db, 'C00031') == [glucose]
     assert glu2 in services.quick_search(test_db, 'Glucose')
 
 
@@ -139,7 +139,7 @@ def test_substructure_search():
 
 
 def test_model_search():
-    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
+    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
 
 
 def test_structure_search():

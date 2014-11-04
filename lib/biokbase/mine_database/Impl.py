@@ -215,6 +215,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN get_comps
         objects = []
         db = self.db_client[db]
+        if len(ids) > 50:
+            raise ValueError("List of compound ids is too long. get_comps is limited to 50 or fewer compounds.")
         for x in ids:
             if isinstance(x, int):
                 meh = db.compounds.find_one({'MINE_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
