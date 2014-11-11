@@ -17,32 +17,38 @@ def known_compound_stats(test_db, test_compounds):
     fn = 0
     found = []
     hits = []
+    pos_params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+', '[M]+', '[M+Na]+'], 'models': [], 'ppm': False,
+                  'charge': True, 'halogens': True}
+    neg_params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M-H]-', '[M+CH3COO]-'], 'models': [], 'ppm': False,
+                  'charge': False, 'halogens': True}
     for line in test_compounds.split('\n')[:-1]:
         sl = line.split('\t')
+        # try to find the compound by accurate mass
         if sl[3] == "Positive":
-            result = services.batch_ms_adduct_search(test_db, sl[2], "form", 2.0, ['M+H', "M+", "M+Na"], [], False,
-                                                     True, True)[0]
+            result = services.mz_search(sl[2], "form", pos_params)[0]
         else:
-            result = services.batch_ms_adduct_search(test_db, sl[2], "form", 2.0, ['M-H', 'M+CH3COO'], [], False,
-                                                     False, True)[0]
+            result = services.mz_search(sl[2], "form", neg_params)[0]
+        # try to find the compound through Inchikey
         try:
-            _ids = services.quick_search(test_db, sl[6].strip())[0]['_id']
+            comp = services.quick_search(test_db, sl[6])[0]
         except ServerError:
+            # found results w/ accurate mass but not Inchikey
             if result["total_hits"]:
                 fp += 1
                 hits.append(result['total_hits'])
+            # found nothing
             else:
                 tn += 1
             continue
-        predicted_ids = set()
+        predicted_ids = []
         for x in result["adducts"]:
             for y in x['isomers']:
-                predicted_ids.add(y['_id'])
-        #predicted_ids = set(y['_id'] for y in itertools.chain.from_iterable(x['isomers'] for x in result[0]["adducts"]))
-        if _ids in predicted_ids:
+                predicted_ids.append(y['_id'])
+        if comp['_id'] in predicted_ids:
             hits.append(result['total_hits'])
             tp += 1
-            #found.append(predicted_ids.index(_ids)/float(len(predicted_ids)))
+            if not 'Name' in comp:
+                found.append((sl[0], sl[6]))
         else:
             fn += 1
     print tp, fp, tn, fn
@@ -52,7 +58,11 @@ def known_compound_stats(test_db, test_compounds):
 
     return found
 
-print numpy.mean(known_compound_stats("KEGGexp", test_compounds))
+for x in known_compound_stats("KEGGexp2", test_compounds):
+    print(x)
+
+
+
 
 
 """
