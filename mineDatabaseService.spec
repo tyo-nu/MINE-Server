@@ -77,7 +77,7 @@ module mineDatabaseServices {
     /* A putative match for a metabolomics search
         string peak_name
         string adduct
-        object_id _id
+        object_id id
         string formula
         int MINE_id
         string name
@@ -93,7 +93,7 @@ module mineDatabaseServices {
     typedef structure {
         string peak_name;
         string adduct;
-        object_id _id;
+        object_id id;
         string formula;
         int MINE_id;
         string name;
