@@ -98,7 +98,7 @@ module mineDatabaseServices {
         int MINE_id;
         string name;
         string SMILES;
-        string Inchikey
+        string Inchikey;
         bool native_hit;
         float logP;
         float minKovatsRI;
@@ -251,7 +251,7 @@ module mineDatabaseServices {
 
     /*  New function replacing batch_ms_adduct_search */
 
-	funcdef ms_adduct_search(string text, string text_type, mzParams mz_params) returns (list<ms_hit> ms_adduct_output);
+	funcdef ms_adduct_search(string text, string text_type, mzParams ms_params) returns (list<ms_hit> ms_adduct_output);
 
     /*  DEPRECIATED - use ms_adduct_search */
 
