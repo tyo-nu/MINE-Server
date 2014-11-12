@@ -215,9 +215,9 @@ class mineDatabaseServices(object):
                           [])
         return resp[0]
 
-    def batch_ms_adduct_search(self, db, text, text_type, tolerance, adduct_list, models, ppm, charge, halogens):
-        resp = self._call('mineDatabaseServices.batch_ms_adduct_search',
-                          [db, text, text_type, tolerance, adduct_list, models, ppm, charge, halogens])
+    def ms_adduct_search(self, text, text_type, ms_params):
+        resp = self._call('mineDatabaseServices.ms_adduct_search',
+                          [text, text_type, ms_params])
         return resp[0]
 
     def mz_search(self, text, text_type, mz_params):

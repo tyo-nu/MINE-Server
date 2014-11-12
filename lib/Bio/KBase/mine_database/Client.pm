@@ -1035,9 +1035,9 @@ sub get_adducts
 
 
 
-=head2 batch_ms_adduct_search
+=head2 ms_adduct_search
 
-  $batch_output = $obj->batch_ms_adduct_search($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens)
+  $ms_adduct_output = $obj->ms_adduct_search($text, $text_type, $ms_params)
 
 =over 4
 
@@ -1046,32 +1046,41 @@ sub get_adducts
 =begin html
 
 <pre>
-$db is a string
 $text is a string
 $text_type is a string
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$batch_output is a reference to a list where each element is a peak
+$ms_params is a mzParams
+$ms_adduct_output is a reference to a list where each element is a ms_hit
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
 bool is an int
-peak is a reference to a hash where the following keys are defined:
-	name has a value which is a string
-	num_forms has a value which is an int
-	num_hits has a value which is an int
-	native_hit has a value which is a bool
-	adducts has a value which is a reference to a list where each element is an adduct_result
-adduct_result is a reference to a hash where the following keys are defined:
+ms_hit is a reference to a hash where the following keys are defined:
+	peak_name has a value which is a string
 	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is a comp_stub
-comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	MINE_id has a value which is a string
-	Names has a value which is a reference to a list where each element is a string
-	Formula has a value which is a string
+	formula has a value which is a string
+	MINE_id has a value which is an int
+	name has a value which is a string
+	SMILES has a value which is a string
+	Inchikey has a value which is a string
+	native_hit has a value which is a bool
+	logP has a value which is a float
+	minKovatsRI has a value which is a float
+	maxKovatsRI has a value which is a float
+	NP_likeness has a value which is a float
 object_id is a string
 
 </pre>
@@ -1080,32 +1089,41 @@ object_id is a string
 
 =begin text
 
-$db is a string
 $text is a string
 $text_type is a string
-$tolerance is a float
-$adduct_list is a reference to a list where each element is a string
-$models is a reference to a list where each element is a string
-$ppm is a bool
-$charge is a bool
-$halogens is a bool
-$batch_output is a reference to a list where each element is a peak
+$ms_params is a mzParams
+$ms_adduct_output is a reference to a list where each element is a ms_hit
+mzParams is a reference to a hash where the following keys are defined:
+	db has a value which is a string
+	tolerance has a value which is a float
+	adducts has a value which is a reference to a list where each element is a string
+	models has a value which is a reference to a list where each element is a string
+	logP has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	kovats has a value which is a reference to a list containing 2 items:
+	0: a float
+	1: a float
+
+	ppm has a value which is a bool
+	charge has a value which is a bool
+	halogen has a value which is a bool
 bool is an int
-peak is a reference to a hash where the following keys are defined:
-	name has a value which is a string
-	num_forms has a value which is an int
-	num_hits has a value which is an int
-	native_hit has a value which is a bool
-	adducts has a value which is a reference to a list where each element is an adduct_result
-adduct_result is a reference to a hash where the following keys are defined:
+ms_hit is a reference to a hash where the following keys are defined:
+	peak_name has a value which is a string
 	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is a comp_stub
-comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	MINE_id has a value which is a string
-	Names has a value which is a reference to a list where each element is a string
-	Formula has a value which is a string
+	formula has a value which is a string
+	MINE_id has a value which is an int
+	name has a value which is a string
+	SMILES has a value which is a string
+	Inchikey has a value which is a string
+	native_hit has a value which is a bool
+	logP has a value which is a float
+	minKovatsRI has a value which is a float
+	maxKovatsRI has a value which is a float
+	NP_likeness has a value which is a float
 object_id is a string
 
 
@@ -1113,74 +1131,55 @@ object_id is a string
 
 =item Description
 
-DEPRECATED - Use mz_search
-
-Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
-
-Input parameters for the "mass_adduct_query" function:
-string db - the database in which to search for M/S matches
-string text - the user supplied text
-string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
-        float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
-        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
-        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+New function replacing batch_ms_adduct_search
 
 =back
 
 =cut
 
-sub batch_ms_adduct_search
+sub ms_adduct_search
 {
     my($self, @args) = @_;
 
 # Authentication: none
 
-    if ((my $n = @args) != 9)
+    if ((my $n = @args) != 3)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function batch_ms_adduct_search (received $n, expecting 9)");
+							       "Invalid argument count for function ms_adduct_search (received $n, expecting 3)");
     }
     {
-	my($db, $text, $text_type, $tolerance, $adduct_list, $models, $ppm, $charge, $halogens) = @args;
+	my($text, $text_type, $ms_params) = @args;
 
 	my @_bad_arguments;
-        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
-        (!ref($text)) or push(@_bad_arguments, "Invalid type for argument 2 \"text\" (value was \"$text\")");
-        (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument 3 \"text_type\" (value was \"$text_type\")");
-        (!ref($tolerance)) or push(@_bad_arguments, "Invalid type for argument 4 \"tolerance\" (value was \"$tolerance\")");
-        (ref($adduct_list) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 5 \"adduct_list\" (value was \"$adduct_list\")");
-        (ref($models) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 6 \"models\" (value was \"$models\")");
-        (!ref($ppm)) or push(@_bad_arguments, "Invalid type for argument 7 \"ppm\" (value was \"$ppm\")");
-        (!ref($charge)) or push(@_bad_arguments, "Invalid type for argument 8 \"charge\" (value was \"$charge\")");
-        (!ref($halogens)) or push(@_bad_arguments, "Invalid type for argument 9 \"halogens\" (value was \"$halogens\")");
+        (!ref($text)) or push(@_bad_arguments, "Invalid type for argument 1 \"text\" (value was \"$text\")");
+        (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument 2 \"text_type\" (value was \"$text_type\")");
+        (ref($ms_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 3 \"ms_params\" (value was \"$ms_params\")");
         if (@_bad_arguments) {
-	    my $msg = "Invalid arguments passed to batch_ms_adduct_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    my $msg = "Invalid arguments passed to ms_adduct_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-								   method_name => 'batch_ms_adduct_search');
+								   method_name => 'ms_adduct_search');
 	}
     }
 
     my $result = $self->{client}->call($self->{url}, $self->{headers}, {
-	method => "mineDatabaseServices.batch_ms_adduct_search",
+	method => "mineDatabaseServices.ms_adduct_search",
 	params => \@args,
     });
     if ($result) {
 	if ($result->is_error) {
 	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
 					       code => $result->content->{error}->{code},
-					       method_name => 'batch_ms_adduct_search',
+					       method_name => 'ms_adduct_search',
 					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
 					      );
 	} else {
 	    return wantarray ? @{$result->result} : $result->result->[0];
 	}
     } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method batch_ms_adduct_search",
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method ms_adduct_search",
 					    status_line => $self->{client}->status_line,
-					    method_name => 'batch_ms_adduct_search',
+					    method_name => 'ms_adduct_search',
 				       );
     }
 }
@@ -1285,7 +1284,7 @@ object_id is a string
 
 =item Description
 
-New function replacing batch_ms_adduct_search
+DEPRECIATED - use ms_adduct_search
 
 =back
 
@@ -1775,6 +1774,79 @@ adducts has a value which is a reference to a list where each element is an addu
 
 
 
+=head2 ms_hit
+
+=over 4
+
+
+
+=item Description
+
+A putative match for a metabolomics search
+string peak_name
+string adduct
+object_id id
+string formula
+int MINE_id
+string name
+string SMILES
+string Inchikey
+bool native_hit - if true, hit is a member of the specified genomic reconstruction
+int steps_from_source - The number of transformations the hit is from a source database compound
+float logP - predicted partition coefficient
+float minKovatsRI -
+float maxKovatsRI - values of the predicted Kovats Retention Index
+float NP_likeness - the natural product likeness score of the hit
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+peak_name has a value which is a string
+adduct has a value which is a string
+id has a value which is an object_id
+formula has a value which is a string
+MINE_id has a value which is an int
+name has a value which is a string
+SMILES has a value which is a string
+Inchikey has a value which is a string
+native_hit has a value which is a bool
+logP has a value which is a float
+minKovatsRI has a value which is a float
+maxKovatsRI has a value which is a float
+NP_likeness has a value which is a float
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+peak_name has a value which is a string
+adduct has a value which is a string
+id has a value which is an object_id
+formula has a value which is a string
+MINE_id has a value which is an int
+name has a value which is a string
+SMILES has a value which is a string
+Inchikey has a value which is a string
+native_hit has a value which is a bool
+logP has a value which is a float
+minKovatsRI has a value which is a float
+maxKovatsRI has a value which is a float
+NP_likeness has a value which is a float
+
+
+=end text
+
+=back
+
+
+
 =head2 CompoundObject
 
 =over 4
@@ -1902,7 +1974,7 @@ Error has a value which is a float
 
 =item Description
 
-Parameters for the mz search function:
+Parameters for the ms adduct search function:
 
 Input parameters for the "mass_adduct_query" function:
 string db - the database in which to search for M/S matches

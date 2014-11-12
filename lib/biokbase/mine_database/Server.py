@@ -271,9 +271,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])
-        self.rpc_service.add(impl_mineDatabaseServices.batch_ms_adduct_search,
-                             name='mineDatabaseServices.batch_ms_adduct_search',
-                             types=[basestring, basestring, basestring, float, list, list, int, int, int])
+        self.rpc_service.add(impl_mineDatabaseServices.ms_adduct_search,
+                             name='mineDatabaseServices.ms_adduct_search',
+                             types=[basestring, basestring, dict])
         self.rpc_service.add(impl_mineDatabaseServices.mz_search,
                              name='mineDatabaseServices.mz_search',
                              types=[basestring, basestring, dict])

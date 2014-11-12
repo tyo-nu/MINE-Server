@@ -278,41 +278,18 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [adducts]
 
-    def batch_ms_adduct_search(self, db, text, text_type, tolerance, adduct_list, models, ppm, charge, halogens):
+    def ms_adduct_search(self, text, text_type, ms_params):
         # self.ctx is set by the wsgi application class
-        # return variables are: batch_output
-        #BEGIN batch_ms_adduct_search
-        name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
-        db = self.db_client[db]
-        params = Adduct_search_params(db, tolerance, adduct_list, charge, models, ppm, halogens)
-        dataset = BatchAdductQuery.Dataset(name, params)
-        batch_output = []
-        if text_type == 'form':
-            for mz in text.split('\n'):
-                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), charge, {}, "False"))
-        else:
-            raise IOError('%s files not supported' % text_type)
-        dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, models)
-        dataset.annotate_peaks(db)
-        for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
-            peak.adducts = []
-            for adduct in peak.formulas:
-                for formula in peak.formulas[adduct]:
-                    peak.adducts.append({'adduct': adduct, 'formula': formula,
-                                         'isomers': sorted(dataset.isomers[formula], key=lambda x: x['steps_from_source'])})
-                    #dataset.record_pathway_counts(x for x in dataset.isomers[formula])
-
-            del peak.formulas, peak.inchi_key
-            batch_output.append(peak.__dict__)
-            #batch_output = [dataset.direct_pathways, dataset.implied_pathways]
-        #END batch_ms_adduct_search
+        # return variables are: ms_adduct_output
+        #BEGIN ms_adduct_search
+        #END ms_adduct_search
 
         #At some point might do deeper type checking...
-        if not isinstance(batch_output, list):
-            raise ValueError('Method batch_ms_adduct_search return value ' +
-                             'batch_output is not type list as required.')
+        if not isinstance(ms_adduct_output, list):
+            raise ValueError('Method ms_adduct_search return value ' +
+                             'ms_adduct_output is not type list as required.')
         # return the results
-        return [batch_output]
+        return [ms_adduct_output]
 
     def mz_search(self, text, text_type, mz_params):
         # self.ctx is set by the wsgi application class
