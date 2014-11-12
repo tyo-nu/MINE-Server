@@ -22,38 +22,6 @@ glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29
                    u'1,4-beta-D-Mannooligosaccharide'], u'score': 3.083333333333333}
 
 
-class Adduct_search_params():
-    def __init__(self, db, mz, tolerance, adducts, charge):
-        self.db = db
-        self.mz = mz
-        self.tolerance = tolerance
-        self.adducts = adducts
-        self.models = []
-        self.ppm = False
-        self.charge = charge
-        self.halogens = False
-
-
-class Pathway_query_params():
-    def __init__(self, db, start, end, length, all_path):
-        self.db = db
-        self.start_comp = start
-        self.end_comp = end
-        self.len_limit = length
-        self.all_paths = all_path
-        self.np_min = -3
-        self.gibbs_cap = 100
-
-
-class mz_test():
-    def __init__(self):
-        self.db = test_db
-        self.tolerance = 2.0
-        self.ppm = False
-        self.charge = True
-        self.halogens = False
-
-
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
     assert services.quick_search(test_db, 'C00031') == [glucose]

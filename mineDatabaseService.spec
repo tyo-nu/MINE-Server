@@ -73,6 +73,38 @@ module mineDatabaseServices {
         bool native_hit;
         list<adduct_result> adducts;
     } peak;
+
+    /* A putative match for a metabolomics search
+        string peak_name
+        string adduct
+        object_id _id
+        string formula
+        int MINE_id
+        string name
+        string SMILES
+        string Inchikey
+        bool native_hit - if true, hit is a member of the specified genomic reconstruction
+        int steps_from_source - The number of transformations the hit is from a source database compound
+        float logP - predicted partition coefficient
+        float minKovatsRI -
+        float maxKovatsRI - values of the predicted Kovats Retention Index
+        float NP_likeness - the natural product likeness score of the hit
+    */
+    typedef structure {
+        string peak_name;
+        string adduct;
+        object_id _id;
+        string formula;
+        int MINE_id;
+        string name;
+        string SMILES;
+        string Inchikey
+        bool native_hit;
+        float logP;
+        float minKovatsRI;
+        float maxKovatsRI;
+        float NP_likeness;
+    } ms_hit;
     
     /* Data structures for a compound object
 
@@ -191,26 +223,7 @@ module mineDatabaseServices {
     funcdef get_adducts() returns (tuple<list<string>, list<string>> adducts);
 
 	/*
-		DEPRECATED - Use mz_search
-
-		Creates output, a list of adduct, formula and isomer combinations that match the supplied parameters
-
-		Input parameters for the "mass_adduct_query" function:
-		string db - the database in which to search for M/S matches
-		string text - the user supplied text
-		string text_type - if an uploaded file, the file extension. if list of m/z values, "form"
-        float tolerance - the desired mass precision
-        list<adduct> adduct_list - the adducts to consider in the query.
-        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
-        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
-        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
-        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
-    */
-	funcdef batch_ms_adduct_search(string db, string text, string text_type, float tolerance, list<string> adduct_list,
-	                    list<string> models, bool ppm, bool charge, bool halogens) returns (list<peak> batch_output);
-
-	/*
-		Parameters for the mz search function:
+		Parameters for the ms adduct search function:
 
 		Input parameters for the "mass_adduct_query" function:
 		string db - the database in which to search for M/S matches
@@ -237,6 +250,10 @@ module mineDatabaseServices {
     } mzParams;
 
     /*  New function replacing batch_ms_adduct_search */
+
+	funcdef ms_adduct_search(string text, string text_type, mzParams mz_params) returns (list<ms_hit> ms_adduct_output);
+
+    /*  DEPRECIATED - use ms_adduct_search */
 
 	funcdef mz_search(string text, string text_type, mzParams mz_params) returns (list<peak> batch_output);
 
