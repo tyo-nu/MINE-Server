@@ -2,17 +2,28 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
 import time
 
-test_db = 'EcoCycexp2'
+test_db = 'KEGGexp2'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
 test_molfile = open("./scripts/xanthine.mol", "r").read()
+
+
+class MZParams():
+    def __init__(self):
+        self.db = 'KEGGexp2'
+        self.tolerance = 2.0
+        self.adducts = ['[M+H]+']
+        self.models = ['Bacteria']
+        self.ppm = False
+        self.charge = True
+        self.halogens = False
+
 
 class Options():
     def __init__(self):
         self.adduct_file = "lib/All Adducts.txt"
         self.kbase_db = 'KBase'
         self.test_db = '1GenEcoCyc'
-
         self.positive_adduct_file = "lib/Positive Adducts full.txt"
         self.negative_adduct_file = "lib/Negative Adducts full.txt"
         self.adduct_list = ['M+H', 'M-H']
@@ -54,7 +65,9 @@ def test_get_adducts():
 
 
 def test_adduct_db_search():
-    meh = services.adduct_db_search(test_db, 164.0937301, 2, ['M+H'], [], False, True, False)
+    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': False}
+    meh = services.mz_search("181.071188116\n0.0", "form", params)
     assert len(meh) == 4
     assert len(meh[1]) == 3
 
@@ -81,15 +94,16 @@ def test_substructure_search():
     print services.substructure_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
     print services.substructure_search('KEGGexp', test_molfile, 20)
 
-def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search('KEGGexp', "181.071188116\n0.0", "form", 2.0, ['[M+H]+'], ['eco'], False, True, False)
-    #assert len(result) == 2
-    print result
-    meh = result[0]['adducts']
-    assert len(meh) == 4
-    assert isinstance(meh[1]['isomers'], list)
+def test_ms_adduct_search():
+    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': False}
+    result = services.ms_adduct_search("181.071188116\n0.0", "form", params)[0]
+    assert len(result) == 35
+    for x in result:
+        print x
 
-test_quick_search()
+test_ms_adduct_search()
+#test_adduct_db_search()
 
 """
 #positive

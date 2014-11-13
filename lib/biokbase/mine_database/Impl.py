@@ -282,6 +282,26 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ms_adduct_output
         #BEGIN ms_adduct_search
+        name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
+        if isinstance(ms_params, dict):
+            ms_params = Struct(**ms_params)
+        db = self.db_client[ms_params.db]
+        dataset = BatchAdductQuery.Dataset(name, ms_params)
+        ms_adduct_output = []
+        if text_type == 'form':
+            for mz in text.split('\n'):
+                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, {}, "False"))
+        else:
+            raise IOError('%s files not supported' % text_type)
+        dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
+        dataset.annotate_peaks(db)
+        for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
+            for adduct in peak.formulas:
+                for formula in peak.formulas[adduct]:
+                    for hit in dataset.isomers[formula]:
+                        hit['peak_name'] = peak.name
+                        hit['adduct'] = adduct
+                        ms_adduct_output.append(hit)
         #END ms_adduct_search
 
         #At some point might do deeper type checking...

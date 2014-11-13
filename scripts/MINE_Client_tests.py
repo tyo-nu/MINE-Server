@@ -62,9 +62,10 @@ def test_get_adducts():
     assert meh[0][3] == '[M+Na]+'
 
 
-def test_batch_ms_adduct_search():
-    result = services.batch_ms_adduct_search(test_db, "181.071188116\n0.0", "form", 2.0, ['[M+H]+'], ['Bacteria'], False,
-                                             True, False)
+def test_ms_adduct_search():
+    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': False}
+    result = services.ms_adduct_search("181.071188116\n0.0", "form", params)
     assert len(result) == 2
     meh = result[0]['adducts']
     assert isinstance(meh[0]['isomers'], list)
