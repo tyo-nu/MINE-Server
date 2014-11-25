@@ -82,7 +82,7 @@ class Dataset():
             if hasattr(self, 'min_kovats'):
                 query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
             if adduct['f0'] == '[M]+':
-                query_terms[3] = {'Charge': 1}
+                query_terms[2] = {'Charge': 1}
             print db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
                                     'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
                                     'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1}).explain()
