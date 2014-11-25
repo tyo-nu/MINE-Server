@@ -25,31 +25,31 @@ def known_compound_stats(test_db, test_compounds):
         sl = line.split('\t')
         # try to find the compound by accurate mass
         if sl[3] == "Positive":
-            result = services.mz_search(sl[2], "form", pos_params)[0]
+            result = services.ms_adduct_search(sl[2], "form", pos_params)
         else:
-            result = services.mz_search(sl[2], "form", neg_params)[0]
+            result = services.ms_adduct_search(sl[2], "form", neg_params)
         # try to find the compound through Inchikey
         try:
             comp = services.quick_search(test_db, sl[6])[0]
         except ServerError:
             # found results w/ accurate mass but not Inchikey
-            if result["total_hits"]:
+            if result:
                 fp += 1
-                hits.append(result['total_hits'])
+                hits.append(len(result))
             # found nothing
             else:
                 tn += 1
             continue
-        predicted_ids = []
-        for x in result["adducts"]:
-            for y in x['isomers']:
-                predicted_ids.append(y['_id'])
-        if comp['_id'] in predicted_ids:
-            hits.append(result['total_hits'])
+        #predicted_ids = set(y['_id'] for y in result)
+        #if comp['_id'] in predicted_ids:
+        result = [x['_id'] for x in sorted(result, key=lambda x: (x['steps_from_source'], x['NP_likeness']))]
+        try:
+            ind = result.index(comp['_id'])
+            hits.append(len(result))
             tp += 1
             if not 'Name' in comp:
-                found.append((sl[0], sl[6]))
-        else:
+                found.append((sl[0], sl[6], ind))
+        except ValueError:
             fn += 1
     print tp, fp, tn, fn
     print "P: %s" % (tp / float(tp + fp))
@@ -60,10 +60,6 @@ def known_compound_stats(test_db, test_compounds):
 
 for x in known_compound_stats("KEGGexp2", test_compounds):
     print(x)
-
-
-
-
 
 """
 

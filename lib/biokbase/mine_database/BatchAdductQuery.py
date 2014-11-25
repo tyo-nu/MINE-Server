@@ -76,14 +76,16 @@ class Dataset():
 
         for i, adduct in enumerate(adducts):
             # build the query by adding the optional terms
-            query_terms = [{'Charge': 0}, {"Mass": {"$gte": float(lower_bounds[i])}},
-                           {"Mass": {"$lte": float(upper_bounds[i])}}]
+            query_terms = [{"Mass": {"$gte": float(lower_bounds[i])}}, {"Mass": {"$lte": float(upper_bounds[i])}}, {'Charge': 0}]
             if hasattr(self, 'min_logP'):
                 query_terms +=[{"logP": {"$gte": self.min_logP}}, {"logP": {"$lte": self.max_logP}}]
             if hasattr(self, 'min_kovats'):
                 query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
             if adduct['f0'] == '[M]+':
-                query_terms[0] = {'Charge': 1}
+                query_terms[3] = {'Charge': 1}
+            print db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
+                                    'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
+                                    'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1}).explain()
             hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
                                     'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
                                     'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
