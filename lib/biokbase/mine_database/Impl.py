@@ -286,6 +286,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if isinstance(ms_params, dict):
             ms_params = Struct(**ms_params)
         db = self.db_client[ms_params.db]
+        ms_params.verbose = False
         dataset = BatchAdductQuery.Dataset(name, ms_params)
         ms_adduct_output = []
         if text_type == 'form':
@@ -319,6 +320,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if isinstance(mz_params, dict):
             mz_params = Struct(**mz_params)
         db = self.db_client[mz_params.db]
+        mz_params.verbose = False
         dataset = BatchAdductQuery.Dataset(name, mz_params)
         batch_output = []
         if text_type == 'form':

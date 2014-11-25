@@ -9,7 +9,6 @@ USAGE - BatchAdductQuery.py [options] run_name file_of_Unknowns
 import sys
 from Utils import establish_db_client
 from optparse import OptionParser
-from HTMLPrinter import Printer
 import xml.etree.ElementTree as ET
 import numpy
 import cPickle
@@ -83,9 +82,6 @@ class Dataset():
                 query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
             if adduct['f0'] == '[M]+':
                 query_terms[2] = {'Charge': 1}
-            print db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
-                                    'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
-                                    'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1}).explain()
             hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
                                     'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
                                     'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
@@ -139,14 +135,16 @@ class Dataset():
                 self.matched_peaks += 1
                 self.total_hits += peak.total_hits
                 self.total_formulas += len(peak.formulas)
-            print "%s percent of peaks processed" % int(float(i)/float(len(self.unk_peaks)) * 100)
+            if self.options.verbose:
+                print "%s percent of peaks processed" % int(float(i)/float(len(self.unk_peaks)) * 100)
 
-        print "Proposed matches for %s of %s peaks" % (self.matched_peaks, len(self.unk_peaks))
-        try:
-            print "Average hits per peak: %s" % (float(self.total_hits)/float(self.matched_peaks))
-            print "Average formulas per peak: %s" % (float(self.total_formulas)/float(self.matched_peaks))
-        except ZeroDivisionError:
-            pass
+        if self.options.verbose:
+            print "Proposed matches for %s of %s peaks" % (self.matched_peaks, len(self.unk_peaks))
+            try:
+                print "Average hits per peak: %s" % (float(self.total_hits)/float(self.matched_peaks))
+                print "Average formulas per peak: %s" % (float(self.total_formulas)/float(self.matched_peaks))
+            except ZeroDivisionError:
+                pass
 
     def cluster_peaks(self):
         """ This function looks for peaks at about the same retention time that appear to be related. This could either
@@ -251,29 +249,6 @@ class Dataset():
             outfile.write("Matches with promiscuity products %s\n" % len(other_isomers))
             for isomer in sort_NPLike(other_isomers):
                 outfile.write(str(isomer)+'\n')
-
-    def html_ranked_isomers(self, formula):
-        #write each isomer to a html file
-        labels = ['KEGG Code', 'Names', 'InChI Key', 'NP Likeness']
-        known_isomers = []
-        native_isomers = []
-        other_isomers = []
-        for isomer in self.isomers[formula]:
-            if isomer['Inchikey'].split('-')[0] in self.known_set:
-                known_isomers.append(isomer)
-            elif isomer['_id'] in self.native_set:
-                native_isomers.append(isomer)
-            else:
-                other_isomers.append(isomer)
-        if len(known_isomers) > 0:
-            outfile.write('<tr> <td colspan="2"> Matches with target/known compounds: %s</td></tr>\n' % len(known_isomers))
-            printer.print_compound_html(sort_NPLike(known_isomers), outfile, labels=labels)
-        if len(native_isomers) > 0:
-            outfile.write('<tr> <td colspan="2"> Matches with native compounds: %s</td></tr>\n' % len(native_isomers))
-            printer.print_compound_html(sort_NPLike(native_isomers), outfile, labels=labels)
-        if len(other_isomers) > 0:
-            outfile.write('<tr> <td colspan="2"> Matches with promiscuity products: %s</td></tr>\n' % len(other_isomers))
-            printer.print_compound_html(sort_NPLike(other_isomers), outfile, labels=labels)
 
     def record_pathway_counts(self, compound):
         try:
@@ -448,23 +423,6 @@ class Peak:
                     data.write_ranked_isomers(formula)
                 outfile.write("\n")
 
-    def write_formulas_html(self, outfile):
-        #Writes the formulas as html documents
-        outfile.write('<h2> %s</h2>' % self.name)
-        outfile.write('<h3> Formulas: %s    Isomers: %s </h3>' % (len(self.formulas), self.total_hits))
-        for adduct in self.formulas:
-            num_form = len(self.formulas[adduct])
-            if num_form > 0:
-                outfile.write('<h3> %s</h3>\n' % adduct)
-                outfile.write('<table border="1" cellspacing="0" cellpadding="6" style="font-size:14pt; text-align:center;">\n')
-                outfile.write('\t<tr>\n\t\t<th>Formula</th>\n\t\t<th> Isomers</th>\n\t</tr>\n')
-                for formula in self.formulas[adduct]:
-                    outfile.write('\t<tr>\n\t\t<td><b> %s </b></td>\n\t\t<td> %s </td>\n\t</tr>\n'
-                                  % (formula, len(data.isomers[formula])))
-                    data.html_ranked_isomers(formula)
-            outfile.write('</table>\n')
-        outfile.write('<br>\n')
-
 
 ######################################################################################
 #                                   Main code                                        #
@@ -494,6 +452,8 @@ if __name__ == '__main__':
     parser.add_option("--ppm", dest="ppm", action="store_true", default=False,
                       help="Tolerance is in Parts Per Million")
     parser.add_option("-x", "--halogens", dest="halogens", action="store_true", default=False,
+                      help="include compounds containing F, Cl, and Br")
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False,
                       help="include compounds containing F, Cl, and Br")
 
     (options, args) = parser.parse_args()
@@ -546,13 +506,6 @@ if __name__ == '__main__':
                 peak.write_formulas_csv(outfile)
             elif '.pkl' in options.output_file:
                 cPickle.dump(peak, outfile, 2)
-            elif '.html' in options.output_file:
-                if i % 20 == 0:
-                    outfile.close()
-                    num_files += 1
-                    outfile = open(str(num_files)+options.output_file, 'w')
-                printer = Printer(db)
-                peak.write_formulas_html(outfile)
             else:
                 raise ValueError('Output file type not recognised. Please use .html, .csv, or .pkl extensions')
         else:
