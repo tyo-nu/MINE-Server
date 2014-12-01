@@ -176,7 +176,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(query_mol.write('smi').strip())
         for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1,
-                                                                 'Inchikey': 1, 'SMILES': 1, 'Mass': 1}):
+                                                                 'Inchikey': 1, 'Mass': 1}):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)
