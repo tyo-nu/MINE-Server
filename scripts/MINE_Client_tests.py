@@ -11,7 +11,8 @@ glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929a
                       u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
                       u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
                       u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
-                      u'1,4-beta-D-Mannooligosaccharide']}
+                      u'1,4-beta-D-Mannooligosaccharide'], u"SMILES": u"OCC1OC(O)C(C(C1O)O)O",
+           u"Inchikey": u"WQZGKKKJIJFFOK-UHFFFAOYSA-N", u"Mass": 180.063388104}
 glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
         u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
                    u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
@@ -19,7 +20,8 @@ glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29
                    u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
                    u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
                    u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
-                   u'1,4-beta-D-Mannooligosaccharide'], u'score': 3.083333333333333}
+                   u'1,4-beta-D-Mannooligosaccharide'], u'score': 3.083333333333333, u"SMILES": u"OCC1OC(O)C(C(C1O)O)O",
+           u"Inchikey": u"WQZGKKKJIJFFOK-UHFFFAOYSA-N", u"Mass": 180.063388104}
 
 
 def test_quick_search():
@@ -31,6 +33,7 @@ def test_quick_search():
 def test_database_query():
     assert services.database_query('admin', '') == ['Illegal query']
     assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}") == [glucose]
+    assert services.database_query(test_db, "{'MINE_id': 19160}") == [glucose]
     assert services.database_query(test_db, "{'Names': 'Glucose'}") == [glucose]
 
 

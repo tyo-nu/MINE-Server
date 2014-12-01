@@ -128,7 +128,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         len_fp = len(query_fp)
         for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
                                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
-                                   {fp_type: 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1}):
+                                   {fp_type: 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'SMILES': 1, 'Mass': 1}):
             test_fp = set(x[fp_type])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
             if tc >= min_tc:
@@ -175,7 +175,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             query_mol = pybel.readstring('smi', str(substructure))
         query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(query_mol.write('smi').strip())
-        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1}):
+        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1,
+                                                                 'Inchikey': 1, 'SMILES': 1, 'Mass': 1}):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)
@@ -197,7 +198,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if db != 'admin':
             db = self.db_client[db]
             query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
-            database_query_results = [x for x in db.compounds.find(query_dict, {'Formula': 1, 'MINE_id': 1, 'Names': 1})]
+            database_query_results = [x for x in db.compounds.find(query_dict, {'Formula': 1, 'MINE_id': 1, 'Names': 1,
+                                                                                'Inchikey': 1, 'SMILES': 1, 'Mass': 1})]
         else:
             database_query_results = ['Illegal query']
         #END database_query
@@ -296,13 +298,14 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
         dataset.annotate_peaks(db)
-        for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
+        for peak in dataset.unk_peaks:
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
                     for hit in dataset.isomers[formula]:
                         hit['peak_name'] = peak.name
                         hit['adduct'] = adduct
                         ms_adduct_output.append(hit)
+        #ms_adduct_output.sort(key=lambda x: (x['steps_from_source'], -x['NP_likeness']))
         #END ms_adduct_search
 
         #At some point might do deeper type checking...
