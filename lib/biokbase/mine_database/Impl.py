@@ -33,6 +33,8 @@ class Adduct_search_params():
 class Struct:
     def __init__(self, **entries):
         self.__dict__.update(entries)
+
+search_projection = {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'Mass': 1}
 #END_HEADER
 
 
@@ -85,7 +87,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: models
         #BEGIN model_search
         db = self.db_client['KEGGdb']
-        models = [x['obj']['_id'] for x in db.command("text", "models", search=query, project={"_id": 1})['results']]
+        cursor = db.models.find({"$text": {"$search": query}}, {"score": {"$meta": "textScore"}, "_id": 1})
+        models = [x["_id"] for x in cursor.sort([("score", {"$meta": "textScore"})])]
         #END model_search
 
         #At some point might do deeper type checking...
@@ -100,7 +103,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: quick_search_results
         #BEGIN quick_search
         db = self.db_client[db]
-        quick_search_results = Utils.quick_search(db, query)
+        quick_search_results = Utils.quick_search(db, query, search_projection)
         for x in quick_search_results:
             if not isinstance(x['_id'], unicode):
                 x['_id'] = unicode(x['_id'])
@@ -126,9 +129,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             mol = pybel.readstring('smi', str(comp_structure))
         query_fp = set(mol.calcfp(fp_type).bits)
         len_fp = len(query_fp)
+        proj = search_projection.e
         for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
                                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
-                                   {fp_type: 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'SMILES': 1, 'Mass': 1}):
+                                   dict([(fp_type, 1)]+search_projection.items())):
             test_fp = set(x[fp_type])
             tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
             if tc >= min_tc:
@@ -153,7 +157,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
-        structure_search_results = Utils.quick_search(db, inchi_key)
+        structure_search_results = Utils.quick_search(db, inchi_key, search_projection)
         #END structure_search
 
         #At some point might do deeper type checking...
@@ -175,8 +179,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             query_mol = pybel.readstring('smi', str(substructure))
         query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(query_mol.write('smi').strip())
-        for x in db.compounds.find({"FP4": {"$all": query_fp}}, {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1,
-                                                                 'Inchikey': 1, 'Mass': 1}):
+        for x in db.compounds.find({"FP4": {"$all": query_fp}}, search_projection):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
                 del x["SMILES"]
                 substructure_search_results.append(x)
@@ -198,8 +201,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if db != 'admin':
             db = self.db_client[db]
             query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
-            database_query_results = [x for x in db.compounds.find(query_dict, {'Formula': 1, 'MINE_id': 1, 'Names': 1,
-                                                                                'Inchikey': 1, 'SMILES': 1, 'Mass': 1})]
+            database_query_results = [x for x in db.compounds.find(query_dict, search_projection)]
         else:
             database_query_results = ['Illegal query']
         #END database_query

@@ -102,8 +102,9 @@ def test_ms_adduct_search():
     for x in result:
         print x
 
-test_ms_adduct_search()
-#test_adduct_db_search()
+def test_model_search():
+    print(services.model_search("human"))
+    #assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
 
 """
 #positive

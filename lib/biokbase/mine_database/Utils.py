@@ -26,7 +26,7 @@ def establish_db_client():
     return client
 
 
-def quick_search(db, comp_data):
+def quick_search(db, comp_data, search_projection={}):
     """This function takes user provided compound identifiers and attempts to find a related database ID"""
     #check if comp_data already is a _id
     if (len(comp_data) == 41) and (comp_data[0] == 'C'):
@@ -45,21 +45,17 @@ def quick_search(db, comp_data):
         query_field = 'Names'
 
     if query_field == 'Inchikey':
-        results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}},
-                                            {'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'SMILES': 1,
-                                             'Mass': 1}).limit(500) if x['_id'][0] == "C"]
+        results = [x for x in db.compounds.find({query_field: {'$regex': '^'+comp_data}}, search_projection).limit(500)
+                   if x['_id'][0] == "C"]
     elif query_field == 'Names':
-        results = [x for x in db.compounds.find({"Names": comp_data},
-                                                {'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'SMILES': 1,
-                                                 'Mass': 1}) if x['_id'][0] == "C"]
+        results = [x for x in db.compounds.find({"Names": comp_data}, search_projection) if x['_id'][0] == "C"]
         cursor = db.compounds.find({"$text": {"$search": comp_data}}, {"score": {"$meta": "textScore"}, 'Formula': 1,
                                                                        'MINE_id': 1, 'Names': 1, 'Inchikey': 1,
                                                                        'SMILES': 1, 'Mass': 1})
         results.extend(x for x in cursor.sort([("score", {"$meta": "textScore"})]).limit(500) if x['_id'][0] == "C")
     else:
-        results = [x for x in db.compounds.find({query_field: comp_data},
-                                            {'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'SMILES': 1,
-                                             'Mass': 1}).limit(500) if x['_id'][0] == "C"]
+        results = [x for x in db.compounds.find({query_field: comp_data}, search_projection).limit(500)
+                   if x['_id'][0] == "C"]
     if not results:
         raise ValueError("%s was not found in the database." % comp_data)
 
