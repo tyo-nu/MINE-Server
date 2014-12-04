@@ -5,7 +5,6 @@ import Utils
 import BatchAdductQuery
 from PathwaySearch import PathwaySearch
 from ast import literal_eval
-import subprocess32
 
 
 class Pathway_query_params():
@@ -19,16 +18,6 @@ class Pathway_query_params():
         self.gibbs_cap = 100
         self.verbose = False
 
-
-class Adduct_search_params():
-    def __init__(self, db, tolerance, adducts, charge, models, ppm, halogens):
-        self.db = db
-        self.tolerance = tolerance
-        self.adducts = adducts
-        self.models = models
-        self.ppm = ppm
-        self.charge = charge
-        self.halogens = halogens
 
 class Struct:
     def __init__(self, **entries):
@@ -129,7 +118,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             mol = pybel.readstring('smi', str(comp_structure))
         query_fp = set(mol.calcfp(fp_type).bits)
         len_fp = len(query_fp)
-        proj = search_projection.e
         for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
                                    {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
                                    dict([(fp_type, 1)]+search_projection.items())):
@@ -157,6 +145,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
+        # sure, we could look for a matching SMILES but this is faster
         structure_search_results = Utils.quick_search(db, inchi_key, search_projection)
         #END structure_search
 
@@ -181,7 +170,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         smarts = pybel.Smarts(query_mol.write('smi').strip())
         for x in db.compounds.find({"FP4": {"$all": query_fp}}, search_projection):
             if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
-                del x["SMILES"]
                 substructure_search_results.append(x)
                 if len(substructure_search_results) == limit:
                     break
@@ -198,7 +186,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
-        if db != 'admin':
+        if db != 'admin':  # we don't want users poking around here
             db = self.db_client[db]
             query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
             database_query_results = [x for x in db.compounds.find(query_dict, search_projection)]
