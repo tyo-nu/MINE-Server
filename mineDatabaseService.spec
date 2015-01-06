@@ -232,7 +232,7 @@ module mineDatabaseServices {
     /*
         Returns a list of OperatorObjects that match supplied operator_names in a specified db
     */
-    funcdef get_rxns(string db, list<string> operator_names) returns (list<OperatorObject> objects);
+    funcdef get_ops(string db, list<string> operator_names) returns (list<OperatorObject> objects);
 
     /*
         Returns a list of SEED models available to be set as native metabolites as tuples of SEED id and name
