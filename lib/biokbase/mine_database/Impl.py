@@ -233,10 +233,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         db = self.db_client[db]
         for x in ids:
             objects.append(db.reactions.find_one({'_id': x}))
-        objects = []
-        db = self.db_client[db]
-        for x in ids:
-            objects.append(db.reactions.find_one({'_id': x}))
         #END get_rxns
 
         #At some point might do deeper type checking...
@@ -250,6 +246,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: objects
         #BEGIN get_ops
+        objects = []
         #END get_ops
 
         #At some point might do deeper type checking...
