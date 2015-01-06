@@ -891,9 +891,9 @@ sub get_rxns
 
 
 
-=head2 get_rxns
+=head2 get_ops
 
-  $objects = $obj->get_rxns($db, $operator_names)
+  $objects = $obj->get_ops($db, $operator_names)
 
 =over 4
 
@@ -937,7 +937,7 @@ Returns a list of OperatorObjects that match supplied operator_names in a specif
 
 =cut
 
-sub get_rxns
+sub get_ops
 {
     my($self, @args) = @_;
 
@@ -946,7 +946,7 @@ sub get_rxns
     if ((my $n = @args) != 2)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function get_rxns (received $n, expecting 2)");
+							       "Invalid argument count for function get_ops (received $n, expecting 2)");
     }
     {
 	my($db, $operator_names) = @args;
@@ -955,30 +955,30 @@ sub get_rxns
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (ref($operator_names) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 2 \"operator_names\" (value was \"$operator_names\")");
         if (@_bad_arguments) {
-	    my $msg = "Invalid arguments passed to get_rxns:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    my $msg = "Invalid arguments passed to get_ops:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-								   method_name => 'get_rxns');
+								   method_name => 'get_ops');
 	}
     }
 
     my $result = $self->{client}->call($self->{url}, $self->{headers}, {
-	method => "mineDatabaseServices.get_rxns",
+	method => "mineDatabaseServices.get_ops",
 	params => \@args,
     });
     if ($result) {
 	if ($result->is_error) {
 	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
 					       code => $result->content->{error}->{code},
-					       method_name => 'get_rxns',
+					       method_name => 'get_ops',
 					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
 					      );
 	} else {
 	    return wantarray ? @{$result->result} : $result->result->[0];
 	}
     } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_rxns",
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_ops",
 					    status_line => $self->{client}->status_line,
-					    method_name => 'get_rxns',
+					    method_name => 'get_ops',
 				       );
     }
 }

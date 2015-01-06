@@ -723,9 +723,9 @@ sub get_rxns
 
 
 
-=head2 get_rxns
+=head2 get_ops
 
-  $objects = $obj->get_rxns($db, $operator_names)
+  $objects = $obj->get_ops($db, $operator_names)
 
 =over 4
 
@@ -771,7 +771,7 @@ Returns a list of OperatorObjects that match supplied operator_names in a specif
 
 =cut
 
-sub get_rxns
+sub get_ops
 {
     my $self = shift;
     my($db, $operator_names) = @_;
@@ -780,21 +780,21 @@ sub get_rxns
     (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
     (ref($operator_names) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"operator_names\" (value was \"$operator_names\")");
     if (@_bad_arguments) {
-	my $msg = "Invalid arguments passed to get_rxns:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	my $msg = "Invalid arguments passed to get_ops:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'get_rxns');
+							       method_name => 'get_ops');
     }
 
     my $ctx = $mineDatabaseServicesServer::CallContext;
     my($objects);
-    #BEGIN get_rxns
-    #END get_rxns
+    #BEGIN get_ops
+    #END get_ops
     my @_bad_returns;
     (ref($objects) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"objects\" (value was \"$objects\")");
     if (@_bad_returns) {
-	my $msg = "Invalid returns passed to get_rxns:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	my $msg = "Invalid returns passed to get_ops:\n" . join("", map { "\t$_\n" } @_bad_returns);
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-							       method_name => 'get_rxns');
+							       method_name => 'get_ops');
     }
     return($objects);
 }

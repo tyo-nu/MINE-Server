@@ -205,8 +205,8 @@ class mineDatabaseServices(object):
                           [db, ids])
         return resp[0]
 
-    def get_rxns(self, db, operator_names):
-        resp = self._call('mineDatabaseServices.get_rxns',
+    def get_ops(self, db, operator_names):
+        resp = self._call('mineDatabaseServices.get_ops',
                           [db, operator_names])
         return resp[0]
 
