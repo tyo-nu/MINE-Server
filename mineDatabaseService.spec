@@ -156,6 +156,23 @@ module mineDatabaseServices {
         float Error;
     } ReactionObject;
 
+    /* Data structures for a operator object
+
+		Guaranteed:
+		string Name - Name of the operator
+		int Reactions_predicted - The number of database reactions predicted by the operator
+		list<object_id> Reaction_ids - A list of the _id hashes for the reaction
+
+        Optionally:
+        float Specificity - The fraction of predicted reactions which match known reactions
+        float Avg_delta_G - The Average Delta G of all predicted reactions
+	*/
+    typedef structure {
+		string Name;
+		int Reactions_predicted;
+		list<object_id> Reaction_ids;
+    } OperatorObject;
+
 
     /* ************************************************************************************************************** */
 	/* MINE FUNCTIONS */
@@ -211,6 +228,11 @@ module mineDatabaseServices {
         Returns a list of ReactionObjects that match supplied object_ids in a specified db
     */
     funcdef get_rxns(string db, list<object_id> ids) returns (list<ReactionObject> objects);
+
+    /*
+        Returns a list of OperatorObjects that match supplied operator_names in a specified db
+    */
+    funcdef get_rxns(string db, list<string> operator_names) returns (list<OperatorObject> objects);
 
     /*
         Returns a list of SEED models available to be set as native metabolites as tuples of SEED id and name
