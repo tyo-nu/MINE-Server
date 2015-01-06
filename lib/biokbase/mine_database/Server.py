@@ -265,6 +265,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
                              name='mineDatabaseServices.get_rxns',
                              types=[basestring, list])
+        self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
+                             name='mineDatabaseServices.get_rxns',
+                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_models,
                              name='mineDatabaseServices.get_models',
                              types=[])

@@ -891,6 +891,100 @@ sub get_rxns
 
 
 
+=head2 get_rxns
+
+  $objects = $obj->get_rxns($db, $operator_names)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$operator_names is a reference to a list where each element is a string
+$objects is a reference to a list where each element is an OperatorObject
+OperatorObject is a reference to a hash where the following keys are defined:
+	Name has a value which is a string
+	Reactions_predicted has a value which is an int
+	Reaction_ids has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$operator_names is a reference to a list where each element is a string
+$objects is a reference to a list where each element is an OperatorObject
+OperatorObject is a reference to a hash where the following keys are defined:
+	Name has a value which is a string
+	Reactions_predicted has a value which is an int
+	Reaction_ids has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+
+=end text
+
+=item Description
+
+Returns a list of OperatorObjects that match supplied operator_names in a specified db
+
+=back
+
+=cut
+
+sub get_rxns
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 2)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function get_rxns (received $n, expecting 2)");
+    }
+    {
+	my($db, $operator_names) = @args;
+
+	my @_bad_arguments;
+        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
+        (ref($operator_names) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument 2 \"operator_names\" (value was \"$operator_names\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to get_rxns:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'get_rxns');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
+	method => "mineDatabaseServices.get_rxns",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'get_rxns',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_rxns",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'get_rxns',
+				       );
+    }
+}
+
+
+
 =head2 get_models
 
   $models = $obj->get_models()
@@ -1958,6 +2052,54 @@ Reactants has a value which is a reference to a list where each element is a rxn
 Products has a value which is a reference to a list where each element is a rxn_comp
 Energy has a value which is a float
 Error has a value which is a float
+
+
+=end text
+
+=back
+
+
+
+=head2 OperatorObject
+
+=over 4
+
+
+
+=item Description
+
+Data structures for a operator object
+
+                Guaranteed:
+                string Name - Name of the operator
+                int Reactions_predicted - The number of database reactions predicted by the operator
+                list<object_id> Reaction_ids - A list of the _id hashes for the reaction
+
+        Optionally:
+        float Specificity - The fraction of predicted reactions which match known reactions
+        float Avg_delta_G - The Average Delta G of all predicted reactions
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+Name has a value which is a string
+Reactions_predicted has a value which is an int
+Reaction_ids has a value which is a reference to a list where each element is an object_id
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+Name has a value which is a string
+Reactions_predicted has a value which is an int
+Reaction_ids has a value which is a reference to a list where each element is an object_id
 
 
 =end text

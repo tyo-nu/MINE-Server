@@ -242,6 +242,23 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [objects]
 
+    def get_rxns(self, db, operator_names):
+        # self.ctx is set by the wsgi application class
+        # return variables are: objects
+        #BEGIN get_rxns
+        objects = []
+        db = self.db_client[db]
+        for x in ids:
+            objects.append(db.reactions.find_one({'_id': x}))
+        #END get_rxns
+
+        #At some point might do deeper type checking...
+        if not isinstance(objects, list):
+            raise ValueError('Method get_rxns return value ' +
+                             'objects is not type list as required.')
+        # return the results
+        return [objects]
+
     def get_models(self):
         # self.ctx is set by the wsgi application class
         # return variables are: models
