@@ -51,6 +51,12 @@ def test_get_comps():
     print services.get_comps(config.test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
 
 
+def test_get_ops():
+    print services.get_ops(test_db, ['2.7.1.a'])[0]
+    #assert meh['Reactions_predicted'] > 4000
+    #assert meh['Reaction_ids'][0] == 'R'
+
+
 def test_get_models():
     meh = services.get_models()[0]
     assert meh[2] == (u'kb|fm.3375', u'Escherichia coli 97.0264')
@@ -82,17 +88,21 @@ def test_pathway_search():
     assert len(services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 9
 
+
 def test_similarity_search():
     print services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100)
     print services.similarity_search('EcoCycexp', test_molfile, 0.8, 'FP4', 100)
+
 
 def test_structure_search():
     print services.structure_search("EcoCycexp", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O')
     print services.structure_search("EcoCycexp", "mol", test_molfile)
 
+
 def test_substructure_search():
     print services.substructure_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
     print services.substructure_search('KEGGexp', test_molfile, 20)
+
 
 def test_ms_adduct_search():
     params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
@@ -101,6 +111,7 @@ def test_ms_adduct_search():
     assert len(result) == 35
     for x in result:
         print x
+
 
 def test_model_search():
     print(services.model_search("human"))
@@ -139,3 +150,4 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
+test_get_ops()

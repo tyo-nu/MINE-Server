@@ -52,6 +52,12 @@ def test_get_rxns():
     assert 'Operators' in meh[0].keys()
 
 
+def test_get_ops():
+    meh = services.get_ops(test_db, ['2.7.1.a'])
+    assert meh['Reactions_predicted'] > 4000
+    assert meh['Reaction_ids'][0] == 'R'
+
+
 def test_get_models():
     meh = services.get_models()
     assert len(meh[0]) == 2

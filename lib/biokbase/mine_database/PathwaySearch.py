@@ -5,11 +5,10 @@ import sys
 import platform
 import time
 from optparse import OptionParser
-from HTMLPrinter import Printer
 from Utils import quick_search
 from Utils import establish_db_client
 
-
+"""
 def write_pathway_html(db, path, outfile):
     html_printer = Printer(db)
     for _id in path:
@@ -17,7 +16,7 @@ def write_pathway_html(db, path, outfile):
             html_printer.print_compound_html(_id, outfile, labels=['Names', 'KEGG_code'])
 
         if _id[0] == 'R':
-            html_printer.print_rxn_html(_id, outfile)
+            html_printer.print_rxn_html(_id, outfile)"""
 
 
 class PathwaySearch():
@@ -182,11 +181,11 @@ if __name__ == '__main__':
         paths = search.bfs()
 
     for i, path in enumerate(paths):
-        if args:
+        """if args:
             with open(args[0]+'%s.html' % i, 'w') as outfile:
                 write_pathway_html(db, path, outfile)
-        else:
-            print(', '.join(str(x) for x in path))
+        else:"""
+        print(', '.join(str(x) for x in path))
 
     print 'Found %s paths shorter than %s reactions' % (len(paths), options.len_limit)
     print 'Script complete, execution took %s sec' %(time.time() - start_time)
