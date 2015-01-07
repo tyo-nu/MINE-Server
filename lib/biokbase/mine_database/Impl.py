@@ -247,6 +247,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: objects
         #BEGIN get_ops
         objects = []
+        db = self.db_client[db]
+        for x in operator_names:
+            op = db.compounds.find_one({'_id': x})
+            op['Reaction_ids'] = [x['_id'] for x in db.reactions.find({'Operators': operator_names})]
+            objects.append(op)
         #END get_ops
 
         #At some point might do deeper type checking...
