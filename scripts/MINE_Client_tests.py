@@ -53,9 +53,9 @@ def test_get_rxns():
 
 
 def test_get_ops():
-    meh = services.get_ops(test_db, ['2.7.1.a'])
+    meh = services.get_ops(test_db, ['2.7.1.a'])[0]
     assert meh['Reactions_predicted'] > 4000
-    assert meh['Reaction_ids'][0] == 'R'
+    assert meh['Reaction_ids'][0][0] == 'R'
 
 
 def test_get_models():
