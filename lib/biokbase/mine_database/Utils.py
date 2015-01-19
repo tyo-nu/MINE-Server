@@ -49,10 +49,11 @@ def quick_search(db, comp_data, search_projection={}):
                    if x['_id'][0] == "C"]
     elif query_field == 'Names':
         results = [x for x in db.compounds.find({"Names": comp_data}, search_projection) if x['_id'][0] == "C"]
-        cursor = db.compounds.find({"$text": {"$search": comp_data}}, {"score": {"$meta": "textScore"}, 'Formula': 1,
-                                                                       'MINE_id': 1, 'Names': 1, 'Inchikey': 1,
-                                                                       'SMILES': 1, 'Mass': 1})
-        results.extend(x for x in cursor.sort([("score", {"$meta": "textScore"})]).limit(500) if x['_id'][0] == "C")
+        if not results:
+            cursor = db.compounds.find({"$text": {"$search": comp_data}}, {"score": {"$meta": "textScore"}, 'Formula': 1,
+                                                                           'MINE_id': 1, 'Names': 1, 'Inchikey': 1,
+                                                                           'SMILES': 1, 'Mass': 1})
+            results.extend(x for x in cursor.sort([("score", {"$meta": "textScore"})]).limit(500) if x['_id'][0] == "C")
     else:
         results = [x for x in db.compounds.find({query_field: comp_data}, search_projection).limit(500)
                    if x['_id'][0] == "C"]
