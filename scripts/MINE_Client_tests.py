@@ -27,7 +27,7 @@ glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N') == [glucose]
     assert services.quick_search(test_db, 'C00031') == [glucose]
-    assert glu2 in services.quick_search(test_db, 'Glucose')
+    assert glucose in services.quick_search(test_db, 'Glucose')
 
 
 def test_database_query():
