@@ -52,9 +52,9 @@ def test_get_comps():
 
 
 def test_get_ops():
-    print services.get_ops(test_db, ['2.7.1.a'])[0]
-    #assert meh['Reactions_predicted'] > 4000
-    #assert meh['Reaction_ids'][0] == 'R'
+    meh = services.get_ops(test_db, ['2.7.1.a'])[0][0]
+    assert meh['Reactions_predicted'] > 4000
+    assert meh['Reaction_ids'][0][0] == 'R'
 
 
 def test_get_models():

@@ -252,7 +252,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             op = db.operators.find_one({'_id': x})
             if op:
                 op['Reaction_ids'] = [x['_id'] for x in db.reactions.find({'Operators': x})]
-            objects.append(op)
+                objects.append(op)
         #END get_ops
 
         #At some point might do deeper type checking...
