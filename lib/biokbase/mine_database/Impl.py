@@ -214,6 +214,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 meh = db.compounds.find_one({'MINE_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
             else:
                 meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
+            if len(meh['Reactant_in']) > 1000:
+                meh['Reactant_in'] = meh['Reactant_in'][:1000]
+            if len(meh['Product_of']) > 1000:
+                meh['Product_of'] = meh['Product_of'][:1000]
 
             objects.append(meh)
         #END get_comps
