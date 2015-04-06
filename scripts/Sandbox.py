@@ -4,7 +4,8 @@ from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 import numpy
 import itertools
 
-test_compounds = open("/Users/JGJeffryes/Documents/repository/MassBank/MassBankTestSet.csv").read()
+#test_compounds = open("/Users/JGJeffryes/Desktop/test comps.csv").read()
+test_compounds = open('testMasses.csv').read()
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 #pos_unks = open("Oce_Neg_MZ").read()
 #neg_unks = open("Oce_Pos_MZ").read()
@@ -17,12 +18,12 @@ def known_compound_stats(test_db, test_compounds):
     fn = 0
     found = []
     hits = []
-    pos_params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+', '[M]+', '[M+Na]+'], 'models': [], 'ppm': False,
+    pos_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M+H]+', '[M]+', '[M+Na]+'], 'models': [], 'ppm': False,
                   'charge': True, 'halogens': True}
-    neg_params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M-H]-', '[M+CH3COO]-'], 'models': [], 'ppm': False,
+    neg_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-', '[M+CH3COO]-'], 'models': [], 'ppm': False,
                   'charge': False, 'halogens': True}
     for line in test_compounds.split('\n')[:-1]:
-        sl = line.split('\t')
+        sl = line.split(',')
         # try to find the compound by accurate mass
         if sl[3] == "Positive":
             result = services.ms_adduct_search(sl[2], "form", pos_params)
@@ -34,6 +35,9 @@ def known_compound_stats(test_db, test_compounds):
         except ServerError:
             # found results w/ accurate mass but not Inchikey
             if result:
+                result.sort(key=lambda x: x['steps_from_source'])
+                if result[0]['steps_from_source']:
+                    tp += 1
                 fp += 1
                 hits.append(len(result))
             # found nothing

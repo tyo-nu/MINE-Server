@@ -235,6 +235,8 @@ module mineDatabaseServices {
     funcdef get_ops(string db, list<string> operator_names) returns (list<OperatorObject> objects);
 
     /*
+        DEPRECATED - Use model_search
+
         Returns a list of SEED models available to be set as native metabolites as tuples of SEED id and name
     */
     funcdef get_models() returns (list<tuple<string id, string name>> models);
