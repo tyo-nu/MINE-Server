@@ -361,7 +361,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             for adduct in peak.formulas:
                 for formula in peak.formulas[adduct]:
                     peak.adducts.append({'adduct': adduct, 'formula': formula,
-                                         'isomers': sorted(dataset.isomers[formula], key=lambda x: x['steps_from_source'])})
+                                         'isomers': sorted(dataset.isomers[formula], key=lambda x: x['Generation'])})
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
         #END mz_search
