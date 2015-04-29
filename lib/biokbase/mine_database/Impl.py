@@ -377,7 +377,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: pathway_query_results
         #BEGIN pathway_search
-        pathway_query_results = 'Not yet implemented'
+        pathway_query_results = ['Not yet implemented']
         """params = Pathway_query_params(db, start_comp, end_comp, len_limit, all_paths)
         pathsearch = PathwaySearch(params)
         if params.all_paths:

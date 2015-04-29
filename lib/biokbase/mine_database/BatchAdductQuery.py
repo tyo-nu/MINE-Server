@@ -84,7 +84,7 @@ class Dataset():
                 query_terms[2] = {'Charge': 1}
             hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
                                     'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
-                                    'SMILES': 1, 'Inchikey': 1, 'steps_from_source': 1})]
+                                    'SMILES': 1, 'Inchikey': 1, 'Generation': 1})]
 
             for compound in hits[adduct['f0']]:
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
@@ -99,8 +99,8 @@ class Dataset():
                 if compound['_id'] in self.native_set:
                     peak.native_hit = True
                     compound['native_hit'] = True
-                if compound['steps_from_source'] < peak.min_steps:
-                    peak.min_steps = compound['steps_from_source']
+                if compound['Generation'] < peak.min_steps:
+                    peak.min_steps = compound['Generation']
 
                 #create a dictionary of formulas keyed by the adduct that produces them
                 try:
