@@ -2,7 +2,7 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
 import time
 
-test_db = 'KEGGexp2'
+test_db = 'EcoCycexp2'
 glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
            u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
 test_molfile = open("./scripts/xanthine.mol", "r").read()
@@ -90,8 +90,8 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    print services.similarity_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100)
-    print services.similarity_search('EcoCycexp', test_molfile, 0.8, 'FP4', 100)
+    print services.similarity_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100)
+    print services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100)
 
 
 def test_structure_search():
@@ -100,8 +100,8 @@ def test_structure_search():
 
 
 def test_substructure_search():
-    print services.substructure_search('EcoCycexp', 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
-    print services.substructure_search('KEGGexp', test_molfile, 20)
+    print services.substructure_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
+    print services.substructure_search('KEGGexp2', test_molfile, 20)
 
 
 def test_ms_adduct_search():
@@ -150,4 +150,4 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
-test_get_ops()
+test_substructure_search()

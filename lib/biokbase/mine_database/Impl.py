@@ -175,10 +175,13 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         query_fp = query_mol.calcfp("FP4").bits
         smarts = pybel.Smarts(query_mol.write('smi').strip())
         for x in db.compounds.find({"FP4": {"$all": query_fp}}, search_projection):
-            if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
-                substructure_search_results.append(x)
-                if len(substructure_search_results) == limit:
-                    break
+            try:
+                if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
+                    substructure_search_results.append(x)
+                    if len(substructure_search_results) == limit:
+                        break
+            except IOError:  # Smarts searches fail for generalized compounds so we just skip over them
+                continue
         #END substructure_search
 
         #At some point might do deeper type checking...

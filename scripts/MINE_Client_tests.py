@@ -93,7 +93,7 @@ def test_mz_search():
 def test_pathway_search():
     meh = services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, False)
-    assert meh == 'Not yet implemented'
+    assert meh == ['Not yet implemented']
     """assert len(meh) == 1
     assert meh[0] == [u'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rbbc40c762b05d59890c196c949522e3ee6ca08c6',
                       u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R0e87f4c178bcb78b9190938b3413b7889b3fbad4',
