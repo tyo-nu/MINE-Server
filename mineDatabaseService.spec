@@ -192,22 +192,24 @@ module mineDatabaseServices {
 	/*
 		Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
 		the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
-		fingerprints to perform the Tannimoto calculation.
+		fingerprints to perform the Tannimoto calculation. Also accepts a metabolic model with which to filter acceptable
+		source compounds or reaction types.
 	*/
-	funcdef similarity_search(string db, string comp_structure, float min_tc, string fp_type, int limit)
+	funcdef similarity_search(string db, string comp_structure, float min_tc, string fp_type, int limit, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> similarity_search_results);
 	/*
 		Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
-		comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+		comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi). Also accepts
+		a metabolic model with which to filter acceptable source compounds or reaction types.
 	*/
-	funcdef structure_search(string db, string input_format, string comp_structure)
+	funcdef structure_search(string db, string input_format, string comp_structure, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> structure_search_results);
 
 	/*
 		Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
-		(as SMILES or molfile)
+		(as SMILES or molfile) Also accepts a metabolic model with which to filter acceptable source compounds or reaction types.
 	*/
-	funcdef substructure_search(string db, string substructure, int limit)
+	funcdef substructure_search(string db, string substructure, int limit, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> substructure_search_results);
 
     /*
@@ -216,8 +218,11 @@ module mineDatabaseServices {
 		Input parameters for the "database_query" function:
 		string db - the database against which the query will be performed
 		mongo_query query - A valid mongo query as a string
+		string parent_filter - require all results originate from compounds in this specified metabolic model
+		string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 	*/
-	funcdef database_query(string db, string mongo_query) returns (list<comp_stub> database_query_results);
+	funcdef database_query(string db, string mongo_query, string parent_filter, string reaction_filter)
+	returns (list<comp_stub> database_query_results);
 
     /*
         Return a list of CompoundObjects that match supplied object_ids in a specified db
@@ -233,13 +238,6 @@ module mineDatabaseServices {
         Returns a list of OperatorObjects that match supplied operator_names in a specified db
     */
     funcdef get_ops(string db, list<string> operator_names) returns (list<OperatorObject> objects);
-
-    /*
-        DEPRECATED - Use model_search
-
-        Returns a list of SEED models available to be set as native metabolites as tuples of SEED id and name
-    */
-    funcdef get_models() returns (list<tuple<string id, string name>> models);
 
     /*
         Returns a tuple of lists of positive and negative mass adducts names that may be used for querying the databases
@@ -259,6 +257,8 @@ module mineDatabaseServices {
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
         bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+        string parent_filter - require all results originate from compounds in this specified metabolic model
+		string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
     */
 
     typedef structure {
