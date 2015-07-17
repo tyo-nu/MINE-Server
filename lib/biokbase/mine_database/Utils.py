@@ -63,6 +63,26 @@ def quick_search(db, comp_data, search_projection={}):
     return results
 
 
+def filter_compounds(db, compounds, parent_filter="", reaction_filter=""):
+    """This function validates compounds against a metabolic model, returning only the compounds which pass"""
+    if not (parent_filter or reaction_filter):
+        return compounds
+    filtered = []
+
+    if parent_filter:
+        parents = set(db.models.find_one({"_id": parent_filter})['Compounds'])
+
+    if reaction_filter:
+        operators = set(db.models.find_one({"_id": reaction_filter})['Operators'])
+
+    for comp in compounds:
+        for rxn in compounds["Source"]:
+            if (not parent_filter or (rxn['Compound'] in parents)) and (not reaction_filter or (set(rxn['Operators'] & operators))):
+                filtered.append(comp)
+                break
+    return filtered
+
+
 def print_sorted_dict(dict):
     list = [x for x in dict]
     for x in sorted(list, key=lambda x: dict[x], reverse=True):
