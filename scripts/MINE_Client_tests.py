@@ -31,10 +31,10 @@ def test_quick_search():
 
 
 def test_database_query():
-    assert services.database_query('admin', '') == ['Illegal query']
-    assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}") == [glucose]
-    assert services.database_query(test_db, "{'MINE_id': 19160}") == [glucose]
-    assert services.database_query(test_db, "{'Names': 'Glucose'}") == [glucose]
+    assert services.database_query('admin', '', "", "") == ['Illegal query']
+    assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}", "", "") == [glucose]
+    assert services.database_query(test_db, "{'MINE_id': 19160}", "", "") == [glucose]
+    assert services.database_query(test_db, "{'Names': 'Glucose'}", "", "") == [glucose]
 
 
 def test_get_comps():
@@ -55,12 +55,6 @@ def test_get_rxns():
 def test_get_ops():
     meh = services.get_ops(test_db, ['2.7.1.a'])[0]
     assert meh['Reactions_predicted'] > 250
-
-
-def test_get_models():
-    meh = services.get_models()
-    assert len(meh[0]) == 2
-    assert len(meh) == 2356
 
 
 def test_get_adducts():
@@ -103,13 +97,13 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100)) == 28
+    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100, "", "")) == 28
     assert len(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100)) == 7
 
 
 def test_substructure_search():
-    assert len(services.substructure_search('KEGGexp', 'cccccc', 100)) == 100
-    assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100)[0], dict)
+    assert len(services.substructure_search('KEGGexp', 'cccccc', 100, "", "")) == 100
+    assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100, "", "")[0], dict)
 
 
 def test_model_search():
@@ -117,5 +111,5 @@ def test_model_search():
 
 
 def test_structure_search():
-    assert services.structure_search(test_db, "mol", test_molfile)[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
-    assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O') == [glucose]
+    assert services.structure_search(test_db, "mol", test_molfile, "", "")[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
+    assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O', "", "") == [glucose]
