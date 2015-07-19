@@ -1,6 +1,6 @@
 package Bio::KBase::mine_database::Client;
 
-use JSON::RPC::Client;
+use JSON::RPC::Legacy::Client;
 use POSIX;
 use strict;
 use Data::Dumper;
@@ -274,7 +274,7 @@ sub quick_search
 
 =head2 similarity_search
 
-  $similarity_search_results = $obj->similarity_search($db, $comp_structure, $min_tc, $fp_type, $limit)
+  $similarity_search_results = $obj->similarity_search($db, $comp_structure, $min_tc, $fp_type, $limit, $parent_filter, $reaction_filter)
 
 =over 4
 
@@ -288,6 +288,8 @@ $comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
+$parent_filter is a string
+$reaction_filter is a string
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -307,6 +309,8 @@ $comp_structure is a string
 $min_tc is a float
 $fp_type is a string
 $limit is an int
+$parent_filter is a string
+$reaction_filter is a string
 $similarity_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -322,7 +326,8 @@ object_id is a string
 
 Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
 the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
-fingerprints to perform the Tannimoto calculation.
+fingerprints to perform the Tannimoto calculation. Also accepts a metabolic model with which to filter acceptable
+source compounds or reaction types.
 
 =back
 
@@ -334,13 +339,13 @@ sub similarity_search
 
 # Authentication: none
 
-    if ((my $n = @args) != 5)
+    if ((my $n = @args) != 7)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function similarity_search (received $n, expecting 5)");
+							       "Invalid argument count for function similarity_search (received $n, expecting 7)");
     }
     {
-	my($db, $comp_structure, $min_tc, $fp_type, $limit) = @args;
+	my($db, $comp_structure, $min_tc, $fp_type, $limit, $parent_filter, $reaction_filter) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
@@ -348,6 +353,8 @@ sub similarity_search
         (!ref($min_tc)) or push(@_bad_arguments, "Invalid type for argument 3 \"min_tc\" (value was \"$min_tc\")");
         (!ref($fp_type)) or push(@_bad_arguments, "Invalid type for argument 4 \"fp_type\" (value was \"$fp_type\")");
         (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument 5 \"limit\" (value was \"$limit\")");
+        (!ref($parent_filter)) or push(@_bad_arguments, "Invalid type for argument 6 \"parent_filter\" (value was \"$parent_filter\")");
+        (!ref($reaction_filter)) or push(@_bad_arguments, "Invalid type for argument 7 \"reaction_filter\" (value was \"$reaction_filter\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to similarity_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -381,7 +388,7 @@ sub similarity_search
 
 =head2 structure_search
 
-  $structure_search_results = $obj->structure_search($db, $input_format, $comp_structure)
+  $structure_search_results = $obj->structure_search($db, $input_format, $comp_structure, $parent_filter, $reaction_filter)
 
 =over 4
 
@@ -393,6 +400,8 @@ sub similarity_search
 $db is a string
 $input_format is a string
 $comp_structure is a string
+$parent_filter is a string
+$reaction_filter is a string
 $structure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -410,6 +419,8 @@ object_id is a string
 $db is a string
 $input_format is a string
 $comp_structure is a string
+$parent_filter is a string
+$reaction_filter is a string
 $structure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -424,7 +435,8 @@ object_id is a string
 =item Description
 
 Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
-comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi)
+comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi). Also accepts
+a metabolic model with which to filter acceptable source compounds or reaction types.
 
 =back
 
@@ -436,18 +448,20 @@ sub structure_search
 
 # Authentication: none
 
-    if ((my $n = @args) != 3)
+    if ((my $n = @args) != 5)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function structure_search (received $n, expecting 3)");
+							       "Invalid argument count for function structure_search (received $n, expecting 5)");
     }
     {
-	my($db, $input_format, $comp_structure) = @args;
+	my($db, $input_format, $comp_structure, $parent_filter, $reaction_filter) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (!ref($input_format)) or push(@_bad_arguments, "Invalid type for argument 2 \"input_format\" (value was \"$input_format\")");
         (!ref($comp_structure)) or push(@_bad_arguments, "Invalid type for argument 3 \"comp_structure\" (value was \"$comp_structure\")");
+        (!ref($parent_filter)) or push(@_bad_arguments, "Invalid type for argument 4 \"parent_filter\" (value was \"$parent_filter\")");
+        (!ref($reaction_filter)) or push(@_bad_arguments, "Invalid type for argument 5 \"reaction_filter\" (value was \"$reaction_filter\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to structure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -481,7 +495,7 @@ sub structure_search
 
 =head2 substructure_search
 
-  $substructure_search_results = $obj->substructure_search($db, $substructure, $limit)
+  $substructure_search_results = $obj->substructure_search($db, $substructure, $limit, $parent_filter, $reaction_filter)
 
 =over 4
 
@@ -493,6 +507,8 @@ sub structure_search
 $db is a string
 $substructure is a string
 $limit is an int
+$parent_filter is a string
+$reaction_filter is a string
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -510,6 +526,8 @@ object_id is a string
 $db is a string
 $substructure is a string
 $limit is an int
+$parent_filter is a string
+$reaction_filter is a string
 $substructure_search_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -524,7 +542,7 @@ object_id is a string
 =item Description
 
 Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
-(as SMILES or molfile)
+(as SMILES or molfile) Also accepts a metabolic model with which to filter acceptable source compounds or reaction types.
 
 =back
 
@@ -536,18 +554,20 @@ sub substructure_search
 
 # Authentication: none
 
-    if ((my $n = @args) != 3)
+    if ((my $n = @args) != 5)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function substructure_search (received $n, expecting 3)");
+							       "Invalid argument count for function substructure_search (received $n, expecting 5)");
     }
     {
-	my($db, $substructure, $limit) = @args;
+	my($db, $substructure, $limit, $parent_filter, $reaction_filter) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (!ref($substructure)) or push(@_bad_arguments, "Invalid type for argument 2 \"substructure\" (value was \"$substructure\")");
         (!ref($limit)) or push(@_bad_arguments, "Invalid type for argument 3 \"limit\" (value was \"$limit\")");
+        (!ref($parent_filter)) or push(@_bad_arguments, "Invalid type for argument 4 \"parent_filter\" (value was \"$parent_filter\")");
+        (!ref($reaction_filter)) or push(@_bad_arguments, "Invalid type for argument 5 \"reaction_filter\" (value was \"$reaction_filter\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to substructure_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -581,7 +601,7 @@ sub substructure_search
 
 =head2 database_query
 
-  $database_query_results = $obj->database_query($db, $mongo_query)
+  $database_query_results = $obj->database_query($db, $mongo_query, $parent_filter, $reaction_filter)
 
 =over 4
 
@@ -592,6 +612,8 @@ sub substructure_search
 <pre>
 $db is a string
 $mongo_query is a string
+$parent_filter is a string
+$reaction_filter is a string
 $database_query_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -608,6 +630,8 @@ object_id is a string
 
 $db is a string
 $mongo_query is a string
+$parent_filter is a string
+$reaction_filter is a string
 $database_query_results is a reference to a list where each element is a comp_stub
 comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
@@ -626,6 +650,8 @@ the specified json query
 Input parameters for the "database_query" function:
 string db - the database against which the query will be performed
 mongo_query query - A valid mongo query as a string
+string parent_filter - require all results originate from compounds in this specified metabolic model
+string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 
 =back
 
@@ -637,17 +663,19 @@ sub database_query
 
 # Authentication: none
 
-    if ((my $n = @args) != 2)
+    if ((my $n = @args) != 4)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function database_query (received $n, expecting 2)");
+							       "Invalid argument count for function database_query (received $n, expecting 4)");
     }
     {
-	my($db, $mongo_query) = @args;
+	my($db, $mongo_query, $parent_filter, $reaction_filter) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (!ref($mongo_query)) or push(@_bad_arguments, "Invalid type for argument 2 \"mongo_query\" (value was \"$mongo_query\")");
+        (!ref($parent_filter)) or push(@_bad_arguments, "Invalid type for argument 3 \"parent_filter\" (value was \"$parent_filter\")");
+        (!ref($reaction_filter)) or push(@_bad_arguments, "Invalid type for argument 4 \"reaction_filter\" (value was \"$reaction_filter\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to database_query:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
@@ -979,78 +1007,6 @@ sub get_ops
         Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_ops",
 					    status_line => $self->{client}->status_line,
 					    method_name => 'get_ops',
-				       );
-    }
-}
-
-
-
-=head2 get_models
-
-  $models = $obj->get_models()
-
-=over 4
-
-=item Parameter and return types
-
-=begin html
-
-<pre>
-$models is a reference to a list where each element is a reference to a list containing 2 items:
-	0: (id) a string
-	1: (name) a string
-
-</pre>
-
-=end html
-
-=begin text
-
-$models is a reference to a list where each element is a reference to a list containing 2 items:
-	0: (id) a string
-	1: (name) a string
-
-
-=end text
-
-=item Description
-
-Returns a list of SEED models available to be set as native metabolites as tuples of SEED id and name
-
-=back
-
-=cut
-
-sub get_models
-{
-    my($self, @args) = @_;
-
-# Authentication: none
-
-    if ((my $n = @args) != 0)
-    {
-	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function get_models (received $n, expecting 0)");
-    }
-
-    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
-	method => "mineDatabaseServices.get_models",
-	params => \@args,
-    });
-    if ($result) {
-	if ($result->is_error) {
-	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
-					       code => $result->content->{error}->{code},
-					       method_name => 'get_models',
-					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
-					      );
-	} else {
-	    return wantarray ? @{$result->result} : $result->result->[0];
-	}
-    } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_models",
-					    status_line => $self->{client}->status_line,
-					    method_name => 'get_models',
 				       );
     }
 }
@@ -2128,6 +2084,8 @@ string db - the database in which to search for M/S matches
         bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
         bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
         bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+        string parent_filter - require all results originate from compounds in this specified metabolic model
+string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 
 
 =item Definition
@@ -2185,7 +2143,7 @@ halogen has a value which is a bool
 =cut
 
 package Bio::KBase::mine_database::Client::RpcClient;
-use base 'JSON::RPC::Client';
+use base 'JSON::RPC::Legacy::Client';
 use POSIX;
 use strict;
 
@@ -2221,11 +2179,11 @@ sub call {
             return JSON::RPC::ServiceObject->new($result, $self->json);
         }
 
-        return JSON::RPC::ReturnObject->new($result, $self->json);
+        return JSON::RPC::Legacy::ReturnObject->new($result, $self->json);
     }
     elsif ($result->content_type eq 'application/json')
     {
-        return JSON::RPC::ReturnObject->new($result, $self->json);
+        return JSON::RPC::Legacy::ReturnObject->new($result, $self->json);
     }
     else {
         return;
@@ -2245,7 +2203,7 @@ sub _post {
             $self->id($obj->{id}) if ($obj->{id}); # if undef, it is notification.
         }
         else {
-            $obj->{id} = $self->id || ($self->id('JSON::RPC::Client'));
+            $obj->{id} = $self->id || ($self->id('JSON::RPC::Legacy::Client'));
         }
     }
     else {

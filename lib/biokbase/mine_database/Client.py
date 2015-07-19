@@ -175,24 +175,24 @@ class mineDatabaseServices(object):
                           [db, query])
         return resp[0]
 
-    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter, reaction_filter):
         resp = self._call('mineDatabaseServices.similarity_search',
-                          [db, comp_structure, min_tc, fp_type, limit])
+                          [db, comp_structure, min_tc, fp_type, limit, parent_filter, reaction_filter])
         return resp[0]
 
-    def structure_search(self, db, input_format, comp_structure):
+    def structure_search(self, db, input_format, comp_structure, parent_filter, reaction_filter):
         resp = self._call('mineDatabaseServices.structure_search',
-                          [db, input_format, comp_structure])
+                          [db, input_format, comp_structure, parent_filter, reaction_filter])
         return resp[0]
 
-    def substructure_search(self, db, substructure, limit):
+    def substructure_search(self, db, substructure, limit, parent_filter, reaction_filter):
         resp = self._call('mineDatabaseServices.substructure_search',
-                          [db, substructure, limit])
+                          [db, substructure, limit, parent_filter, reaction_filter])
         return resp[0]
 
-    def database_query(self, db, mongo_query):
+    def database_query(self, db, mongo_query, parent_filter, reaction_filter):
         resp = self._call('mineDatabaseServices.database_query',
-                          [db, mongo_query])
+                          [db, mongo_query, parent_filter, reaction_filter])
         return resp[0]
 
     def get_comps(self, db, ids):
@@ -208,11 +208,6 @@ class mineDatabaseServices(object):
     def get_ops(self, db, operator_names):
         resp = self._call('mineDatabaseServices.get_ops',
                           [db, operator_names])
-        return resp[0]
-
-    def get_models(self):
-        resp = self._call('mineDatabaseServices.get_models',
-                          [])
         return resp[0]
 
     def get_adducts(self):

@@ -249,16 +249,16 @@ class Application(object):
                              types=[basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.similarity_search,
                              name='mineDatabaseServices.similarity_search',
-                             types=[basestring, basestring, float, basestring, int])
+                             types=[basestring, basestring, float, basestring, int, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.structure_search,
                              name='mineDatabaseServices.structure_search',
-                             types=[basestring, basestring, basestring])
+                             types=[basestring, basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.substructure_search,
                              name='mineDatabaseServices.substructure_search',
-                             types=[basestring, basestring, int])
+                             types=[basestring, basestring, int, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
-                             types=[basestring, basestring])
+                             types=[basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
                              types=[basestring, list])
@@ -268,9 +268,6 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_ops,
                              name='mineDatabaseServices.get_ops',
                              types=[basestring, list])
-        self.rpc_service.add(impl_mineDatabaseServices.get_models,
-                             name='mineDatabaseServices.get_models',
-                             types=[])
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])

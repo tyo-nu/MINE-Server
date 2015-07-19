@@ -107,7 +107,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
@@ -142,7 +142,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def structure_search(self, db, input_format, comp_structure):
+    def structure_search(self, db, input_format, comp_structure, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: structure_search_results
         #BEGIN structure_search
@@ -161,7 +161,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [structure_search_results]
 
-    def substructure_search(self, db, substructure, limit):
+    def substructure_search(self, db, substructure, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
@@ -191,7 +191,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [substructure_search_results]
 
-    def database_query(self, db, mongo_query):
+    def database_query(self, db, mongo_query, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
@@ -270,20 +270,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'objects is not type list as required.')
         # return the results
         return [objects]
-
-    def get_models(self):
-        # self.ctx is set by the wsgi application class
-        # return variables are: models
-        #BEGIN get_models
-        models = self.models
-        #END get_models
-
-        #At some point might do deeper type checking...
-        if not isinstance(models, list):
-            raise ValueError('Method get_models return value ' +
-                             'models is not type list as required.')
-        # return the results
-        return [models]
 
     def get_adducts(self):
         # self.ctx is set by the wsgi application class
