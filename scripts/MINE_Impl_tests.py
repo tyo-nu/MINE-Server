@@ -44,7 +44,7 @@ def test_quick_search():
 def test_database_query():
     #assert services.database_query('admin', '', '', False) == ['Illegal query']
     #assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
-    print services.database_query(test_db, "{'Names': 'Glucose'}")
+    print services.database_query(test_db, "{'Charge': 1}", "", "")
 
 
 def test_get_comps():
@@ -90,18 +90,18 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    print services.similarity_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100)
-    print services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100)
+    print services.similarity_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100, "", "")
+    print services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100, "", "")
 
 
 def test_structure_search():
-    print services.structure_search("EcoCycexp", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O')
-    print services.structure_search("EcoCycexp", "mol", test_molfile)
+    print services.structure_search("EcoCycexp2", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', "", "")
+    print services.structure_search("EcoCycexp2", "mol", test_molfile, "", "")
 
 
 def test_substructure_search():
-    print services.substructure_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20)
-    print services.substructure_search('KEGGexp2', test_molfile, 20)
+    print services.substructure_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20, "", "")
+    print services.substructure_search('KEGGexp2', test_molfile, 20, "", "")
 
 
 def test_ms_adduct_search():
@@ -150,4 +150,4 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
-test_substructure_search()
+test_structure_search()

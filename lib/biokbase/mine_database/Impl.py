@@ -132,7 +132,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 similarity_search_results.append(x)
                 if len(similarity_search_results) == limit:
                     break
-        similarity_search_results = Utils.filter_compounds(similarity_search_results, parent_filter, reaction_filter)
+        similarity_search_results = Utils.filter_compounds(self.keggdb, similarity_search_results, parent_filter, reaction_filter)
         #END similarity_search
 
         #At some point might do deeper type checking...
@@ -152,7 +152,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         inchi_key = mol.write("inchikey").strip()
         # sure, we could look for a matching SMILES but this is faster
         structure_search_results = Utils.quick_search(db, inchi_key, search_projection)
-        structure_search_results = Utils.filter_compounds(structure_search_results, parent_filter, reaction_filter)
+        structure_search_results = Utils.filter_compounds(self.keggdb, structure_search_results, parent_filter, reaction_filter)
         #END structure_search
 
         #At some point might do deeper type checking...
@@ -183,7 +183,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                         break
             except IOError:  # Smarts searches fail for generalized compounds so we just skip over them
                 continue
-        substructure_search_results = Utils.filter_compounds(substructure_search_results, parent_filter, reaction_filter)
+        substructure_search_results = Utils.filter_compounds(self.keggdb, substructure_search_results, parent_filter, reaction_filter)
         #END substructure_search
 
         #At some point might do deeper type checking...
@@ -204,7 +204,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             database_query_results = [x for x in db.compounds.find(query_dict, search_projection)]
         else:
             database_query_results = ['Illegal query']
-        database_query_results = Utils.filter_compounds(database_query_results, parent_filter, reaction_filter)
+        database_query_results = Utils.filter_compounds(self.keggdb, database_query_results, parent_filter, reaction_filter)
         #END database_query
 
         #At some point might do deeper type checking...
