@@ -4,24 +4,14 @@ from lib.biokbase.mine_database.Client import mineDatabaseServices
 services = mineDatabaseServices(url='http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp2'
 test_molfile = open("scripts/xanthine.mol", "r").read()
-glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
-           u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
-                      u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
-                      u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar', u'L-Galactose', u'D-Galactose',
-                      u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
-                      u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
-                      u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
-                      u'1,4-beta-D-Mannooligosaccharide'], u"SMILES": u"OCC1OC(O)C(C(C1O)O)O",
-           u"Inchikey": u"WQZGKKKJIJFFOK-UHFFFAOYSA-N", u"Mass": 180.063388104}
-glu2 = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13', u'MINE_id': 19160,
-        u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose', u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose',
-                   u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose', u'D-Mannose', u'D-Aldose2', u'D-Aldose1',
-                   u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar', u'L-Galactose', u'D-Galactose',
-                   u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose', u'beta-D-Glucose',
-                   u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
-                   u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose',
-                   u'1,4-beta-D-Mannooligosaccharide'], u'score': 3.083333333333333, u"SMILES": u"OCC1OC(O)C(C(C1O)O)O",
-           u"Inchikey": u"WQZGKKKJIJFFOK-UHFFFAOYSA-N", u"Mass": 180.063388104}
+glucose = {u'SMILES': u'OCC1OC(O)C(C(C1O)O)O', u'Inchikey': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'Generation': 0.0,
+           u'MINE_id': 19160, u'Mass': 180.063388104, u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose',
+            u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose', u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose',
+            u'D-Mannose', u'D-Aldose2', u'D-Aldose1', u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar',
+            u'L-Galactose', u'D-Galactose', u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose',
+            u'beta-D-Glucose', u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
+            u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose', u'1,4-beta-D-Mannooligosaccharide'],
+           u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
 
 
 def test_quick_search():
@@ -32,7 +22,6 @@ def test_quick_search():
 
 def test_database_query():
     assert services.database_query('admin', '', "", "") == ['Illegal query']
-    assert services.database_query(test_db, "{'DB_links.PubChem': '3333'}", "", "") == [glucose]
     assert services.database_query(test_db, "{'MINE_id': 19160}", "", "") == [glucose]
     assert services.database_query(test_db, "{'Names': 'Glucose'}", "", "") == [glucose]
 
@@ -81,7 +70,6 @@ def test_mz_search():
     assert isinstance(meh[0]['isomers'], list)
     assert result[0]['native_hit'] is True
     assert result[0]['min_steps'] == 0
-    print meh
 
 
 def test_pathway_search():
@@ -98,7 +86,7 @@ def test_pathway_search():
 
 def test_similarity_search():
     assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100, "", "")) == 28
-    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100)) == 7
+    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100, "", "")) == 7
 
 
 def test_substructure_search():
@@ -107,7 +95,8 @@ def test_substructure_search():
 
 
 def test_model_search():
-    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
+    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates',
+                                              u'hsa', u'Arthropods', u'Insects', u'phu']
 
 
 def test_structure_search():
