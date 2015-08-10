@@ -44,7 +44,8 @@ def test_quick_search():
 def test_database_query():
     #assert services.database_query('admin', '', '', False) == ['Illegal query']
     #assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
-    print services.database_query(test_db, "{'Charge': 1}", "", "")
+    for x in sorted(services.database_query(test_db, "{'Charge': 1}", "Biological", "")[0], key=lambda x: x["Likelihood_score"])[::-1]:
+        print(x['Likelihood_score'])
 
 
 def test_get_comps():
@@ -150,4 +151,4 @@ map = "map00340"
 for comp in up_result[0][map]+up_result[1][map]:
     print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
     """
-test_structure_search()
+test_database_query()

@@ -63,24 +63,39 @@ def quick_search(db, comp_data, search_projection={}):
     return results
 
 
-def filter_compounds(db, compounds, parent_filter="", reaction_filter=""):
+def score_compounds(db, compounds, model_id, parent_frac=0.5, reaction_frac=0.5):
     """This function validates compounds against a metabolic model, returning only the compounds which pass"""
-    if not (parent_filter or reaction_filter):
+    if not model_id:
         return compounds
-    filtered = []
-
-    if parent_filter:
-        parents = set(db.models.find_one({"_id": parent_filter})['Compounds'])
-
-    if reaction_filter:
-        operators = set(db.models.find_one({"_id": reaction_filter})['Operators'])
+    model = db.models.find_one({"_id": model_id})
+    parents = set(model["Compound_ids"])
+    operators = dict((x[0], x[1]) for x in model['Operators'])
 
     for comp in compounds:
-        for rxn in compounds["Source"]:
-            if (not parent_filter or (rxn['Compound'] in parents)) and (not reaction_filter or (set(rxn['Operators'] & operators))):
-                filtered.append(comp)
-                break
-    return filtered
+        if comp['_id'] in parents:
+            comp['Likelihood_score'] = parent_frac+reaction_frac
+            continue
+        elif comp['Generation'] == 0:
+            comp['Likelihood_score'] = reaction_frac
+            continue
+        else:
+            comp['Likelihood_score'] = 0.0
+
+        for source in comp['Sources']:
+            ls = reaction_frac
+            for op in source['Operators']:
+                if op in operators:
+                    ls *= operators[op]
+                else:
+                    ls *= 0
+
+            if source['Compound'] in parents:
+                ls += parent_frac
+
+            if ls > comp['Likelihood_score']:
+                comp['Likelihood_score'] = ls
+
+    return compounds
 
 
 def print_sorted_dict(dict):

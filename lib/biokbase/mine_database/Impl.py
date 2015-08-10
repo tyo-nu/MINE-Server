@@ -23,7 +23,8 @@ class Struct:
     def __init__(self, **entries):
         self.__dict__.update(entries)
 
-search_projection = {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'Mass': 1, 'Source': 1}
+search_projection = {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'Mass': 1, 'Sources': 1,
+                     'Generation': 1}
 #END_HEADER
 
 
@@ -132,7 +133,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 similarity_search_results.append(x)
                 if len(similarity_search_results) == limit:
                     break
-        similarity_search_results = Utils.filter_compounds(self.keggdb, similarity_search_results, parent_filter, reaction_filter)
+        similarity_search_results = Utils.score_compounds(db, similarity_search_results, parent_filter)
         #END similarity_search
 
         #At some point might do deeper type checking...
@@ -152,7 +153,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         inchi_key = mol.write("inchikey").strip()
         # sure, we could look for a matching SMILES but this is faster
         structure_search_results = Utils.quick_search(db, inchi_key, search_projection)
-        structure_search_results = Utils.filter_compounds(self.keggdb, structure_search_results, parent_filter, reaction_filter)
+        structure_search_results = Utils.score_compounds(db, structure_search_results, parent_filter)
         #END structure_search
 
         #At some point might do deeper type checking...
@@ -183,7 +184,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                         break
             except IOError:  # Smarts searches fail for generalized compounds so we just skip over them
                 continue
-        substructure_search_results = Utils.filter_compounds(self.keggdb, substructure_search_results, parent_filter, reaction_filter)
+        substructure_search_results = Utils.score_compounds(db, substructure_search_results, parent_filter)
         #END substructure_search
 
         #At some point might do deeper type checking...
@@ -204,7 +205,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             database_query_results = [x for x in db.compounds.find(query_dict, search_projection)]
         else:
             database_query_results = ['Illegal query']
-        database_query_results = Utils.filter_compounds(self.keggdb, database_query_results, parent_filter, reaction_filter)
+        database_query_results = Utils.score_compounds(db, database_query_results, parent_filter)
         #END database_query
 
         #At some point might do deeper type checking...
