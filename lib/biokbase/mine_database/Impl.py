@@ -24,7 +24,7 @@ class Struct:
         self.__dict__.update(entries)
 
 search_projection = {'SMILES': 1, 'Formula': 1, 'MINE_id': 1, 'Names': 1, 'Inchikey': 1, 'Mass': 1, 'Sources': 1,
-                     'Generation': 1}
+                     'Generation': 1, 'NP_likeness': 1}
 #END_HEADER
 
 
