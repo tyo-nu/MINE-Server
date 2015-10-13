@@ -43,6 +43,8 @@ class Dataset():
         if hasattr(options, 'logP'):
             self.min_logP = options.logP[0]
             self.max_logP = options.logP[1]
+        self.hit_projection = {'Formula': 1, 'MINE_id': 1, 'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1,
+                               'NP_likeness': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'Generation': 1}
         self.known_peaks = []  # contains Peak objects for knowns
         self.unk_peaks = []  # contains Peak objects for unknowns
         self.clusters = []  # contains tuples of formula and list of matching peaks
@@ -75,16 +77,12 @@ class Dataset():
             # build the query by adding the optional terms
             query_terms = [{"Mass": {"$gte": float(lower_bounds[i])}}, {"Mass": {"$lte": float(upper_bounds[i])}}, {'Charge': 0}]
             if hasattr(self, 'min_logP'):
-                query_terms +=[{"logP": {"$gte": self.min_logP}}, {"logP": {"$lte": self.max_logP}}]
+                query_terms += [{"logP": {"$gte": self.min_logP}}, {"logP": {"$lte": self.max_logP}}]
             if hasattr(self, 'min_kovats'):
                 query_terms += [{"maxKovatsRI": {"$gte": self.min_kovats}}, {"minKovatsRI": {"$lte": self.max_kovats}}]
             if adduct['f0'] == '[M]+':
                 query_terms[2] = {'Charge': 1}
-            hits[adduct['f0']] = [x for x in db.compounds.find({"$and": query_terms}, {'Formula': 1, 'MINE_id': 1,
-                                    'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1, 'NP_likeness': 1, 'Names': 1,
-                                    'SMILES': 1, 'Inchikey': 1, 'Generation': 1})]
-
-            for compound in hits[adduct['f0']]:
+            for compound in db.compounds.find({"$and": query_terms}, self.hit_projection):
                 #Filters out halogens if the flag is enabled by moving to the next compound before the current compound
                 # is counted or stored.
                 if not self.options.halogens:
@@ -99,20 +97,11 @@ class Dataset():
                 if compound['Generation'] < peak.min_steps:
                     peak.min_steps = compound['Generation']
 
-                #create a dictionary of formulas keyed by the adduct that produces them
-                try:
-                    if not compound['Formula'] in peak.formulas[adduct['f0']]:
-                        peak.formulas[adduct['f0']].append(compound['Formula'])
-                        peak.total_formulas += 1
-                except KeyError:
-                    peak.formulas[adduct['f0']] = [compound['Formula']]
-                    peak.total_formulas += 1
-                    #if the compound is not in the dictionary of compounds that are isomers of a formula, add it
-                try:
-                    if not compound in self.isomers[compound['Formula']]:
-                        self.isomers[compound['Formula']].append(compound)
-                except KeyError:
-                    self.isomers[compound['Formula']] = [compound]
+                peak.formulas.add((compound['Formula'], adduct['f0']))
+
+                if compound['Formula'] not in self.isomers:
+                    self.isomers[compound['Formula']] = []
+                self.isomers[compound['Formula']].append(compound)
 
     def annotate_peaks(self, db):
         """ This function iterates the through the unknown peaks in the data set searches the database for compounds
@@ -268,14 +257,13 @@ def read_csv(input_file):
 
 class Peak:
     """A class holding information about an unknown peak"""
-    def __init__(self, name, r_time, mz, charge, formula, inchi_key):
+    def __init__(self, name, r_time, mz, charge, inchi_key):
         self.name = name
         self.r_time = float(r_time)  # retention time
         self.mz = float(mz)  # mass to charge ratio
         self.charge = charge  # polarity of charge
         self.inchi_key = inchi_key  # the id of the peak if known, as an Inchikey
-        self.formulas = formula  # a dictionary of all the formulas that match the peak for a given adduct as a key
-        self.total_formulas = 0
+        self.formulas = set()
         self.total_hits = 0
         self.native_hit = False
         self.min_steps = 99
@@ -285,16 +273,13 @@ class Peak:
 
     def print_formulas(self):
         #this sends the results to stdout in a "hopefully" human readable form"
-        print "%s: %s formulas and %s structures" % (self.name, self.total_formulas, self.total_hits)
+        print "%s: %s formulas and %s structures" % (self.name, len(self.formulas), self.total_hits)
         print ''
-        for adduct in self.formulas:
-            num_form = len(self.formulas[adduct])
-            if num_form > 0:
-                print string.center(adduct, 25)
-                print string.ljust("Formula", 18), string.center("Isomers", 7)
-                for formula in self.formulas[adduct]:
-                    print string.ljust(formula, 18), string.center(repr(len(data.isomers[formula])), 7)
-                print ''
+        for form_tup in self.formulas:
+            print string.center(form_tup[1], 25)
+            print string.ljust("Formula", 18), string.center("Isomers", 7)
+            print string.ljust(form_tup[0], 18), string.center(repr(len(data.isomers[form_tup[0]])), 7)
+            print ''
 
 
 ######################################################################################

@@ -301,18 +301,17 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         ms_adduct_output = []
         if text_type == 'form':
             for mz in text.split('\n'):
-                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, {}, "False"))
+                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, "False"))
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
-            for adduct in peak.formulas:
-                for formula in peak.formulas[adduct]:
-                    for hit in dataset.isomers[formula]:
-                        hit['peak_name'] = peak.name
-                        hit['adduct'] = adduct
-                        ms_adduct_output.append(hit)
+            for formula in peak.formulas:
+                for hit in dataset.isomers[formula[0]]:
+                    hit['peak_name'] = peak.name
+                    hit['adduct'] = formula[1]
+                    ms_adduct_output.append(hit)
         #END ms_adduct_search
 
         #At some point might do deeper type checking...
@@ -336,17 +335,16 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         batch_output = []
         if text_type == 'form':
             for mz in text.split('\n'):
-                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), mz_params.charge, {}, "False"))
+                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), mz_params.charge, "False"))
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, mz_params.models)
         dataset.annotate_peaks(db)
         for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
             peak.adducts = []
-            for adduct in peak.formulas:
-                for formula in peak.formulas[adduct]:
-                    peak.adducts.append({'adduct': adduct, 'formula': formula,
-                                         'isomers': sorted(dataset.isomers[formula], key=lambda x: x['Generation'])})
+            for formula in peak.formulas:
+                peak.adducts.append({'adduct': formula[1], 'formula': formula[0],
+                                     'isomers': sorted(dataset.isomers[formula[0]], key=lambda x: x['Generation'])})
             del peak.formulas, peak.inchi_key
             batch_output.append(peak.__dict__)
         #END mz_search
