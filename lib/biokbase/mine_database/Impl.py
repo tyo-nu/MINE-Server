@@ -307,11 +307,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
-            for formula in peak.formulas:
-                for hit in dataset.isomers[formula[0]]:
-                    hit['peak_name'] = peak.name
-                    hit['adduct'] = formula[1]
-                    ms_adduct_output.append(hit)
+            for hit in peak.isomers:
+                ms_adduct_output.append(hit)
         #END ms_adduct_search
 
         #At some point might do deeper type checking...
@@ -325,28 +322,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: batch_output
         #BEGIN mz_search
-        print "<MZ Search: TextType=%s, Text=%s, Parameters=%s>" % (text_type, text, mz_params)
-        name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
-        if isinstance(mz_params, dict):
-            mz_params = Struct(**mz_params)
-        db = self.db_client[mz_params.db]
-        mz_params.verbose = False
-        dataset = BatchAdductQuery.Dataset(name, mz_params)
-        batch_output = []
-        if text_type == 'form':
-            for mz in text.split('\n'):
-                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), mz_params.charge, "False"))
-        else:
-            raise IOError('%s files not supported' % text_type)
-        dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, mz_params.models)
-        dataset.annotate_peaks(db)
-        for peak in sorted(dataset.unk_peaks, key=lambda x: x.min_steps):
-            peak.adducts = []
-            for formula in peak.formulas:
-                peak.adducts.append({'adduct': formula[1], 'formula': formula[0],
-                                     'isomers': sorted(dataset.isomers[formula[0]], key=lambda x: x['Generation'])})
-            del peak.formulas, peak.inchi_key
-            batch_output.append(peak.__dict__)
+        batch_output = ["This feature is deprecated"]
         #END mz_search
 
         #At some point might do deeper type checking...

@@ -50,7 +50,6 @@ class Dataset():
         self.clusters = []  # contains tuples of formula and list of matching peaks
         self.known_set = set()  # contains InChI key of all known compounds
         self.native_set = set()  # contains _ids of compounds in model set
-        self.isomers = {}  # contains a list of all compounds that are isomers of the key formula
         self.total_formulas = 0
         self.total_hits = 0
         self.matched_peaks = 0
@@ -96,12 +95,10 @@ class Dataset():
                     compound['native_hit'] = True
                 if compound['Generation'] < peak.min_steps:
                     peak.min_steps = compound['Generation']
-
-                peak.formulas.add((compound['Formula'], adduct['f0']))
-
-                if compound['Formula'] not in self.isomers:
-                    self.isomers[compound['Formula']] = []
-                self.isomers[compound['Formula']].append(compound)
+                peak.formulas.add(compound['Formula'])
+                compound['adduct'] = adduct['f0']
+                compound['peak_name'] = peak.name
+                peak.isomers.append(compound)
 
     def annotate_peaks(self, db):
         """ This function iterates the through the unknown peaks in the data set searches the database for compounds
@@ -131,28 +128,6 @@ class Dataset():
                 print "Average formulas per peak: %s" % (float(self.total_formulas)/float(self.matched_peaks))
             except ZeroDivisionError:
                 pass
-
-    def print_ranked_isomers(self, formula):
-        #print each isomer hit to stdout
-        known_isomers = []
-        native_isomers = []
-        other_isomers = []
-        for isomer in self.isomers[formula]:
-            if isomer['Inchikey'].split('-')[0] in self.known_set:
-                known_isomers.append(isomer)
-            elif isomer['_id'] in self.native_set:
-                native_isomers.append(isomer)
-            else:
-                other_isomers.append(isomer)
-        if len(known_isomers) > 0:
-            print "Matches with known/target compounds: %s" % len(known_isomers)
-            print sorted(known_isomers, key=lambda x: x['NP Likeness'], reverse=True)
-        if len(native_isomers) > 0:
-            print "Matches with native compounds %s" % len(native_isomers)
-            #print sorted(native_isomers, key=lambda x: x['NP Likeness'], reverse=True)
-        if len(other_isomers) > 0:
-            print "Matches with promiscuity products %s" % len(other_isomers)
-            #print sorted(other_isomers, key=lambda x: x['NP Likeness'], reverse=True)
 
 
 def get_modelSEED_comps(kb_db, models):
@@ -263,6 +238,7 @@ class Peak:
         self.mz = float(mz)  # mass to charge ratio
         self.charge = charge  # polarity of charge
         self.inchi_key = inchi_key  # the id of the peak if known, as an Inchikey
+        self.isomers = []
         self.formulas = set()
         self.total_hits = 0
         self.native_hit = False
@@ -270,16 +246,6 @@ class Peak:
 
     def __str__(self):
         return self.name
-
-    def print_formulas(self):
-        #this sends the results to stdout in a "hopefully" human readable form"
-        print "%s: %s formulas and %s structures" % (self.name, len(self.formulas), self.total_hits)
-        print ''
-        for form_tup in self.formulas:
-            print string.center(form_tup[1], 25)
-            print string.ljust("Formula", 18), string.center("Isomers", 7)
-            print string.ljust(form_tup[0], 18), string.center(repr(len(data.isomers[form_tup[0]])), 7)
-            print ''
 
 
 ######################################################################################
@@ -348,9 +314,8 @@ if __name__ == '__main__':
         data.native_set = get_modelSEED_comps(kbase_db, [options.modelSEED])
 
     data.annotate_peaks(db)
-
-    for i, peak in enumerate(data.unk_peaks):
-        peak.print_formulas()
+    with open(data.name+'.pkl') as outfile:
+        cPickle.dump(data, outfile)
 
     tend = time.time()
     print "BatchAdductQuery.py completed in %s seconds" %(tend-tstart)
