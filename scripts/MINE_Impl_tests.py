@@ -3,8 +3,14 @@ from lib.biokbase.mine_database.Impl import mineDatabaseServices
 import time
 
 test_db = 'EcoCycexp2'
-glucose = {u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13',
-           u'Names': [u'D-Glucose', u'Grape sugar', u'Dextrose', u'Glucose']}
+glucose = {u'SMILES': u'OCC1OC(O)C(C(C1O)O)O', u'Inchikey': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'Generation': 0.0,
+           u'MINE_id': 19160, u'Mass': 180.063388104, u'Names': [u'Hexose', u'D-Idose', u'Glucose', u'Mannose',
+            u'D-Gulose', u'D-Allose', u'D-Hexose', u'Dextrose', u'Seminose', u'L-Gulose', u'D-Talose', u'D-Aldose',
+            u'D-Mannose', u'D-Aldose2', u'D-Aldose1', u'D-Glucose', u'D-Altrose', u'Carubinose', u'Grape sugar',
+            u'L-Galactose', u'D-Galactose', u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose',
+            u'beta-D-Glucose', u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
+            u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose', u'1,4-beta-D-Mannooligosaccharide'],
+           u'NP_likeness': 0, u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
 test_molfile = open("./scripts/xanthine.mol", "r").read()
 
 
@@ -36,58 +42,78 @@ config = Options()
 services = mineDatabaseServices(None)
 
 def test_quick_search():
-    #print services.quick_search(config.test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')
-    #assert services.quick_search(config.test_db, 'C00031') == ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13']
-    print services.quick_search(test_db, 'Glucose')[0]
+    assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')[0] == [glucose]
+    assert services.quick_search(test_db, 'C00031')[0] == [glucose]
+    assert glucose in services.quick_search(test_db, 'Glucose')[0]
 
 
 def test_database_query():
-    #assert services.database_query('admin', '', '', False) == ['Illegal query']
-    #assert services.database_query(test_db, 'KEGG_code', 'C00031', False) == [glucose]
-    for x in sorted(services.database_query(test_db, "{'Charge': 1}", "Biological", "")[0], key=lambda x: x["Likelihood_score"])[::-1]:
-        print(x['Likelihood_score'])
+    assert services.database_query('admin', '', "", "")[0] == ['Illegal query']
+    assert services.database_query(test_db, "{'MINE_id': 19160}", "", "")[0] == [glucose]
+    assert services.database_query(test_db, "{'Names': 'Glucose'}", "", "")[0] == [glucose]
 
 
 def test_get_comps():
-    print services.get_comps(config.test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
+    meh = services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])[0]
+    assert len(meh) == 1
+    assert 'Reactant_in' in meh[0].keys()
+    meh = services.get_comps(test_db, [19160])[0]
+    assert len(meh) == 1
+    assert 'Reactant_in' in meh[0].keys()
+
+
+def test_get_rxns():
+    meh = services.get_rxns(test_db, ['R2e28f382545b6b00b88bcd5b1bb927bc480c2711'])[0]
+    assert len(meh) == 1
+    assert 'Operators' in meh[0].keys()
 
 
 def test_get_ops():
     meh = services.get_ops(test_db, ['2.7.1.a'])[0][0]
-    assert meh['Reactions_predicted'] > 4000
-    assert meh['Reaction_ids'][0][0] == 'R'
-
-
-def test_get_models():
-    meh = services.get_models()[0]
-    assert meh[2] == (u'kb|fm.3375', u'Escherichia coli 97.0264')
-    assert len(meh) == 2356
+    assert meh['Reactions_predicted'] > 250
 
 
 def test_get_adducts():
     meh = services.get_adducts()[0]
     assert len(meh[0]) == 33
-    assert len(meh[1]) == 30
-    assert meh[0][2] == 'M+Na '
+    assert len(meh[1]) == 15
+    assert meh[0][2] == '[M+NH4]+'
 
 
-def test_adduct_db_search():
+def test_ms_adduct_search():
     params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
               'charge': True, 'halogens': False}
-    meh = services.mz_search("181.071188116\n0.0", "form", params)
-    assert len(meh) == 4
-    assert len(meh[1]) == 3
+    result = services.ms_adduct_search("181.071188116\n0.0", "form", params)[0]
+    assert len(result) == 31
+    print result[0].keys()
+    assert isinstance(result[0], dict)
+    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
+             u'Formula', u'minKovatsRI', u'_id', u'peak_name']
+    assert result[0].keys() == keys
+
+
+def test_mz_search():
+    """Deprecated version"""
+    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': False}
+    result = services.mz_search("181.071188116\n0.0", "form", params)[0]
+    assert len(result) == 2
+    meh = result[0]['adducts']
+    assert isinstance(meh[0]['isomers'], list)
+    assert result[0]['native_hit'] is True
+    assert result[0]['min_steps'] == 0
 
 
 def test_pathway_search():
     meh = services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
                                                        'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, False)
-    assert len(meh) == 1
-    assert meh[0] == ['C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rab0dd7bc1c91b88c6f6ba90362413cb31fe00a42',
-                         u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R4cfa8ce3f06297e2282b42ad69356815ee18d94f',
-                         u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
+    assert meh[0] == ['Not yet implemented']
+    """assert len(meh) == 1
+    assert meh[0] == [u'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1', u'Rbbc40c762b05d59890c196c949522e3ee6ca08c6',
+                      u'C4d1c9d1a3841a799052b6e347f1a9553ed088092', u'R0e87f4c178bcb78b9190938b3413b7889b3fbad4',
+                      u'C89b394fd02e5e5e60ae1e167780ea7ab3276288e']
     assert len(services.pathway_search(test_db, 'C1b443383bfb0f99f1afe6a37f3ff2dadc3dbaff1',
-                                       'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 9
+                                       'C89b394fd02e5e5e60ae1e167780ea7ab3276288e', 3, True)) == 4"""
 
 
 def test_similarity_search():
@@ -105,50 +131,6 @@ def test_substructure_search():
     print services.substructure_search('KEGGexp2', test_molfile, 20, "", "")
 
 
-def test_ms_adduct_search():
-    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': True, 'halogens': False}
-    result = services.ms_adduct_search("181.071188116\n0.0", "form", params)[0]
-    assert len(result) == 35
-    for x in result:
-        print x
-
-
 def test_model_search():
-    print(services.model_search("human"))
-    #assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates', u'hsa', u'Arthropods', u'Insects', u'phu']
-
-"""
-#positive
-up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
-down_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Down_mz_Pos").read(), "form", 0.003, ['M+H', 'M+'], [], False, True, False)[0]
-
-#negative
-#up_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Up_mz_Neg").read(), "form", 0.003, ['M-', 'M+CH3COO'], [], False, True, False)[0]
-#down_result = services.batch_ms_adduct_search("EcoCycexp", open("./scripts/Down_mz_Neg").read(), "form", 0.003, ['M-', 'M+CH3COO'], [], False, False, False)[0]
-
-
-in_sillico_confidence = 0
-
-up_maps = []
-down_maps = []
-for key in set(up_result[0].keys() + up_result[1].keys()):
-    meh = len(up_result[0][key]) - len(down_result[0][key]) + in_sillico_confidence * (len(up_result[1][key]) - len(down_result[1][key]))
-    if meh >= 1:
-        up_maps.append((key, meh))
-
-for key in set(down_result[0].keys() + down_result[1].keys()):
-    meh = len(down_result[0][key]) - len(up_result[0][key]) + in_sillico_confidence * (len(down_result[1][key]) - len(up_result[1][key]))
-    if meh >= 1:
-        down_maps.append((key, meh))
-print "Up Maps"
-for x in sorted(up_maps, key=lambda x: -x[1]):
-    print x
-print "Down maps"
-for x in sorted(down_maps, key=lambda x: -x[1]):
-    print x
-map = "map00340"
-for comp in up_result[0][map]+up_result[1][map]:
-    print services.database_query("EcoCycexp", "{'_id':'%s'}" %comp)
-    """
-test_database_query()
+    assert services.model_search("human")[0] == [u'Eukaryotes', u'Animals', u'hsa', u'Mammals', u'Vertebrates',
+                                                 u'Arthropods', u'Insects', u'phu']

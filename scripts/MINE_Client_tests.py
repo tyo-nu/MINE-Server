@@ -11,7 +11,7 @@ glucose = {u'SMILES': u'OCC1OC(O)C(C(C1O)O)O', u'Inchikey': u'WQZGKKKJIJFFOK-UHF
             u'L-Galactose', u'D-Galactose', u'D-ido-Hexose', u'D-gulo-Hexose', u'D-talo-Hexose', u'beta-D-Mannose',
             u'beta-D-Glucose', u'D-altro-Hexose', u'alpha-D-Glucose', u'alpha-D-Mannose', u'D-glucopyranose',
             u'beta-D-Galactose', u'alpha-D-Galactose', u'D-galactopyranose', u'1,4-beta-D-Mannooligosaccharide'],
-           u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
+           u'NP_likeness': 0, u'Formula': u'C6H12O6', u'_id': u'Cb5b3273ab083d77ed29fbef8f7e464929af29c13'}
 
 
 def test_quick_search():
@@ -70,6 +70,9 @@ def test_mz_search():
     assert isinstance(meh[0]['isomers'], list)
     assert result[0]['native_hit'] is True
     assert result[0]['min_steps'] == 0
+    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
+             u'Formula', u'minKovatsRI', u'_id', u'peak_name']
+    assert result[0].keys() == keys
 
 
 def test_pathway_search():
