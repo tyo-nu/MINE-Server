@@ -52,8 +52,6 @@ class Dataset():
         self.total_formulas = 0
         self.total_hits = 0
         self.matched_peaks = 0
-        self.direct_pathways = defaultdict(list)
-        self.implied_pathways = defaultdict(list)
 
     def __str__(self):
         return self.name
@@ -95,7 +93,6 @@ class Dataset():
 
                 #update the total hits for the peak and make a note if the compound is in the native_set
                 peak.total_hits += 1
-                self.record_pathway_counts(compound)
                 if compound['_id'] in self.native_set:
                     peak.native_hit = True
                     compound['native_hit'] = True
@@ -146,62 +143,6 @@ class Dataset():
             except ZeroDivisionError:
                 pass
 
-    def cluster_peaks(self):
-        """ This function looks for peaks at about the same retention time that appear to be related. This could either
-            be because the peaks are different adducts of the same compound or potentally that they are isomers of the
-            same formula. """
-        tstart = time.time()
-        r_times = set()
-        tolerance = options.cluster/2  # the +/- value is half the total span of the cluster
-        all_peaks = self.unk_peaks + self.known_peaks  # try to cluster known peaks with the unknown if possible
-        #sort the peaks and iterate through the list. Time we look backward and forward at peaks and compare the
-        # difference in retention times. if its in the tolerance add it to the group, if not we can stop looking in that
-        # direction because the difference can only get bigger.
-        all_peaks.sort(key=lambda x: x.r_time)
-        for i, peak in enumerate(all_peaks):
-            group = [peak]
-            step = 1
-            #look backward in the list
-            while (i - step) >= 0:  # this makes sure we don't step off the index.
-                if peak.r_time - all_peaks[i - step].r_time <= tolerance:
-                    group.append(all_peaks[i - step])
-                else:
-                    break  # stop looking this direction
-                step += 1
-            #look forward in the list
-            step = 1
-            while (i + step) < len(all_peaks):
-                spread = all_peaks[i + step].r_time - peak.r_time
-                if spread <= tolerance:
-                    group.append(all_peaks[i + step])
-                else:
-                    break
-                step += 1
-            #the above search is exhaustive but is prone to producing duplicate groups. Therefore we sort the group and
-            # convert the list to an immutable type which can be hashed and rapidly checked against previously generated
-            # groups
-            if len(group) > 1:
-                group.sort(key=lambda x: x.mz)
-                group = tuple(group)
-                if not group in r_times:
-                    r_times.add(group)
-        #regroup the peaks in each group in a dictionary with a formula proposed for that peak as the key.
-        for group in r_times:
-            cluster = {}
-            for peak in group:
-                for adduct in peak.formulas:
-                    for formula in peak.formulas[adduct]:
-                        try:
-                            cluster[formula].append((peak.name, adduct))
-                        except KeyError:
-                            cluster[formula] = [(peak.name, adduct)]
-            #can't really have a cluster of one peak can we? so we only store the formulas with more than one peak
-            for formula in cluster:
-                if len(cluster[formula]) > 1:
-                    self.clusters.append((formula, cluster[formula]))
-        tend = time.time()
-        print "Clustering peaks took %s sec" % (tend-tstart)
-
     def print_ranked_isomers(self, formula):
         #print each isomer hit to stdout
         known_isomers = []
@@ -223,44 +164,6 @@ class Dataset():
         if len(other_isomers) > 0:
             print "Matches with promiscuity products %s" % len(other_isomers)
             #print sorted(other_isomers, key=lambda x: x['NP Likeness'], reverse=True)
-
-    def write_ranked_isomers(self, formula):
-        #write each isomer hit to csv file
-        known_isomers = []
-        native_isomers = []
-        other_isomers = []
-        for isomer in self.isomers[formula]:
-            if isomer['Inchikey'].split('-')[0] in self.known_set:
-                known_isomers.append(isomer)
-            elif isomer['_id'] in self.native_set:
-                native_isomers.append(isomer)
-            else:
-                other_isomers.append(isomer)
-        if len(known_isomers) > 0:
-            outfile.write("Matches with known/target compounds: %s\n" % len(known_isomers))
-            for isomer in sort_NPLike(known_isomers):
-                outfile.write(str(isomer)+'\n')
-            outfile.writelines(known_isomers)
-        if len(native_isomers) > 0:
-            outfile.write("Matches with native compounds %s\n" % len(native_isomers))
-            for isomer in sort_NPLike(native_isomers):
-                outfile.write(str(isomer)+'\n')
-        if len(other_isomers) > 0:
-            outfile.write("Matches with promiscuity products %s\n" % len(other_isomers))
-            for isomer in sort_NPLike(other_isomers):
-                outfile.write(str(isomer)+'\n')
-
-    def record_pathway_counts(self, compound):
-        try:
-            if "Pathways" in compound:
-                for x in compound["Pathways"]:
-                    if isinstance(x, unicode):
-                        self.direct_pathways[x].append(compound['_id'])
-                    else:
-                        for y in x[1]:
-                            self.implied_pathways[y].append(compound['_id'])
-        except:
-            print compound["Pathways"]
 
 
 def get_modelSEED_comps(kb_db, models):
@@ -288,22 +191,6 @@ def get_KEGG_comps(db, kegg_db, models):
 
 def sort_NPLike(dic_list):
     return sorted(dic_list, key=lambda x: float(x['NP_likeness']), reverse=True)
-
-
-def validate():
-    #this verifies that certain known peaks are returned. Should be rewritten as an external test
-    found = 0
-    for kpeak in data.known_peaks:
-        right_key = kpeak.known
-        for upeak in data.unk_peaks:
-            if upeak.name == kpeak.name:
-                for adduct in upeak.formulas:
-                    for formula in upeak.formulas[adduct]:
-                        for compound in data.isomers[formula]:
-                            if compound["Inchikey"] == right_key:
-                                print upeak.name
-                                found += 1
-    print found / float(len(data.known_peaks)) * 100
 
 
 def read_mgf(input_file):
@@ -409,20 +296,6 @@ class Peak:
                     print string.ljust(formula, 18), string.center(repr(len(data.isomers[formula])), 7)
                 print ''
 
-    def write_formulas_csv(self, outfile):
-        #writes a comma separated value file that can be opened in excel
-        outfile.write("%s,%s,%s\n" % (self.name, len(self.formulas), self.total_hits))
-        outfile.write("\n")
-        for adduct in self.formulas:
-            num_form = len(self.formulas[adduct])
-            if num_form > 0:
-                outfile.write("%s\n" % adduct)
-                outfile.write("Formula,Isomers\n")
-                for formula in self.formulas[adduct]:
-                    outfile.write("%s,%s\n" % (formula, len(data.isomers[formula])))
-                    data.write_ranked_isomers(formula)
-                outfile.write("\n")
-
 
 ######################################################################################
 #                                   Main code                                        #
@@ -437,8 +310,6 @@ if __name__ == '__main__':
                       "Adducts.txt", help="The path to the desired positive adducts file")
     parser.add_option("-n", "--negative_adducts", dest="negative_adduct_file", default="Batch Adduct Query/Negative "
                       "Adducts.txt", help="The path to the desired negative adducts file")
-    parser.add_option("-o", "--outfile", dest="output_file", default="null",
-                      help="The file name of the desired output file. Must be .csv or .pkl")
     parser.add_option("-d", "--database", dest="database", default="1GenKEGG",
                       help="The name of the database to search")
     parser.add_option("-m", "--modelSEED", dest="modelSEED", default="null",
@@ -447,8 +318,6 @@ if __name__ == '__main__':
                       help="The path to a file containing known or targeted peaks")
     parser.add_option("-t", "--tolerance", dest="tolerance", type="float", default=2,
                       help="The m/z tolerance(precision) for peak searching")
-    parser.add_option("-c", "--cluster", dest="cluster", type="float", default=-1, help="Sort peaks by retention time "
-                      "and search for common formulas. The maximum spread for a cluster must be input as a float")
     parser.add_option("--ppm", dest="ppm", action="store_true", default=False,
                       help="Tolerance is in Parts Per Million")
     parser.add_option("-x", "--halogens", dest="halogens", action="store_true", default=False,
@@ -495,36 +364,8 @@ if __name__ == '__main__':
 
     data.annotate_peaks(db)
 
-    #if an outfile is specified write to it(faster) otherwise print to stdout
-
-    num_files = 0
-    if options.output_file != 'null':
-        outfile = open(options.output_file, 'w')
     for i, peak in enumerate(data.unk_peaks):
-        if options.output_file != 'null':
-            if '.csv' in options.output_file:
-                peak.write_formulas_csv(outfile)
-            elif '.pkl' in options.output_file:
-                cPickle.dump(peak, outfile, 2)
-            else:
-                raise ValueError('Output file type not recognised. Please use .html, .csv, or .pkl extensions')
-        else:
-            peak.print_formulas()
-
-    #if the cluster flag is true, do the clustering calculations
-    if options.cluster >= 0:
-
-        data.cluster_peaks()
-
-        #print formulas and isomers for clusters
-        for cluster in data.clusters:
-            print cluster
-            try:
-                data.print_ranked_isomers(cluster[0])
-            except:
-                print "Could not retrieve matching isomers"
-            print ''
-            print ''
+        peak.print_formulas()
 
     tend = time.time()
     print "BatchAdductQuery.py completed in %s seconds" %(tend-tstart)

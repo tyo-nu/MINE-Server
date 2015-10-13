@@ -313,7 +313,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                         hit['peak_name'] = peak.name
                         hit['adduct'] = adduct
                         ms_adduct_output.append(hit)
-        #ms_adduct_output.sort(key=lambda x: (x['steps_from_source'], -x['NP_likeness']))
         #END ms_adduct_search
 
         #At some point might do deeper type checking...
