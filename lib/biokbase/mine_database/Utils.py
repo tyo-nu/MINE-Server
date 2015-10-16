@@ -108,3 +108,40 @@ def uni_dict_2_string_dict(dictionary):
     """Recursively converts dictionary keys to strings."""
     if not isinstance(dictionary, dict):
         return dictionary
+
+def approximate_matches(list1, list2, epsilon=0.01):
+    """
+    Takes two list of tuples and searches for matches of tuples first value within the supplied epsilon. Emits tuples
+    with the tuples second values where found. if a value in one dist does not match the other list, it is emitted alone.
+    :param list1: first list of tuples
+    :type list1: list
+    :param list2: second list of tuples
+    :type list2: list
+    :param epsilon: maximum difference in
+    :type epsilon: float
+    :return: second values of tuples
+    :rtype: generator
+    """
+    list1.sort()
+    list2.sort()
+    list1_index = 0
+    list2_index = 0
+
+    while list1_index < len(list1) and list2_index < len(list2):
+        list1_element = list1[list1_index][0]
+        list2_element = list2[list2_index][0]
+
+        difference = abs(list1_element - list2_element)
+
+        if difference < epsilon:
+            yield (list1[list1_index][1], list2[list2_index][1])
+            list1_index += 1
+            list2_index += 1
+        elif list1_element < list2_element:
+            yield (list1[list1_index][1], 0)
+            list1_index += 1
+        elif list2_element < list1_element:
+            yield (0, list2[list2_index][1])
+            list2_index += 1
+        else:
+            raise AssertionError('Unexpected else taken')

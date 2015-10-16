@@ -13,9 +13,10 @@ import xml.etree.ElementTree as ET
 import numpy
 import cPickle
 import time
-import string
 import re
-from collections import defaultdict
+import math
+import Utils
+from scipy.spatial import distance
 
 class Dataset():
     """A class containing all the information for a metabolomics data set"""
@@ -158,19 +159,27 @@ def sort_NPLike(dic_list):
 
 
 def read_mgf(input_file):
-
     peaks = []
     with open(input_file, 'r') as infile:
+        ms2 = []
         for line in infile:
             sl = line.strip(' \r\n').split('=')
             if sl[0] == "PEPMASS":
                 mass = sl[1]
-            if sl[0] == "TITLE":
+            elif sl[0] == "TITLE":
                 name = sl[1]
-            if sl[0] == "RTINSECONDS":
+            elif sl[0] == "RTINSECONDS":
                 r_time = sl[1]
-            if sl[0] == "END IONS":
-                peaks.append(Peak(name, r_time, mass, "+", {}, "False"))
+            elif sl[0] == "END IONS":
+                peaks.append(Peak(name, r_time, mass, "+", "False", ms2=ms2))
+                ms2 = []
+            else:
+                try:
+                    mz, i = sl[0].split('\t')
+                    ms2.append((float(mz), float(i)))
+                except ValueError:
+                    continue
+
     return peaks
 
 
@@ -196,48 +205,19 @@ def read_mzXML(input_file):
             r_time = scan.attrib['retentionTime'][2:-1]
             name = "%s @ %s" % (mz, r_time)
             charge = scan.attrib['polarity']
-            peaks.append(Peak(name, r_time, mz, charge, {}, "False"))
-    return peaks
-
-
-def read_csv(input_file):
-    #import peaks from a tab or comma delimited file
-    peaks = []
-    with open(input_file, 'r') as infile:
-        for line in infile:
-            #This is some jury rigged code to do some automatic parsing of tab or comma delimited files.
-            #It probably should be replaced with numpy automatic parsing
-            sl = line.strip('\n').split('\t')
-            #if tabs split a line up in to more than two chunks, there is a pretty good chance that's not by accident
-            if len(sl) > 2:
-                #If it has more than 4 fields that it must have data associated with being a known compound
-                if len(sl) > 4:
-                    peaks.append(Peak(sl[0], sl[1], sl[2], sl[3], {sl[5]: [sl[4]]}, sl[6]))
-                else:
-                    peaks.append(Peak(sl[0], sl[1], sl[2], sl[3], {}, "False"))
-            #parse comma separated values
-            else:
-                sl = line.strip('\n').split(',')
-                if len(sl) > 2:
-                    if len(sl) > 4:
-                        peaks.append(Peak(sl[0], sl[1], sl[2], sl[3], {sl[5]: [sl[4]]}, sl[6]))
-                    else:
-                        peaks.append(Peak(sl[0], sl[1], sl[2], sl[3], {}, "False"))
-                #Congradualtions! You broke the jank-ass parser.
-                else:
-                    sys.exit("Failed to parse input file")
-
+            peaks.append(Peak(name, r_time, mz, charge, "False"))
     return peaks
 
 
 class Peak:
     """A class holding information about an unknown peak"""
-    def __init__(self, name, r_time, mz, charge, inchi_key):
+    def __init__(self, name, r_time, mz, charge, inchi_key, ms2=[]):
         self.name = name
         self.r_time = float(r_time)  # retention time
         self.mz = float(mz)  # mass to charge ratio
         self.charge = charge  # polarity of charge
         self.inchi_key = inchi_key  # the id of the peak if known, as an Inchikey
+        self.ms2peaks = ms2
         self.isomers = []
         self.formulas = set()
         self.total_hits = 0
@@ -247,11 +227,59 @@ class Peak:
     def __str__(self):
         return self.name
 
+    def score_isomers(self, metric=dot_product, energy_level=1):
+        """
+        Calculates the cosign similarity score between the provided ms2 peak list and pre-calculated CFM-spectra and
+        sorts the isomer list according to this metric.
+        :param metric: The scoring metric to use for the spectra. Function must accept 2 lists of (mz,intensity) tuples
+         and return a score. Defaults to dot_product.
+        :type energy_level: function
+        :param energy_level: The Fragmentation energy level to use. Ranges from 0-2. Defaults to 1
+        :type energy_level: int
+        :return:
+        :rtype:
+        """
+        if not self.ms2peaks:
+            raise ValueError('The ms2 peak list is empty')
+
+        for i, hit in enumerate(self.isomers):
+            if "CFM_spectra" in hit:
+                hit_spec = hit["CFM_spectra"]['Energy_%s' % energy_level]
+                self.isomers[i]['Spectral_score'] = metric(self.ms2peaks, hit_spec)
+            else:
+                self.isomers[i]['Spectral_score'] = None
+        self.isomers.sort(key=lambda x: x['Spectral_score'], reverse=True)
+
+def dot_product(x, y, epsilon=0.01):
+    """Calculate the dot_product of two spectra"""
+    z = 0
+    n_v1 = 0
+    n_v2 = 0
+
+    for int1, int2 in Utils.approximate_matches(x, y, epsilon):
+        z += int1 * int2
+        n_v1 += int1 * int1
+        n_v2 += int2 * int2
+    return z / (math.sqrt(n_v1) * math.sqrt(n_v2))
+
+
+def jacquard(x, y, epsilon=0.01):
+    """Calculate the Jacquard Index of two spectra"""
+    intersect = 0
+    for val1, val2 in Utils.approximate_matches(x, y, epsilon):
+        if val1 and val2:
+            intersect += 1
+    return intersect/float((len(x)+len(y)-intersect))
 
 ######################################################################################
 #                                   Main code                                        #
 ######################################################################################
 if __name__ == '__main__':
+    test = read_mgf("/Users/JGJeffryes/Documents/Research/Scripts/Python/database-scripts/Batch Adduct Query/Cultured Cells Replicate 1.mgf")
+    for i in range(1, len(test)):
+        pass
+
+    sys.exit()
     tstart = time.time()
     #This block handles user flags and arguments. For more information see the optparse API documentation
 
