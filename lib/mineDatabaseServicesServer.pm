@@ -37,7 +37,7 @@ our %return_counts = (
         'get_ops' => 1,
         'get_adducts' => 1,
         'ms_adduct_search' => 1,
-        'mz_search' => 1,
+        'ms2_search' => 1,
         'pathway_search' => 1,
         'version' => 1,
 );
@@ -59,7 +59,7 @@ sub _build_valid_methods
         'get_ops' => 1,
         'get_adducts' => 1,
         'ms_adduct_search' => 1,
-        'mz_search' => 1,
+        'ms2_search' => 1,
         'pathway_search' => 1,
         'version' => 1,
     };

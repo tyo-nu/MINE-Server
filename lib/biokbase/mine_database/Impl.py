@@ -318,19 +318,18 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [ms_adduct_output]
 
-    def mz_search(self, text, text_type, mz_params):
+    def ms2_search(self, text, text_type, ms_params):
         # self.ctx is set by the wsgi application class
-        # return variables are: batch_output
-        #BEGIN mz_search
-        batch_output = ["This feature is deprecated"]
-        #END mz_search
+        # return variables are: ms_adduct_output
+        #BEGIN ms2_search
+        #END ms2_search
 
         #At some point might do deeper type checking...
-        if not isinstance(batch_output, list):
-            raise ValueError('Method mz_search return value ' +
-                             'batch_output is not type list as required.')
+        if not isinstance(ms_adduct_output, list):
+            raise ValueError('Method ms2_search return value ' +
+                             'ms_adduct_output is not type list as required.')
         # return the results
-        return [batch_output]
+        return [ms_adduct_output]
 
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
         # self.ctx is set by the wsgi application class

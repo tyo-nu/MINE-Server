@@ -1236,9 +1236,9 @@ sub ms_adduct_search
 
 
 
-=head2 mz_search
+=head2 ms2_search
 
-  $batch_output = $obj->mz_search($text, $text_type, $mz_params)
+  $ms_adduct_output = $obj->ms2_search($text, $text_type, $ms_params)
 
 =over 4
 
@@ -1249,9 +1249,9 @@ sub ms_adduct_search
 <pre>
 $text is a string
 $text_type is a string
-$mz_params is a mzParams
-$batch_output is a reference to a list where each element is a peak
-mzParams is a reference to a hash where the following keys are defined:
+$ms_params is a ms2Params
+$ms_adduct_output is a reference to a list where each element is a ms_hit
+ms2Params is a reference to a hash where the following keys are defined:
 	db has a value which is a string
 	tolerance has a value which is a float
 	adducts has a value which is a reference to a list where each element is a string
@@ -1264,25 +1264,26 @@ mzParams is a reference to a hash where the following keys are defined:
 	0: a float
 	1: a float
 
+	scoring_function has a value which is a string
+	energy_level has a value which is a float
 	ppm has a value which is a bool
 	charge has a value which is a bool
 	halogen has a value which is a bool
 bool is an int
-peak is a reference to a hash where the following keys are defined:
-	name has a value which is a string
-	num_forms has a value which is an int
-	num_hits has a value which is an int
-	native_hit has a value which is a bool
-	adducts has a value which is a reference to a list where each element is an adduct_result
-adduct_result is a reference to a hash where the following keys are defined:
+ms_hit is a reference to a hash where the following keys are defined:
+	peak_name has a value which is a string
 	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is a comp_stub
-comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	MINE_id has a value which is a string
-	Names has a value which is a reference to a list where each element is a string
-	Formula has a value which is a string
+	formula has a value which is a string
+	MINE_id has a value which is an int
+	name has a value which is a string
+	SMILES has a value which is a string
+	Inchikey has a value which is a string
+	native_hit has a value which is a bool
+	logP has a value which is a float
+	minKovatsRI has a value which is a float
+	maxKovatsRI has a value which is a float
+	NP_likeness has a value which is a float
 object_id is a string
 
 </pre>
@@ -1293,9 +1294,9 @@ object_id is a string
 
 $text is a string
 $text_type is a string
-$mz_params is a mzParams
-$batch_output is a reference to a list where each element is a peak
-mzParams is a reference to a hash where the following keys are defined:
+$ms_params is a ms2Params
+$ms_adduct_output is a reference to a list where each element is a ms_hit
+ms2Params is a reference to a hash where the following keys are defined:
 	db has a value which is a string
 	tolerance has a value which is a float
 	adducts has a value which is a reference to a list where each element is a string
@@ -1308,25 +1309,26 @@ mzParams is a reference to a hash where the following keys are defined:
 	0: a float
 	1: a float
 
+	scoring_function has a value which is a string
+	energy_level has a value which is a float
 	ppm has a value which is a bool
 	charge has a value which is a bool
 	halogen has a value which is a bool
 bool is an int
-peak is a reference to a hash where the following keys are defined:
-	name has a value which is a string
-	num_forms has a value which is an int
-	num_hits has a value which is an int
-	native_hit has a value which is a bool
-	adducts has a value which is a reference to a list where each element is an adduct_result
-adduct_result is a reference to a hash where the following keys are defined:
+ms_hit is a reference to a hash where the following keys are defined:
+	peak_name has a value which is a string
 	adduct has a value which is a string
-	formula has a value which is a string
-	isomers has a value which is a reference to a list where each element is a comp_stub
-comp_stub is a reference to a hash where the following keys are defined:
 	id has a value which is an object_id
-	MINE_id has a value which is a string
-	Names has a value which is a reference to a list where each element is a string
-	Formula has a value which is a string
+	formula has a value which is a string
+	MINE_id has a value which is an int
+	name has a value which is a string
+	SMILES has a value which is a string
+	Inchikey has a value which is a string
+	native_hit has a value which is a bool
+	logP has a value which is a float
+	minKovatsRI has a value which is a float
+	maxKovatsRI has a value which is a float
+	NP_likeness has a value which is a float
 object_id is a string
 
 
@@ -1334,13 +1336,13 @@ object_id is a string
 
 =item Description
 
-DEPRECIATED - use ms_adduct_search
+performs a ms adduct search but also scores hits using the supplied ms2 data
 
 =back
 
 =cut
 
-sub mz_search
+sub ms2_search
 {
     my($self, @args) = @_;
 
@@ -1349,40 +1351,40 @@ sub mz_search
     if ((my $n = @args) != 3)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function mz_search (received $n, expecting 3)");
+							       "Invalid argument count for function ms2_search (received $n, expecting 3)");
     }
     {
-	my($text, $text_type, $mz_params) = @args;
+	my($text, $text_type, $ms_params) = @args;
 
 	my @_bad_arguments;
         (!ref($text)) or push(@_bad_arguments, "Invalid type for argument 1 \"text\" (value was \"$text\")");
         (!ref($text_type)) or push(@_bad_arguments, "Invalid type for argument 2 \"text_type\" (value was \"$text_type\")");
-        (ref($mz_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 3 \"mz_params\" (value was \"$mz_params\")");
+        (ref($ms_params) eq 'HASH') or push(@_bad_arguments, "Invalid type for argument 3 \"ms_params\" (value was \"$ms_params\")");
         if (@_bad_arguments) {
-	    my $msg = "Invalid arguments passed to mz_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    my $msg = "Invalid arguments passed to ms2_search:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
-								   method_name => 'mz_search');
+								   method_name => 'ms2_search');
 	}
     }
 
     my $result = $self->{client}->call($self->{url}, $self->{headers}, {
-	method => "mineDatabaseServices.mz_search",
+	method => "mineDatabaseServices.ms2_search",
 	params => \@args,
     });
     if ($result) {
 	if ($result->is_error) {
 	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
 					       code => $result->content->{error}->{code},
-					       method_name => 'mz_search',
+					       method_name => 'ms2_search',
 					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
 					      );
 	} else {
 	    return wantarray ? @{$result->result} : $result->result->[0];
 	}
     } else {
-        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method mz_search",
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method ms2_search",
 					    status_line => $self->{client}->status_line,
-					    method_name => 'mz_search',
+					    method_name => 'ms2_search',
 				       );
     }
 }
@@ -2129,6 +2131,88 @@ kovats has a value which is a reference to a list containing 2 items:
 0: a float
 1: a float
 
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
+
+
+=end text
+
+=back
+
+
+
+=head2 ms2Params
+
+=over 4
+
+
+
+=item Description
+
+Parameters for the ms2 adduct search function:
+
+Input parameters for the "mass_adduct_query" function:
+string db - the database in which to search for M/S matches
+        float tolerance - the desired mass precision
+        list<string> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
+        tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
+        tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
+        string scoring_function - The name of the scoring function which will be used to score the spectra
+        float energy_level - an integer from 0-2 specifying the fragmentation energy of the predicted spectra
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+        string parent_filter - require all results originate from compounds in this specified metabolic model
+string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+scoring_function has a value which is a string
+energy_level has a value which is a float
+ppm has a value which is a bool
+charge has a value which is a bool
+halogen has a value which is a bool
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+db has a value which is a string
+tolerance has a value which is a float
+adducts has a value which is a reference to a list where each element is a string
+models has a value which is a reference to a list where each element is a string
+logP has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+kovats has a value which is a reference to a list containing 2 items:
+0: a float
+1: a float
+
+scoring_function has a value which is a string
+energy_level has a value which is a float
 ppm has a value which is a bool
 charge has a value which is a bool
 halogen has a value which is a bool

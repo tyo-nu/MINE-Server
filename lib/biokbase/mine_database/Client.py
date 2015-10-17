@@ -220,9 +220,9 @@ class mineDatabaseServices(object):
                           [text, text_type, ms_params])
         return resp[0]
 
-    def mz_search(self, text, text_type, mz_params):
-        resp = self._call('mineDatabaseServices.mz_search',
-                          [text, text_type, mz_params])
+    def ms2_search(self, text, text_type, ms_params):
+        resp = self._call('mineDatabaseServices.ms2_search',
+                          [text, text_type, ms_params])
         return resp[0]
 
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):

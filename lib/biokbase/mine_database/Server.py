@@ -274,8 +274,8 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.ms_adduct_search,
                              name='mineDatabaseServices.ms_adduct_search',
                              types=[basestring, basestring, dict])
-        self.rpc_service.add(impl_mineDatabaseServices.mz_search,
-                             name='mineDatabaseServices.mz_search',
+        self.rpc_service.add(impl_mineDatabaseServices.ms2_search,
+                             name='mineDatabaseServices.ms2_search',
                              types=[basestring, basestring, dict])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
