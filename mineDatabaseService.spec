@@ -277,9 +277,42 @@ module mineDatabaseServices {
 
 	funcdef ms_adduct_search(string text, string text_type, mzParams ms_params) returns (list<ms_hit> ms_adduct_output);
 
-    /*  DEPRECIATED - use ms_adduct_search */
+    /*
+		Parameters for the ms2 adduct search function:
 
-	funcdef mz_search(string text, string text_type, mzParams mz_params) returns (list<peak> batch_output);
+		Input parameters for the "mass_adduct_query" function:
+		string db - the database in which to search for M/S matches
+        float tolerance - the desired mass precision
+        list<string> adduct_list - the adducts to consider in the query.
+        list<string> models - the models in SEED that will be considered native metabolites(can be empty)
+        tuple<float,float> logP - a tuple specifying the minimum and maximum values of logP values
+        tuple<float,float> kovats - a tuple specifying the minimum and maximum values of Kovats RI
+        string scoring_function - The name of the scoring function which will be used to score the spectra
+        float energy_level - an integer from 0-2 specifying the fragmentation energy of the predicted spectra
+        bool ppm - if true, precision is supplied in parts per million. Else, precision is in Daltons
+        bool charge - the polarity for molecules if not specified in file. 1 = +, 0 = -
+        bool halogens - if false, compounds containing Cl, Br, and F will be excluded from results
+        string parent_filter - require all results originate from compounds in this specified metabolic model
+		string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
+    */
+
+    typedef structure {
+		string db;
+        float tolerance;
+        list<string> adducts;
+        list<string> models;
+        tuple<float,float> logP;
+        tuple<float,float> kovats;
+        string scoring_function;
+        float energy_level;
+        bool ppm;
+        bool charge;
+        bool halogen;
+    } ms2Params;
+
+    /*  performs a ms adduct search but also scores hits using the supplied ms2 data */
+
+	funcdef ms2_search(string text, string text_type, ms2Params ms_params) returns (list<ms_hit> ms_adduct_output);
 
     /*
 		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
