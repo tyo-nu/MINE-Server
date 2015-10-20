@@ -96,6 +96,7 @@ def test_ms2_search():
               'charge': False, 'halogens': False, 'scoring_function': 'jacquard', 'energy_level': 1}
     result2 = services.ms2_search(open("./scripts/folate.mgf").read(), "mgf", params)[0]
     assert isinstance(result2[0], dict)
+    assert result2
     print(result2[0])
     keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
             u'Spectral_score', u'Formula', u'minKovatsRI', u'_id', u'peak_name']

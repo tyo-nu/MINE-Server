@@ -161,7 +161,7 @@ def sort_NPLike(dic_list):
 def read_mgf(input_string, charge):
     peaks = []
     ms2 = []
-    for line in input_string.split('\n')[:-1]:
+    for line in input_string.split('\n'):
         sl = line.strip(' \r\n').split('=')
         if sl[0] == "PEPMASS":
             mass = sl[1]
