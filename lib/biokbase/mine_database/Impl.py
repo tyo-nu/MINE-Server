@@ -312,7 +312,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
             for hit in peak.isomers:
-                del hit['CFM_spectra']
+                if 'CFM_spectra' in hit:
+                    del hit['CFM_spectra']
                 ms_adduct_output.append(hit)
         #END ms_adduct_search
 
