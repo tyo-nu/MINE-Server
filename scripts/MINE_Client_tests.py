@@ -61,18 +61,7 @@ def test_ms_adduct_search():
     assert isinstance(result[0], dict)
 
 
-def test_mz_search():
-    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': True, 'halogens': False}
-    result = services.mz_search("181.071188116\n0.0", "form", params)
-    assert len(result) == 2
-    meh = result[0]['adducts']
-    assert isinstance(meh[0]['isomers'], list)
-    assert result[0]['native_hit'] is True
-    assert result[0]['min_steps'] == 0
-    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
-             u'Formula', u'minKovatsRI', u'_id', u'peak_name']
-    assert result[0].keys() == keys
+
 
 
 def test_pathway_search():

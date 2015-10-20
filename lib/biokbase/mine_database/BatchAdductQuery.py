@@ -16,7 +16,6 @@ import time
 import re
 import math
 import Utils
-from scipy.spatial import distance
 
 class Dataset():
     """A class containing all the information for a metabolomics data set"""
