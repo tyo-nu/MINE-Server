@@ -45,7 +45,8 @@ class Dataset():
             self.min_logP = options.logP[0]
             self.max_logP = options.logP[1]
         self.hit_projection = {'Formula': 1, 'MINE_id': 1, 'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1,
-                               'NP_likeness': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'Generation': 1}
+                               'NP_likeness': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'Generation': 1,
+                               'CFM_spectra': 1}
         self.known_peaks = []  # contains Peak objects for knowns
         self.unk_peaks = []  # contains Peak objects for unknowns
         self.clusters = []  # contains tuples of formula and list of matching peaks
@@ -158,34 +159,32 @@ def sort_NPLike(dic_list):
     return sorted(dic_list, key=lambda x: float(x['NP_likeness']), reverse=True)
 
 
-def read_mgf(input_file):
+def read_mgf(input_string, charge):
     peaks = []
-    with open(input_file, 'r') as infile:
-        ms2 = []
-        for line in infile:
-            sl = line.strip(' \r\n').split('=')
-            if sl[0] == "PEPMASS":
-                mass = sl[1]
-            elif sl[0] == "TITLE":
-                name = sl[1]
-            elif sl[0] == "RTINSECONDS":
-                r_time = sl[1]
-            elif sl[0] == "END IONS":
-                peaks.append(Peak(name, r_time, mass, "+", "False", ms2=ms2))
-                ms2 = []
-            else:
-                try:
-                    mz, i = sl[0].split('\t')
-                    ms2.append((float(mz), float(i)))
-                except ValueError:
-                    continue
-
+    ms2 = []
+    for line in input_string.split('\n')[:-1]:
+        sl = line.strip(' \r\n').split('=')
+        if sl[0] == "PEPMASS":
+            mass = sl[1]
+        elif sl[0] == "TITLE":
+            name = sl[1]
+        elif sl[0] == "RTINSECONDS":
+            r_time = sl[1]
+        elif sl[0] == "END IONS":
+            peaks.append(Peak(name, r_time, mass, charge, "False", ms2=ms2))
+            ms2 = []
+        else:
+            try:
+                mz, i = sl[0].split('\t')
+                ms2.append((float(mz), float(i)))
+            except ValueError:
+                continue
     return peaks
 
 
-def read_mzXML(input_file):
+def read_mzXML(input_string, charge):
     peaks = []
-    tree = ET.parse(input_file)
+    tree = ET.fromstring(input_string)
     root = tree.getroot()
     prefix = root.tag.strip('mzXML')
     #we collect info about the instrument...'cus we can.
@@ -207,6 +206,28 @@ def read_mzXML(input_file):
             charge = scan.attrib['polarity']
             peaks.append(Peak(name, r_time, mz, charge, "False"))
     return peaks
+
+
+def dot_product(x, y, epsilon=0.01):
+    """Calculate the dot_product of two spectra"""
+    z = 0
+    n_v1 = 0
+    n_v2 = 0
+
+    for int1, int2 in Utils.approximate_matches(x, y, epsilon):
+        z += int1 * int2
+        n_v1 += int1 * int1
+        n_v2 += int2 * int2
+    return z / (math.sqrt(n_v1) * math.sqrt(n_v2))
+
+
+def jacquard(x, y, epsilon=0.01):
+    """Calculate the Jacquard Index of two spectra"""
+    intersect = 0
+    for val1, val2 in Utils.approximate_matches(x, y, epsilon):
+        if val1 and val2:
+            intersect += 1
+    return intersect/float((len(x)+len(y)-intersect))
 
 
 class Peak:
@@ -248,28 +269,8 @@ class Peak:
                 self.isomers[i]['Spectral_score'] = metric(self.ms2peaks, hit_spec)
             else:
                 self.isomers[i]['Spectral_score'] = None
+            del hit['CFM_spectra']
         self.isomers.sort(key=lambda x: x['Spectral_score'], reverse=True)
-
-def dot_product(x, y, epsilon=0.01):
-    """Calculate the dot_product of two spectra"""
-    z = 0
-    n_v1 = 0
-    n_v2 = 0
-
-    for int1, int2 in Utils.approximate_matches(x, y, epsilon):
-        z += int1 * int2
-        n_v1 += int1 * int1
-        n_v2 += int2 * int2
-    return z / (math.sqrt(n_v1) * math.sqrt(n_v2))
-
-
-def jacquard(x, y, epsilon=0.01):
-    """Calculate the Jacquard Index of two spectra"""
-    intersect = 0
-    for val1, val2 in Utils.approximate_matches(x, y, epsilon):
-        if val1 and val2:
-            intersect += 1
-    return intersect/float((len(x)+len(y)-intersect))
 
 ######################################################################################
 #                                   Main code                                        #
@@ -323,11 +324,11 @@ if __name__ == '__main__':
 
     #detect unknown compounds file type and parse accordingly
     if ('.txt' or '.csv') in unknowns_file:
-        data.unk_peaks = read_csv(unknowns_file)
+        data.unk_peaks = read_csv(open(unknowns_file).read())
     elif '.mgf' in unknowns_file:
-        data.unk_peaks = read_mgf(unknowns_file)
+        data.unk_peaks = read_mgf(open(unknowns_file).read())
     elif '.mzXML' in unknowns_file:
-        data.unk_peaks = read_mzXML(unknowns_file)
+        data.unk_peaks = read_mzXML(open(unknowns_file).read())
     else:
         sys.exit("Unknown file type not recognised. Please use .mgf, .xlsx, .txt or .csv file")
 

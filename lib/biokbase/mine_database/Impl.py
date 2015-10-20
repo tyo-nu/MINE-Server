@@ -302,12 +302,17 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         if text_type == 'form':
             for mz in text.split('\n'):
                 dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, "False"))
+        elif text_type == 'mgf':
+            dataset.unk_peaks = BatchAdductQuery.read_mgf(text, ms_params.charge)
+        elif text_type == 'mzXML':
+            dataset.unk_peaks = BatchAdductQuery.read_mzXML(text, ms_params.charge)
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
             for hit in peak.isomers:
+                del hit['CFM_spectra']
                 ms_adduct_output.append(hit)
         #END ms_adduct_search
 
@@ -322,6 +327,32 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ms_adduct_output
         #BEGIN ms2_search
+        print "<MS Adduct Search: TextType=%s, Text=%s, Parameters=%s>" % (text_type, text, ms_params)
+        name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
+        if isinstance(ms_params, dict):
+            ms_params = Struct(**ms_params)
+        db = self.db_client[ms_params.db]
+        ms_params.verbose = False
+        dataset = BatchAdductQuery.Dataset(name, ms_params)
+        ms_adduct_output = []
+        if text_type == 'form':
+            for mz in text.split('\n'):
+                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, "False"))
+        elif text_type == 'mgf':
+            dataset.unk_peaks = BatchAdductQuery.read_mgf(text, ms_params.charge)
+        elif text_type == 'mzXML':
+            dataset.unk_peaks = BatchAdductQuery.read_mzXML(text, ms_params.charge)
+        else:
+            raise IOError('%s files not supported' % text_type)
+        dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
+        dataset.annotate_peaks(db)
+        for peak in dataset.unk_peaks:
+            if ms_params.scoring_function == 'jacquard':
+                peak.score_isomers(metric=BatchAdductQuery.jacquard, energy_level=ms_params.energy_level)
+            else:
+                peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level)
+            for hit in peak.isomers:
+                ms_adduct_output.append(hit)
         #END ms2_search
 
         #At some point might do deeper type checking...

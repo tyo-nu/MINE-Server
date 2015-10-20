@@ -85,19 +85,21 @@ def test_ms_adduct_search():
               'charge': True, 'halogens': False}
     result = services.ms_adduct_search("181.071188116\n0.0", "form", params)[0]
     assert len(result) == 31
-    print result[0].keys()
     assert isinstance(result[0], dict)
     keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
              u'Formula', u'minKovatsRI', u'_id', u'peak_name']
     assert result[0].keys() == keys
 
 
-def test_mz_search():
-    """Deprecated version"""
-    params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': True, 'halogens': False}
-    result = services.mz_search("181.071188116\n0.0", "form", params)[0]
-    assert result == ["This feature is deprecated"]
+def test_ms2_search():
+    params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': False, 'halogens': False, 'scoring_function': 'jacquard', 'energy_level': 1}
+    result2 = services.ms2_search(open("./scripts/folate.mgf").read(), "mgf", params)[0]
+    assert isinstance(result2[0], dict)
+    print(result2[0])
+    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
+            u'Spectral_score', u'Formula', u'minKovatsRI', u'_id', u'peak_name']
+    assert result2[0].keys() == keys
 
 
 def test_pathway_search():
