@@ -265,7 +265,7 @@ class Peak:
         for i, hit in enumerate(self.isomers):
             if "CFM_spectra" in hit:
                 hit_spec = hit["CFM_spectra"]['Energy_%s' % energy_level]
-                self.isomers[i]['spectral_score'] = metric(self.ms2peaks, hit_spec)
+                self.isomers[i]['spectral_score'] = round(metric(self.ms2peaks, hit_spec)*1000)
                 del hit['CFM_spectra']
             else:
                 self.isomers[i]['spectral_score'] = None
