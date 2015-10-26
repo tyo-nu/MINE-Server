@@ -337,8 +337,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset = BatchAdductQuery.Dataset(name, ms_params)
         ms_adduct_output = []
         if text_type == 'form':
-            for mz in text.split('\n'):
-                dataset.unk_peaks.append(BatchAdductQuery.Peak(mz, 0, float(mz), ms_params.charge, "False"))
+            split_form = [x.split() for x in text.split('\n')]
+            dataset.unk_peaks.append(BatchAdductQuery.Peak(split_form[0], 0, float(split_form[0][0]), ms_params.charge,
+                                                           "False", ms2=[(float(mz), float(i)) for mz, i in split_form[1:]]))
         elif text_type == 'mgf':
             dataset.unk_peaks = BatchAdductQuery.read_mgf(text, ms_params.charge)
         elif text_type == 'mzXML':

@@ -101,6 +101,8 @@ def test_ms2_search():
     keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
             u'Spectral_score', u'Formula', u'minKovatsRI', u'_id', u'peak_name']
     assert result2[0].keys() == keys
+    result2_2 = services.ms2_search(open("./scripts/folate_form.txt").read(), "form", params)[0]
+    assert len(result2) == len(result2_2)
 
 
 def test_pathway_search():
