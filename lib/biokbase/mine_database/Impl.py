@@ -328,7 +328,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ms_adduct_output
         #BEGIN ms2_search
-        print "<MS Adduct Search: TextType=%s, Text=%s, Parameters=%s>" % (text_type, text, ms_params)
+        print "<MS Adduct Search: TextType=%s, Parameters=%s>" % (text_type, ms_params)
         name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
         if isinstance(ms_params, dict):
             ms_params = Struct(**ms_params)

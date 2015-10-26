@@ -265,10 +265,10 @@ class Peak:
         for i, hit in enumerate(self.isomers):
             if "CFM_spectra" in hit:
                 hit_spec = hit["CFM_spectra"]['Energy_%s' % energy_level]
-                self.isomers[i]['Spectral_score'] = metric(self.ms2peaks, hit_spec)
+                self.isomers[i]['spectral_score'] = metric(self.ms2peaks, hit_spec)
                 del hit['CFM_spectra']
             else:
-                self.isomers[i]['Spectral_score'] = None
+                self.isomers[i]['spectral_score'] = None
         self.isomers.sort(key=lambda x: x['Spectral_score'], reverse=True)
 
 ######################################################################################
