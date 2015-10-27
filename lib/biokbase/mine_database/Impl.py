@@ -306,6 +306,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             dataset.unk_peaks = BatchAdductQuery.read_mgf(text, ms_params.charge)
         elif text_type == 'mzXML':
             dataset.unk_peaks = BatchAdductQuery.read_mzXML(text, ms_params.charge)
+        elif text_type == 'msp':
+            dataset.unk_peaks = BatchAdductQuery.read_msp(text, ms_params.charge)
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
@@ -344,6 +346,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             dataset.unk_peaks = BatchAdductQuery.read_mgf(text, ms_params.charge)
         elif text_type == 'mzXML':
             dataset.unk_peaks = BatchAdductQuery.read_mzXML(text, ms_params.charge)
+        elif text_type == 'msp':
+            dataset.unk_peaks = BatchAdductQuery.read_msp(text, ms_params.charge)
         else:
             raise IOError('%s files not supported' % text_type)
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)

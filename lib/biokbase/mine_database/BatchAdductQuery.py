@@ -105,7 +105,7 @@ class Dataset():
         """ This function iterates the through the unknown peaks in the data set searches the database for compounds
             that match a peak m/z given the adducts permitted. Statistics on the annotated data set are printed"""
         for i, peak in enumerate(self.unk_peaks):
-            if peak.charge == '+' or peak.charge == 'Positive' or peak.charge:
+            if peak.charge == '+' or peak.charge == 'Positive' or (peak.charge and isinstance(peak.charge, bool)):
                 self.find_db_hits(peak, db, self.pos_adducts)
 
             elif peak.charge == '-' or peak.charge == 'Negative' or not peak.charge:
@@ -178,6 +178,34 @@ def read_mgf(input_string, charge):
                 ms2.append((float(mz), float(i)))
             except ValueError:
                 continue
+    return peaks
+
+
+def read_msp(input_string, charge):
+    peaks = []
+    for spec in input_string.strip().split('\n\n'):
+        ms2 = []
+        inchikey = "False"
+        for line in spec.split('\n'):
+            sl = line.split(': ')
+            sl[0] = sl[0].replace(' ', '').replace('/', '').upper()
+            if sl[0] == "PRECURSORMZ":
+                mass = sl[1]
+            elif sl[0] == "NAME":
+                name = sl[1]
+            elif sl[0] == "RETENTIONTIME":
+                r_time = sl[1]
+            elif sl[0] == "IONMODE":
+                charge = sl[1].capitalize()
+            elif sl[0] == "INCHIKEY":
+                inchikey = sl[1]
+            elif line and line[0].isdigit():
+                try:
+                    row = re.split('[\t ]', line)
+                    ms2.append((float(row[0]), float(row[1])))
+                except ValueError:
+                    continue
+        peaks.append(Peak(name, r_time, mass, charge, inchikey, ms2=ms2))
     return peaks
 
 
