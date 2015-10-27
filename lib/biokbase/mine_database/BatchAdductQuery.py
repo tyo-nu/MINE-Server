@@ -186,6 +186,7 @@ def read_msp(input_string, charge):
     for spec in input_string.strip().split('\n\n'):
         ms2 = []
         inchikey = "False"
+        r_time = 0
         for line in spec.split('\n'):
             sl = line.split(': ')
             sl[0] = sl[0].replace(' ', '').replace('/', '').upper()
@@ -193,8 +194,8 @@ def read_msp(input_string, charge):
                 mass = sl[1]
             elif sl[0] == "NAME":
                 name = sl[1]
-            elif sl[0] == "RETENTIONTIME":
-                r_time = sl[1]
+            #elif sl[0] == "RETENTIONTIME":
+                #r_time = sl[1]
             elif sl[0] == "IONMODE":
                 charge = sl[1].capitalize()
             elif sl[0] == "INCHIKEY":
