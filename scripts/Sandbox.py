@@ -2,13 +2,8 @@ __author__ = 'JGJeffryes'
 
 from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 import numpy
-import itertools
 
-#test_compounds = open("/Users/JGJeffryes/Desktop/test comps.csv").read()
-test_compounds = open('/Users/JGJeffryes/Documents/Research/Manuscripts/2015 MINE/MassBankTestSet.csv').read()
 services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
-#pos_unks = open("Oce_Neg_MZ").read()
-#neg_unks = open("Oce_Pos_MZ").read()
 
 
 def known_compound_stats(test_db, test_compounds):
@@ -18,24 +13,22 @@ def known_compound_stats(test_db, test_compounds):
     fn = 0
     top_X_tot = 0
     top_X_new = 0
-    cutoff = 5
+    cutoff = 3
     found = []
     hits = []
-    pos_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M+H]+', '[M]+', '[M+Na]+'], 'models': [], 'ppm': False,
-                  'charge': True, 'halogens': True}
-    neg_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-', '[M+CH3COO]-'], 'models': [], 'ppm': False,
+    params = {'db': test_db, 'tolerance': 10.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': True, 'scoring_function': 'jacquard', 'energy_level': 1}
+    neg_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': [], 'ppm': False,
                   'charge': False, 'halogens': True}
-    for i, line in enumerate(test_compounds.split('\n')[:-1]):
+    for i, compound in enumerate(test_compounds.split('\n\n')[:-1]):
         print i + 1
-        sl = line.split('\t')
-        # try to find the compound by accurate mass
-        if sl[3] == "Positive":
-            result = services.ms_adduct_search(sl[2], "form", pos_params)
-        else:
-            result = services.ms_adduct_search(sl[2], "form", neg_params)
+        result = services.ms2_search(compound, "msp", params)
+        ids = [x['Inchikey'] for x in result]
+        scores = [x['Spectral_score'] for x in result]
         # try to find the compound through Inchikey
         try:
-            comp = services.quick_search(test_db, sl[6])[0]
+            code = compound.split('calculated InChI Key: ')[1].split('\n')[0]
+            comp = services.quick_search(test_db, code)[0]
         except ServerError:
             # found results w/ accurate mass but not Inchikey
             if result:
@@ -45,19 +38,18 @@ def known_compound_stats(test_db, test_compounds):
             else:
                 tn += 1
             continue
-        result = [x['_id'] for x in sorted(result, key=lambda x: (x['Generation'], x['NP_likeness']))]
         try:
-            ind = result.index(comp['_id'])
+            ind = ids.index(comp['Inchikey'])
+            print scores[ind]
             hits.append(len(result))
             tp += 1
             if ind < cutoff:
                 top_X_tot += 1
-            if not 'Names' in comp:
-                found.append((sl[0], sl[6], ind))
-                if ind < cutoff:
-                    top_X_new += 1
+            if comp['Generation']:
+                top_X_new += 1
         except ValueError:
             fn += 1
+            print comp['Inchikey']
     print tp, fp, tn, fn
     print "P: %s" % (tp / float(tp + fp))
     print "Coverage: %s" % ((tp + fp) / float(tp + fp + tn + fn))
@@ -66,8 +58,9 @@ def known_compound_stats(test_db, test_compounds):
 
     return found
 
-for x in known_compound_stats("KEGGexp2", test_compounds):
-    pass
+with open('/Users/JGJeffryes/Desktop/pos_MoNA_20eV.msp') as test_compounds:
+    for x in known_compound_stats("KEGGexp2", test_compounds.read()):
+        pass
 
 """
 
