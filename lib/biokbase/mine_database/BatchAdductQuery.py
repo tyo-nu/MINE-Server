@@ -249,8 +249,8 @@ def dot_product(x, y, epsilon=0.01):
     return z / (math.sqrt(n_v1) * math.sqrt(n_v2))
 
 
-def jacquard(x, y, epsilon=0.01):
-    """Calculate the Jacquard Index of two spectra"""
+def jaccard(x, y, epsilon=0.01):
+    """Calculate the Jaccard Index of two spectra"""
     intersect = 0
     for val1, val2 in Utils.approximate_matches(x, y, epsilon):
         if val1 and val2:
@@ -276,7 +276,7 @@ class Peak:
     def __str__(self):
         return self.name
 
-    def score_isomers(self, metric=dot_product, energy_level=1):
+    def score_isomers(self, metric=dot_product, energy_level=1, tolerance=0.005):
         """
         Calculates the cosign similarity score between the provided ms2 peak list and pre-calculated CFM-spectra and
         sorts the isomer list according to this metric.
@@ -294,7 +294,7 @@ class Peak:
         for i, hit in enumerate(self.isomers):
             if "CFM_spectra" in hit:
                 hit_spec = hit["CFM_spectra"]['Energy_%s' % energy_level]
-                self.isomers[i]['Spectral_score'] = round(metric(self.ms2peaks, hit_spec)*1000)
+                self.isomers[i]['Spectral_score'] = round(metric(self.ms2peaks, hit_spec, epsilon=tolerance)*1000)
                 del hit['CFM_spectra']
             else:
                 self.isomers[i]['Spectral_score'] = None

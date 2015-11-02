@@ -353,8 +353,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset.native_set = BatchAdductQuery.get_KEGG_comps(db, self.keggdb, ms_params.models)
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
-            if ms_params.scoring_function == 'jacquard':
-                peak.score_isomers(metric=BatchAdductQuery.jacquard, energy_level=ms_params.energy_level)
+            if ms_params.scoring_function == 'jaccard':
+                peak.score_isomers(metric=BatchAdductQuery.jaccard, energy_level=ms_params.energy_level)
             else:
                 peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level)
             for hit in peak.isomers:
