@@ -290,12 +290,16 @@ class Peak:
         """
         if not self.ms2peaks:
             raise ValueError('The ms2 peak list is empty')
+        if self.charge:
+            spec_key = "Pos_CFM_spectra"
+        else:
+            spec_key = "Neg_CFM_spectra"
 
         for i, hit in enumerate(self.isomers):
-            if "CFM_spectra" in hit:
-                hit_spec = hit["CFM_spectra"]['Energy_%s' % energy_level]
+            if spec_key in hit:
+                hit_spec = hit[spec_key]['Energy_%s' % energy_level]
                 self.isomers[i]['Spectral_score'] = round(metric(self.ms2peaks, hit_spec, epsilon=tolerance)*1000)
-                del hit['CFM_spectra']
+                del hit[spec_key]
             else:
                 self.isomers[i]['Spectral_score'] = None
         self.isomers.sort(key=lambda x: x['Spectral_score'], reverse=True)
