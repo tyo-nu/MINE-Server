@@ -317,7 +317,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 if 'CFM_spectra' in hit:
                     del hit['CFM_spectra']
                 ms_adduct_output.append(hit)
-        ms_adduct_output = Utils.score_compounds(db, ms_adduct_output, ms_params.models[0], parent_frac=.75, reaction_frac=.25)
+        if ms_params.models:
+            ms_adduct_output = Utils.score_compounds(db, ms_adduct_output, ms_params.models[0], parent_frac=.75, reaction_frac=.25)
         #END ms_adduct_search
 
         #At some point might do deeper type checking...
@@ -360,7 +361,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level)
             for hit in peak.isomers:
                 ms_adduct_output.append(hit)
-            ms_adduct_output = Utils.score_compounds(db, ms_adduct_output, ms_params.models[0], parent_frac=.75, reaction_frac=.25)
+            if ms_params.models:
+                ms_adduct_output = Utils.score_compounds(db, ms_adduct_output, ms_params.models[0], parent_frac=.75, reaction_frac=.25)
         #END ms2_search
 
         #At some point might do deeper type checking...
