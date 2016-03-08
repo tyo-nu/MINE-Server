@@ -86,9 +86,6 @@ def test_ms_adduct_search():
     result = services.ms_adduct_search("181.071188116\n0.0", "form", params)[0]
     assert len(result) == 31
     assert isinstance(result[0], dict)
-    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
-             u'Formula', u'minKovatsRI', u'_id', u'peak_name']
-    assert result[0].keys() == keys
 
 
 def test_ms2_search():
@@ -98,9 +95,6 @@ def test_ms2_search():
     assert isinstance(result2[0], dict)
     assert result2
     print(result2[0])
-    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
-            u'Spectral_score', u'Formula', u'minKovatsRI', u'_id', u'peak_name']
-    assert result2[0].keys() == keys
     result2_2 = services.ms2_search(open("./scripts/folate_form.txt").read(), "form", params)[0]
     assert len(result2) == len(result2_2)
     result2_2 = services.ms2_search(open("./scripts/2870575.msp").read(), "msp", params)[0]

@@ -45,7 +45,7 @@ class Dataset():
             self.max_logP = options.logP[1]
         self.hit_projection = {'Formula': 1, 'MINE_id': 1, 'logP': 1, 'minKovatsRI': 1, 'maxKovatsRI': 1,
                                'NP_likeness': 1, 'Names': 1, 'SMILES': 1, 'Inchikey': 1, 'Generation': 1,
-                               'Pos_CFM_spectra': 1, 'Neg_CFM_spectra': 1}
+                               'Pos_CFM_spectra': 1, 'Neg_CFM_spectra': 1, "Sources": 1}
         self.known_peaks = []  # contains Peak objects for knowns
         self.unk_peaks = []  # contains Peak objects for unknowns
         self.clusters = []  # contains tuples of formula and list of matching peaks
