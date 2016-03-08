@@ -297,7 +297,7 @@ class Peak:
 
         for i, hit in enumerate(self.isomers):
             if spec_key in hit:
-                hit_spec = hit[spec_key]['Energy_%s' % energy_level]
+                hit_spec = hit[spec_key]['%s eV' % energy_level]
                 self.isomers[i]['Spectral_score'] = round(metric(self.ms2peaks, hit_spec, epsilon=tolerance)*1000)
                 del hit[spec_key]
             else:

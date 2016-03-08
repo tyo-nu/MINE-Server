@@ -63,7 +63,7 @@ def test_ms_adduct_search():
 
 def test_ms2_search():
     params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 1}
+              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 20}
     result2 = services.ms2_search(open("./scripts/folate.mgf").read(), "mgf", params)
     assert result2
     assert isinstance(result2[0], dict)
