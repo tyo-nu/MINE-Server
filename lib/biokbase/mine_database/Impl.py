@@ -356,9 +356,17 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         dataset.annotate_peaks(db)
         for peak in dataset.unk_peaks:
             if ms_params.scoring_function == 'jaccard':
-                peak.score_isomers(metric=BatchAdductQuery.jaccard, energy_level=ms_params.energy_level, tolerance=float(ms_params.tolerance)/1000)
+                if not ms_params.ppm:
+                    peak.score_isomers(metric=BatchAdductQuery.jaccard, energy_level=ms_params.energy_level,
+                                       tolerance=float(ms_params.tolerance)/1000)
+                else:
+                    peak.score_isomers(metric=BatchAdductQuery.jaccard, energy_level=ms_params.energy_level)
             else:
-                peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level, tolerance=float(ms_params.tolerance)/1000)
+                if not ms_params.ppm:
+                    peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level,
+                                       tolerance=float(ms_params.tolerance)/1000)
+                else:
+                    peak.score_isomers(metric=BatchAdductQuery.dot_product, energy_level=ms_params.energy_level)
             for hit in peak.isomers:
                 ms_adduct_output.append(hit)
             if ms_params.models:
