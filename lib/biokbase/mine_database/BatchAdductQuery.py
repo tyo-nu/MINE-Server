@@ -276,15 +276,17 @@ class Peak:
     def __str__(self):
         return self.name
 
-    def score_isomers(self, metric=dot_product, energy_level=1, tolerance=0.005):
+    def score_isomers(self, metric=dot_product, energy_level=20, tolerance=0.005):
         """
         Calculates the cosign similarity score between the provided ms2 peak list and pre-calculated CFM-spectra and
         sorts the isomer list according to this metric.
         :param metric: The scoring metric to use for the spectra. Function must accept 2 lists of (mz,intensity) tuples
          and return a score. Defaults to dot_product.
         :type energy_level: function
-        :param energy_level: The Fragmentation energy level to use. Ranges from 0-2. Defaults to 1
+        :param energy_level: The Fragmentation energy level to use. May be 10, 20 or 40. Defaults to 20
         :type energy_level: int
+        :param tolerance: The precision to use for matching m/z in mDa
+        :type energy_level: float
         :return:
         :rtype:
         """

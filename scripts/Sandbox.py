@@ -3,7 +3,10 @@ __author__ = 'JGJeffryes'
 from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 import numpy
 
-services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
+#services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
+from lib.biokbase.mine_database.Impl import mineDatabaseServices
+services = mineDatabaseServices(None)
+
 
 
 def known_compound_stats(test_db, test_compounds):
@@ -13,26 +16,32 @@ def known_compound_stats(test_db, test_compounds):
     fn = 0
     top_X_tot = 0
     top_X_new = 0
-    cutoff = 3
+    fp_score = []
+    tp_score = []
+    cutoff = 5
     found = []
     hits = []
-    params = {'db': test_db, 'tolerance': 10.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': True, 'halogens': True, 'scoring_function': 'jacquard', 'energy_level': 1}
-    neg_params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': [], 'ppm': False,
-                  'charge': False, 'halogens': True}
+    params = {'db': test_db, 'tolerance': 5, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': True, 'halogens': True, 'scoring_function': 'dot_product', 'energy_level': 20}
     for i, compound in enumerate(test_compounds.split('\n\n')[:-1]):
         print i + 1
-        result = services.ms2_search(compound, "msp", params)
+        print (compound.split('\n')[0])
+        if "Num Peaks: 1" in compound and abs(float(compound.split('base peak: ')[1].split('\n')[0]) - float(compound.split('precursor m/z: ')[1].split('\n')[0])) < .005:
+            print("Not MS/MS")
+            continue
+        result = services.ms2_search(compound, "msp", params)[0]
         ids = [x['Inchikey'] for x in result]
         scores = [x['Spectral_score'] for x in result]
         # try to find the compound through Inchikey
         try:
             code = compound.split('calculated InChI Key: ')[1].split('\n')[0]
-            comp = services.quick_search(test_db, code)[0]
-        except ServerError:
+            comp = services.quick_search(test_db, code)[0][0]
+        except ValueError:
             # found results w/ accurate mass but not Inchikey
             if result:
                 fp += 1
+                print("FP high score: %s" % scores[0])
+                fp_score.append(scores[0])
                 hits.append(len(result))
             # found nothing
             else:
@@ -40,13 +49,18 @@ def known_compound_stats(test_db, test_compounds):
             continue
         try:
             ind = ids.index(comp['Inchikey'])
-            print scores[ind]
+            print("TP: %s %s" % (ind, scores))
             hits.append(len(result))
+            if scores[ind] != None:
+                if ind == 0:
+                    tp_score.append(scores[ind])
+                else:
+                    fp_score.append(scores[0])
             tp += 1
             if ind < cutoff:
                 top_X_tot += 1
-            if comp['Generation']:
-                top_X_new += 1
+                if comp['Generation']:
+                    top_X_new += 1
         except ValueError:
             fn += 1
             print comp['Inchikey']
@@ -58,9 +72,9 @@ def known_compound_stats(test_db, test_compounds):
 
     return found
 
-with open('/Users/JGJeffryes/Desktop/pos_MoNA_20eV.msp') as test_compounds:
+with open('/Users/JGJeffryes/Documents/repository/MoNA Specs/pos_MoNA_40eV.msp') as test_compounds:
     for x in known_compound_stats("KEGGexp2", test_compounds.read()):
-        pass
+        print x
 
 """
 

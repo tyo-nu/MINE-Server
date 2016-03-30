@@ -127,7 +127,16 @@ def approximate_matches(list1, list2, epsilon=0.01):
     list1_index = 0
     list2_index = 0
 
-    while list1_index < len(list1) and list2_index < len(list2):
+    while list1_index < len(list1) or list2_index < len(list2):
+        if list1_index == len(list1):
+            yield (0, list2[list2_index][1])
+            list2_index += 1
+            continue
+        if list2_index == len(list2):
+            yield (list1[list1_index][1], 0)
+            list1_index += 1
+            continue
+
         list1_element = list1[list1_index][0]
         list2_element = list2[list2_index][0]
 
