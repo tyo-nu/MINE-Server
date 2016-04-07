@@ -71,6 +71,7 @@ def test_get_rxns():
 def test_get_ops():
     meh = services.get_ops(test_db, ['2.7.1.a'])[0][0]
     assert meh['Reactions_predicted'] > 250
+    assert len(meh["Reaction_ids"]) == meh['Reactions_predicted']
 
 
 def test_get_adducts():
@@ -90,7 +91,7 @@ def test_ms_adduct_search():
 
 def test_ms2_search():
     params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 1}
+              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 20}
     result2 = services.ms2_search(open("./scripts/folate.mgf").read(), "mgf", params)[0]
     assert isinstance(result2[0], dict)
     assert result2
