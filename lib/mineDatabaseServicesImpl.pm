@@ -830,6 +830,85 @@ sub get_ops
 
 
 
+=head2 get_operator
+
+  $operator = $obj->get_operator($db, $operator_name)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$operator_name is a string
+$operator is an OperatorObject
+OperatorObject is a reference to a hash where the following keys are defined:
+	Name has a value which is a string
+	Reactions_predicted has a value which is an int
+	Reaction_ids has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$operator_name is a string
+$operator is an OperatorObject
+OperatorObject is a reference to a hash where the following keys are defined:
+	Name has a value which is a string
+	Reactions_predicted has a value which is an int
+	Reaction_ids has a value which is a reference to a list where each element is an object_id
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+Returns a OperatorObject with it's reaction IDs that matches supplied operator_name in a specified db
+
+=back
+
+=cut
+
+sub get_operator
+{
+    my $self = shift;
+    my($db, $operator_name) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($operator_name)) or push(@_bad_arguments, "Invalid type for argument \"operator_name\" (value was \"$operator_name\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to get_operator:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'get_operator');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($operator);
+    #BEGIN get_operator
+    #END get_operator
+    my @_bad_returns;
+    (ref($operator) eq 'HASH') or push(@_bad_returns, "Invalid type for return variable \"operator\" (value was \"$operator\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to get_operator:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'get_operator');
+    }
+    return($operator);
+}
+
+
+
+
 =head2 get_adducts
 
   $adducts = $obj->get_adducts()

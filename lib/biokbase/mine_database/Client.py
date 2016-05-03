@@ -210,6 +210,11 @@ class mineDatabaseServices(object):
                           [db, operator_names])
         return resp[0]
 
+    def get_operator(self, db, operator_name):
+        resp = self._call('mineDatabaseServices.get_operator',
+                          [db, operator_name])
+        return resp[0]
+
     def get_adducts(self):
         resp = self._call('mineDatabaseServices.get_adducts',
                           [])

@@ -273,6 +273,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [objects]
 
+    def get_operator(self, db, operator_name):
+        # self.ctx is set by the wsgi application class
+        # return variables are: operator
+        #BEGIN get_operator
+        #END get_operator
+
+        #At some point might do deeper type checking...
+        if not isinstance(operator, dict):
+            raise ValueError('Method get_operator return value ' +
+                             'operator is not type dict as required.')
+        # return the results
+        return [operator]
+
     def get_adducts(self):
         # self.ctx is set by the wsgi application class
         # return variables are: adducts

@@ -268,6 +268,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_ops,
                              name='mineDatabaseServices.get_ops',
                              types=[basestring, list])
+        self.rpc_service.add(impl_mineDatabaseServices.get_operator,
+                             name='mineDatabaseServices.get_operator',
+                             types=[basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])
