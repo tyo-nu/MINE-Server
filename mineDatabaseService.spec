@@ -240,6 +240,11 @@ module mineDatabaseServices {
     funcdef get_ops(string db, list<string> operator_names) returns (list<OperatorObject> objects);
 
     /*
+        Returns a OperatorObject with it's reaction IDs that matches supplied operator_name in a specified db
+    */
+    funcdef get_operator(string db, string operator_name) returns (OperatorObject operator);
+
+    /*
         Returns a tuple of lists of positive and negative mass adducts names that may be used for querying the databases
     */
     funcdef get_adducts() returns (tuple<list<string>, list<string>> adducts);
