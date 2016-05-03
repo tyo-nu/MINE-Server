@@ -277,6 +277,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: operator
         #BEGIN get_operator
+        db = self.db_client[db]
+        operator = db.operators.find_one({'_id': operator_name})
+        operator['Reaction_ids'] = db.reactions.find({"Operators": operator_name}).distinct("_id")
         #END get_operator
 
         #At some point might do deeper type checking...

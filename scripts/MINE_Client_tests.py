@@ -46,6 +46,12 @@ def test_get_ops():
     assert meh['Reactions_predicted'] > 250
 
 
+def test_get_operator():
+        meh = services.get_operator(test_db, '2.7.1.a')[0]
+        assert meh['Reactions_predicted'] > 250
+        assert len(meh['Reaction_ids']) == meh['Reactions_predicted']
+
+
 def test_get_adducts():
     meh = services.get_adducts()
     assert len(meh[0]) == 33
