@@ -7,11 +7,10 @@ USAGE - BatchAdductQuery.py [options] run_name file_of_Unknowns
 """
 
 import sys
-from Utils import establish_db_client
 from optparse import OptionParser
 import xml.etree.ElementTree as ET
 import numpy
-import cPickle
+import pickle
 import time
 import re
 import math
@@ -120,13 +119,13 @@ class Dataset():
                 self.total_hits += peak.total_hits
                 self.total_formulas += len(peak.formulas)
             if self.options.verbose:
-                print "%s percent of peaks processed" % int(float(i)/float(len(self.unk_peaks)) * 100)
+                print("%s percent of peaks processed" % int(float(i)/float(len(self.unk_peaks)) * 100))
 
         if self.options.verbose:
-            print "Proposed matches for %s of %s peaks" % (self.matched_peaks, len(self.unk_peaks))
+            print("Proposed matches for %s of %s peaks" % (self.matched_peaks, len(self.unk_peaks)))
             try:
-                print "Average hits per peak: %s" % (float(self.total_hits)/float(self.matched_peaks))
-                print "Average formulas per peak: %s" % (float(self.total_formulas)/float(self.matched_peaks))
+                print("Average hits per peak: %s" % (float(self.total_hits)/float(self.matched_peaks)))
+                print("Average formulas per peak: %s" % (float(self.total_formulas)/float(self.matched_peaks)))
             except ZeroDivisionError:
                 pass
 
@@ -351,7 +350,7 @@ if __name__ == '__main__':
 
     #if the user specifies known peaks import them for use in clustering and ordering of isomers
     if options.known_file != 'null':
-        print "Loading known peaks"
+        print("Loading known peaks")
         data.known_peaks = read_csv(options.known_file)
         for peak in data.known_peaks:
             data.known_set.add(peak.known)
@@ -372,13 +371,13 @@ if __name__ == '__main__':
         sys.exit('No compounds in supplied database')
 
     if options.modelSEED != 'null':
-        print "Loading native compounds"
+        print("Loading native compounds")
         kbase_db = client['KBase']
         data.native_set = get_modelSEED_comps(kbase_db, [options.modelSEED])
 
     data.annotate_peaks(db)
     with open(data.name+'.pkl') as outfile:
-        cPickle.dump(data, outfile)
+        pickle.dump(data, outfile)
 
     tend = time.time()
-    print "BatchAdductQuery.py completed in %s seconds" %(tend-tstart)
+    print("BatchAdductQuery.py completed in %s seconds" %(tend-tstart))
