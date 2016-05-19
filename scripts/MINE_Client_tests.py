@@ -47,7 +47,7 @@ def test_get_ops():
 
 
 def test_get_operator():
-        meh = services.get_operator(test_db, '2.7.1.a')[0]
+        meh = services.get_operator(test_db, '2.7.1.a')
         assert meh['Reactions_predicted'] > 250
         assert len(meh['Reaction_ids']) == meh['Reactions_predicted']
 
@@ -102,8 +102,8 @@ def test_similarity_search():
 
 
 def test_substructure_search():
-    assert len(services.substructure_search('KEGGexp', 'cccccc', 100, "", "")) == 100
-    assert isinstance(services.substructure_search('KEGGexp', 'Nc1ncnc2[nH]cnc12', 100, "", "")[0], dict)
+    assert len(services.substructure_search(test_db, 'cccccc', 100, "", "")) == 100
+    assert isinstance(services.substructure_search(test_db, 'Nc1ncnc2[nH]cnc12', 100, "", "")[0], dict)
 
 
 def test_model_search():
