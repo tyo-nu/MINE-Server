@@ -1,21 +1,9 @@
 #BEGIN_HEADER
-import pybel
 import time
-import Utils
-import BatchAdductQuery
+from . import Utils
+from . import BatchAdductQuery
 from ast import literal_eval
-
-
-class Pathway_query_params():
-    def __init__(self, db, start, end, length, all_path):
-        self.db = db
-        self.start_comp = start
-        self.end_comp = end
-        self.len_limit = length
-        self.all_paths = all_path
-        self.np_min = -3
-        self.gibbs_cap = 100
-        self.verbose = False
+from minedatabase import databases, queries
 
 
 class Struct:
@@ -58,9 +46,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.models = []
-        self.db_client = Utils.establish_db_client()
-        self.kbase_db = self.db_client['KBase']
-        self.keggdb = self.db_client['KEGGdb']
+        self.db_client = databases.establish_db_client()
+        self.kbase_db = databases.MINE('KBase')
+        self.keggdb = databases.MINE('KEGGdb')
         for model in self.kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
@@ -76,8 +64,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: models
         #BEGIN model_search
         print('<Model Search: %s>' % query)
-        db = self.db_client['KEGGdb']
-        cursor = db.models.find({"$text": {"$search": query}}, {"score": {"$meta": "textScore"}, "_id": 1})
+        cursor = self.kbase_db.models.find({"$text": {"$search": query}}, {"score": {"$meta": "textScore"}, "_id": 1})
         models = [x["_id"] for x in cursor.sort([("score", {"$meta": "textScore"})])]
         #END model_search
 
@@ -110,25 +97,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN similarity_search
         print("<Similarity Search: DB=%s, Structure=%s, MinTC=%s, FPType=%s, Limit=%s>" % (db, comp_structure,
                                                                                             min_tc, fp_type, limit))
-        similarity_search_results = []
-        fp_type = str(fp_type)
-        db = self.db_client[db]
-        if "\n" in comp_structure:
-            mol = pybel.readstring('mol', str(comp_structure))
-        else:
-            mol = pybel.readstring('smi', str(comp_structure))
-        query_fp = set(mol.calcfp(fp_type).bits)
-        len_fp = len(query_fp)
-        for x in db.compounds.find({"$and": [{"len_"+fp_type: {"$gte": min_tc*len_fp}},
-                                   {"len_"+fp_type: {"$lte": len_fp/min_tc}}]},
-                                   dict([(fp_type, 1)]+search_projection.items())):
-            test_fp = set(x[fp_type])
-            tc = len(query_fp & test_fp)/float(len(query_fp | test_fp))
-            if tc >= min_tc:
-                del x[fp_type]
-                similarity_search_results.append(x)
-                if len(similarity_search_results) == limit:
-                    break
+        similarity_search_results = queries.similarity_search(db, comp_structure, min_tc, fp_type, limit)
         similarity_search_results = Utils.score_compounds(db, similarity_search_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END similarity_search
 
@@ -145,10 +114,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN structure_search
         print("<Structure Search: DB=%s, Structure=%s, Format=%s>" % (db, comp_structure, input_format))
         db = self.db_client[db]
-        mol = pybel.readstring(str(input_format), str(comp_structure))
-        inchi_key = mol.write("inchikey").strip()
-        # sure, we could look for a matching SMILES but this is faster
-        structure_search_results = Utils.quick_search(db, inchi_key, search_projection)
+        structure_search_results = queries.structure_search(db, comp_structure)
         structure_search_results = Utils.score_compounds(db, structure_search_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END structure_search
 
@@ -164,22 +130,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: substructure_search_results
         #BEGIN substructure_search
         print("<Substructure Search: DB=%s, Structure=%s, Limit=%s>" % (db, substructure, limit))
-        substructure_search_results = []
-        db = self.db_client[db]
-        if "\n" in substructure:
-            query_mol = pybel.readstring('mol', str(substructure))
-        else:
-            query_mol = pybel.readstring('smi', str(substructure))
-        query_fp = query_mol.calcfp("FP4").bits
-        smarts = pybel.Smarts(query_mol.write('smi').strip())
-        for x in db.compounds.find({"FP4": {"$all": query_fp}}, search_projection):
-            try:
-                if smarts.findall(pybel.readstring("smi", str(x["SMILES"]))):
-                    substructure_search_results.append(x)
-                    if len(substructure_search_results) == limit:
-                        break
-            except IOError:  # Smarts searches fail for generalized compounds so we just skip over them
-                continue
+        substructure_search_results = queries.substructure_search(self.db_client[db], substructure, limit)
         substructure_search_results = Utils.score_compounds(db, substructure_search_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END substructure_search
 

@@ -13,10 +13,10 @@ except ImportError:
     import simplejson as _json
 
 import requests as _requests
-import urlparse as _urlparse
+import urllib.parse as _urlparse
 import random as _random
 import base64 as _base64
-from ConfigParser import ConfigParser as _ConfigParser
+from configparser import ConfigParser as _ConfigParser
 import os as _os
 
 _CT = 'content-type'

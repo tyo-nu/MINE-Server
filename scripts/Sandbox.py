@@ -1,7 +1,7 @@
 __author__ = 'JGJeffryes'
 
-from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 import numpy
+from minedatabase import databases
 
 #services = mineDatabaseServices('http://bio-data-1.mcs.anl.gov/services/mine-database')
 from lib.biokbase.mine_database.Impl import mineDatabaseServices
@@ -24,7 +24,7 @@ def known_compound_stats(test_db, test_compounds):
     params = {'db': test_db, 'tolerance': 5, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
               'charge': True, 'halogens': True, 'scoring_function': 'dot_product', 'energy_level': 20}
     for i, compound in enumerate(test_compounds.split('\n\n')[:-1]):
-        print i + 1
+        print (i + 1)
         print (compound.split('\n')[0])
         if "Num Peaks: 1" in compound and abs(float(compound.split('base peak: ')[1].split('\n')[0]) - float(compound.split('precursor m/z: ')[1].split('\n')[0])) < .005:
             print("Not MS/MS")
@@ -63,18 +63,17 @@ def known_compound_stats(test_db, test_compounds):
                     top_X_new += 1
         except ValueError:
             fn += 1
-            print comp['Inchikey']
-    print tp, fp, tn, fn
-    print "P: %s" % (tp / float(tp + fp))
-    print "Coverage: %s" % ((tp + fp) / float(tp + fp + tn + fn))
-    print "Canidates\tMean: %s Median: %s" % (numpy.average(hits), numpy.median(hits))
-    print "In top %s: %s total, %s new" % (cutoff, top_X_tot, top_X_new)
+            print (comp['Inchikey'])
+    print (tp, fp, tn, fn)
+    print ("P: %s" % (tp / float(tp + fp)))
+    print ("Coverage: %s" % ((tp + fp) / float(tp + fp + tn + fn)))
+    print ("Canidates\tMean: %s Median: %s" % (numpy.average(hits), numpy.median(hits)))
 
     return found
 
 with open('/Users/JGJeffryes/Documents/repository/MoNA Specs/pos_MoNA_40eV.msp') as test_compounds:
     for x in known_compound_stats("KEGGexp2", test_compounds.read()):
-        print x
+        print (x)
 
 """
 
