@@ -261,9 +261,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN get_ops
         objects = []
         db = self.db_client[db]
-        for x in operator_names:
-            op = db.operators.find_one({'_id': x})
-            objects.append(op)
+        if not operator_names:
+            objects = [x for x in db.operators.find()]
+        else:
+            objects = [db.operators.find_one({'$or': [{'_id': x}, {"Name": x}]}) for x in operator_names]
         #END get_ops
 
         #At some point might do deeper type checking...
@@ -278,7 +279,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: operator
         #BEGIN get_operator
         db = self.db_client[db]
-        operator = db.operators.find_one({'_id': operator_name})
+        operator = db.operators.find_one({'$or': [{'_id': operator_name}, {"Name": operator_name}]})
         operator['Reaction_ids'] = db.reactions.find({"Operators": operator_name}).distinct("_id")
         #END get_operator
 
