@@ -6,19 +6,19 @@ from pymongo import MongoClient
 def establish_db_client():
     """This establishes a mongo database client for many environments"""
     try:
-        #special case for working on a sapphire node
+        # special case for working on a sapphire node
         if 'node' in platform.node():
             client = MongoClient(host='master')
-        #special case for working on a SEED cluster
+        # special case for working on a SEED cluster
         elif ('bio' in platform.node()) or ('twig' in platform.node()):
             client = MongoClient(host='branch')
             admin = client['admin']
-            admin.authenticate('worker', 'bnice14bot')
+            admin.authenticate('MineApiBot', 'PublicPassword')
         elif ('branch' in platform.node()):
             client = MongoClient()
             admin = client['admin']
-            admin.authenticate('worker', 'bnice14bot')
-        #local database
+            admin.authenticate('MineApiBot', 'PublicPassword')
+        # local database
         else:
             client = MongoClient()
     except:
@@ -28,7 +28,7 @@ def establish_db_client():
 
 def quick_search(db, comp_data, search_projection={}):
     """This function takes user provided compound identifiers and attempts to find a related database ID"""
-    #check if comp_data already is a _id
+    # check if comp_data already is a _id
     if (len(comp_data) == 41) and (comp_data[0] == 'C'):
         query_field = '_id'
     elif (len(comp_data) == 6) and (comp_data[0] == 'C'):
@@ -101,7 +101,7 @@ def score_compounds(db, compounds, model_id, parent_frac=0.5, reaction_frac=0.5)
 def print_sorted_dict(dict):
     list = [x for x in dict]
     for x in sorted(list, key=lambda x: dict[x], reverse=True):
-        print "%s\t%s" % (x, dict[x])
+        print("%s\t%s" % (x, dict[x]))
 
 
 def uni_dict_2_string_dict(dictionary):
