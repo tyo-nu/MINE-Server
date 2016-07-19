@@ -38,6 +38,9 @@ def quick_search(db, comp_data, search_projection={}):
     elif len(comp_data.split('-')[0]) == 14 and comp_data.isupper():
         query_field = 'Inchikey'
         comp_data = comp_data.split('-')[0]
+    elif "InChIKey=" in comp_data:
+        query_field = 'Inchikey'
+        comp_data = comp_data.split('-')[0].split('=')[1]
     elif comp_data.isdigit():
         query_field = "MINE_id"
         comp_data = int(comp_data)
