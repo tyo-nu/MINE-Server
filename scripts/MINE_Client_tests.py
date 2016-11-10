@@ -26,6 +26,12 @@ def test_database_query():
     assert services.database_query(test_db, "{'Names': 'Glucose'}", "", "") == [glucose]
 
 
+def test_get_ids():
+    meh = services.get_ids(test_db, 'operators')[0]
+    assert len(meh) == 179
+    assert u'1.1.-1.h' in meh
+
+
 def test_get_comps():
     meh = services.get_comps(test_db, ['Cb5b3273ab083d77ed29fbef8f7e464929af29c13'])
     assert len(meh) == 1

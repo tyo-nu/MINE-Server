@@ -219,6 +219,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ids
         #BEGIN get_ids
+        if db == 'admin':
+            raise ValueError('Illegal query')
+
+        db = self.db_client[db]
+        ids = [x['_id'] for x in db[collection].find()]
         #END get_ids
 
         #At some point might do deeper type checking...
