@@ -195,6 +195,11 @@ class mineDatabaseServices(object):
                           [db, mongo_query, parent_filter, reaction_filter])
         return resp[0]
 
+    def get_ids(self, db, collection):
+        resp = self._call('mineDatabaseServices.get_ids',
+                          [db, collection])
+        return resp[0]
+
     def get_comps(self, db, ids):
         resp = self._call('mineDatabaseServices.get_comps',
                           [db, ids])

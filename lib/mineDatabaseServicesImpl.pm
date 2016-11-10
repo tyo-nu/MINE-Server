@@ -569,6 +569,77 @@ sub database_query
 
 
 
+=head2 get_ids
+
+  $ids = $obj->get_ids($db, $collection)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$collection is a string
+$ids is a reference to a list where each element is an object_id
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$collection is a string
+$ids is a reference to a list where each element is an object_id
+object_id is a string
+
+
+=end text
+
+
+
+=item Description
+
+Return a list of object_ids in a specified collection in a specified db
+
+=back
+
+=cut
+
+sub get_ids
+{
+    my $self = shift;
+    my($db, $collection) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($collection)) or push(@_bad_arguments, "Invalid type for argument \"collection\" (value was \"$collection\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to get_ids:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'get_ids');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($ids);
+    #BEGIN get_ids
+    #END get_ids
+    my @_bad_returns;
+    (ref($ids) eq 'ARRAY') or push(@_bad_returns, "Invalid type for return variable \"ids\" (value was \"$ids\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to get_ids:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'get_ids');
+    }
+    return($ids);
+}
+
+
+
+
 =head2 get_comps
 
   $objects = $obj->get_comps($db, $ids)

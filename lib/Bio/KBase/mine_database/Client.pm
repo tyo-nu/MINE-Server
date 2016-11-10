@@ -707,6 +707,92 @@ sub database_query
 
 
 
+=head2 get_ids
+
+  $ids = $obj->get_ids($db, $collection)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$collection is a string
+$ids is a reference to a list where each element is an object_id
+object_id is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$collection is a string
+$ids is a reference to a list where each element is an object_id
+object_id is a string
+
+
+=end text
+
+=item Description
+
+Return a list of object_ids in a specified collection in a specified db
+
+=back
+
+=cut
+
+sub get_ids
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 2)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function get_ids (received $n, expecting 2)");
+    }
+    {
+	my($db, $collection) = @args;
+
+	my @_bad_arguments;
+        (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
+        (!ref($collection)) or push(@_bad_arguments, "Invalid type for argument 2 \"collection\" (value was \"$collection\")");
+        if (@_bad_arguments) {
+	    my $msg = "Invalid arguments passed to get_ids:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+								   method_name => 'get_ids');
+	}
+    }
+
+    my $result = $self->{client}->call($self->{url}, $self->{headers}, {
+	method => "mineDatabaseServices.get_ids",
+	params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'get_ids',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method get_ids",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'get_ids',
+				       );
+    }
+}
+
+
+
 =head2 get_comps
 
   $objects = $obj->get_comps($db, $ids)

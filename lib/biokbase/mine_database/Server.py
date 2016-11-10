@@ -259,6 +259,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
                              types=[basestring, basestring, basestring, basestring])
+        self.rpc_service.add(impl_mineDatabaseServices.get_ids,
+                             name='mineDatabaseServices.get_ids',
+                             types=[basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
                              types=[basestring, list])
