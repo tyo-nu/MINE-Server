@@ -225,6 +225,11 @@ module mineDatabaseServices {
 	returns (list<comp_stub> database_query_results);
 
     /*
+        Return a list of object_ids in a specified collection in a specified db
+    */
+    funcdef get_ids(string db, string collection) returns (list<object_id> ids);
+
+    /*
         Return a list of CompoundObjects that match supplied object_ids in a specified db
     */
     funcdef get_comps(string db, list<object_id> ids) returns (list<CompoundObject> objects);
