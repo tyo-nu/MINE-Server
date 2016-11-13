@@ -226,8 +226,13 @@ module mineDatabaseServices {
 
     /*
         Return a list of object_ids in a specified collection in a specified db
+        Input parameters for the "get_ids" function:
+        string db - the database from which to retrieve ids
+        string collection - the collection from which to retrieve ids
+		mongo_query query - A valid mongo query as a string
+
     */
-    funcdef get_ids(string db, string collection) returns (list<object_id> ids);
+    funcdef get_ids(string db, string collection, string query) returns (list<object_id> ids);
 
     /*
         Return a list of CompoundObjects that match supplied object_ids in a specified db

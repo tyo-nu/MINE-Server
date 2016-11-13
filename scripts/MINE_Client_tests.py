@@ -27,7 +27,7 @@ def test_database_query():
 
 
 def test_get_ids():
-    meh = services.get_ids(test_db, 'operators')[0]
+    meh = services.get_ids(test_db, 'operators')
     assert len(meh) == 179
     assert u'1.1.-1.h' in meh
 
@@ -113,7 +113,7 @@ def test_substructure_search():
 
 
 def test_model_search():
-    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Biological', u'Mammals', u'Vertebrates',
+    assert services.model_search("human") == [u'Animals', u'Eukaryotes', u'Mammals', u'Vertebrates',
                                               u'hsa', u'Arthropods', u'Insects', u'phu']
 
 
