@@ -215,7 +215,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [database_query_results]
 
-    def get_ids(self, db, collection):
+    def get_ids(self, db, collection, query):
         # self.ctx is set by the wsgi application class
         # return variables are: ids
         #BEGIN get_ids

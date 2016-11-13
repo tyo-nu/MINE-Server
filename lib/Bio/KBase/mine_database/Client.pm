@@ -709,7 +709,7 @@ sub database_query
 
 =head2 get_ids
 
-  $ids = $obj->get_ids($db, $collection)
+  $ids = $obj->get_ids($db, $collection, $query)
 
 =over 4
 
@@ -720,6 +720,7 @@ sub database_query
 <pre>
 $db is a string
 $collection is a string
+$query is a string
 $ids is a reference to a list where each element is an object_id
 object_id is a string
 
@@ -731,6 +732,7 @@ object_id is a string
 
 $db is a string
 $collection is a string
+$query is a string
 $ids is a reference to a list where each element is an object_id
 object_id is a string
 
@@ -740,6 +742,10 @@ object_id is a string
 =item Description
 
 Return a list of object_ids in a specified collection in a specified db
+Input parameters for the "get_ids" function:
+string db - the database from which to retrieve ids
+string collection - the collection from which to retrieve ids
+        mongo_query query - A valid mongo query as a string
 
 =back
 
@@ -751,17 +757,18 @@ sub get_ids
 
 # Authentication: none
 
-    if ((my $n = @args) != 2)
+    if ((my $n = @args) != 3)
     {
 	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
-							       "Invalid argument count for function get_ids (received $n, expecting 2)");
+							       "Invalid argument count for function get_ids (received $n, expecting 3)");
     }
     {
-	my($db, $collection) = @args;
+	my($db, $collection, $query) = @args;
 
 	my @_bad_arguments;
         (!ref($db)) or push(@_bad_arguments, "Invalid type for argument 1 \"db\" (value was \"$db\")");
         (!ref($collection)) or push(@_bad_arguments, "Invalid type for argument 2 \"collection\" (value was \"$collection\")");
+        (!ref($query)) or push(@_bad_arguments, "Invalid type for argument 3 \"query\" (value was \"$query\")");
         if (@_bad_arguments) {
 	    my $msg = "Invalid arguments passed to get_ids:\n" . join("", map { "\t$_\n" } @_bad_arguments);
 	    Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,

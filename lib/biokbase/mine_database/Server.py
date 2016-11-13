@@ -261,7 +261,7 @@ class Application(object):
                              types=[basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_ids,
                              name='mineDatabaseServices.get_ids',
-                             types=[basestring, basestring])
+                             types=[basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
                              types=[basestring, list])
