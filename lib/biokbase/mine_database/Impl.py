@@ -223,7 +223,11 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             raise ValueError('Illegal query')
 
         db = self.db_client[db]
-        ids = [x['_id'] for x in db[collection].find()]
+        if query:
+            query = literal_eval(query)  # this transforms the string into a dictionary
+        else:
+            query = {}
+        ids = [x['_id'] for x in db[collection].find(query)]
         #END get_ids
 
         #At some point might do deeper type checking...

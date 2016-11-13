@@ -27,9 +27,10 @@ def test_database_query():
 
 
 def test_get_ids():
-    meh = services.get_ids(test_db, 'operators')
+    meh = services.get_ids(test_db, 'operators', None)
     assert len(meh) == 179
     assert u'1.1.-1.h' in meh
+    assert len(services.get_ids(test_db, 'operators', "{'_id':'1.1.-1.h'}"))
 
 
 def test_get_comps():
