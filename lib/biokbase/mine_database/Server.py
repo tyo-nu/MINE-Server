@@ -243,49 +243,46 @@ class Application(object):
         self.rpc_service = JSONRPCServiceCustom()
         self.rpc_service.add(impl_mineDatabaseServices.model_search,
                              name='mineDatabaseServices.model_search',
-                             types=[basestring])
+                             types=[str])
         self.rpc_service.add(impl_mineDatabaseServices.quick_search,
                              name='mineDatabaseServices.quick_search',
-                             types=[basestring, basestring])
+                             types=[str, str])
         self.rpc_service.add(impl_mineDatabaseServices.similarity_search,
                              name='mineDatabaseServices.similarity_search',
-                             types=[basestring, basestring, float, basestring, int, basestring, basestring])
+                             types=[str, str, float, str, int, str, str])
         self.rpc_service.add(impl_mineDatabaseServices.structure_search,
                              name='mineDatabaseServices.structure_search',
-                             types=[basestring, basestring, basestring, basestring, basestring])
+                             types=[str, str, str, str, str])
         self.rpc_service.add(impl_mineDatabaseServices.substructure_search,
                              name='mineDatabaseServices.substructure_search',
-                             types=[basestring, basestring, int, basestring, basestring])
+                             types=[str, str, int, str, str])
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
-                             types=[basestring, basestring, basestring, basestring])
-        self.rpc_service.add(impl_mineDatabaseServices.get_ids,
-                             name='mineDatabaseServices.get_ids',
-                             types=[basestring, basestring, basestring])
+                             types=[str, str, str, str])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
-                             types=[basestring, list])
+                             types=[str, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
                              name='mineDatabaseServices.get_rxns',
-                             types=[basestring, list])
+                             types=[str, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_ops,
                              name='mineDatabaseServices.get_ops',
-                             types=[basestring, list])
+                             types=[str, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_operator,
                              name='mineDatabaseServices.get_operator',
-                             types=[basestring, basestring])
+                             types=[str, str])
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])
         self.rpc_service.add(impl_mineDatabaseServices.ms_adduct_search,
                              name='mineDatabaseServices.ms_adduct_search',
-                             types=[basestring, basestring, dict])
+                             types=[str, str, dict])
         self.rpc_service.add(impl_mineDatabaseServices.ms2_search,
                              name='mineDatabaseServices.ms2_search',
-                             types=[basestring, basestring, dict])
+                             types=[str, str, dict])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
-                             types=[basestring, basestring, basestring, int, int])
+                             types=[str, str, str, int, int])
 
     def __call__(self, environ, start_response):
         # Context object, equivalent to the perl impl CallContext
@@ -333,7 +330,7 @@ class Application(object):
                            }
                     trace = jre.trace if hasattr(jre, 'trace') else None
                     rpc_result = self.process_error(err, ctx, req, trace)
-                except Exception, e:
+                except Exception as e:
                     err = {'error': {'code': 0,
                                      'name': 'Unexpected Server Error',
                                      'message': 'An unexpected server error ' +
@@ -404,7 +401,7 @@ try:
 # a wsgi container that has enabled gevent, such as
 # uwsgi with the --gevent option
     if config is not None and config.get('gevent_monkeypatch_all', False):
-        print "Monkeypatching std libraries for async"
+        print("Monkeypatching std libraries for async")
         from gevent import monkey
         monkey.patch_all()
     uwsgi.applications = {
@@ -430,7 +427,7 @@ def start_server(host='localhost', port=0, newprocess=False):
         raise RuntimeError('server is already running')
     httpd = make_server(host, port, application)
     port = httpd.server_address[1]
-    print "Listening on port %s" % port
+    print("Listening on port %s" % port)
     if newprocess:
         _proc = Process(target=httpd.serve_forever)
         _proc.daemon = True
@@ -450,7 +447,7 @@ if __name__ == "__main__":
         opts, args = getopt(sys.argv[1:], "", ["port=", "host="])
     except GetoptError as err:
         # print help information and exit:
-        print str(err)  # will print something like "option -a not recognized"
+        print(str(err))  # will print something like "option -a not recognized"
         sys.exit(2)
     port = 9999
     host = 'localhost'
@@ -459,7 +456,7 @@ if __name__ == "__main__":
             port = int(a)
         elif o == '--host':
             host = a
-            print "Host set to %s" % host
+            print("Host set to %s" % host)
         else:
             assert False, "unhandled option"
 

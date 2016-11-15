@@ -3,7 +3,6 @@ import pybel
 import time
 import Utils
 import BatchAdductQuery
-from PathwaySearch import PathwaySearch
 from ast import literal_eval
 
 
@@ -76,7 +75,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: models
         #BEGIN model_search
-        print '<Model Search: %s>' % query
+        print('<Model Search: %s>' % query)
         db = self.db_client['KEGGdb']
         cursor = db.models.find({"$text": {"$search": query}}, {"score": {"$meta": "textScore"}, "_id": 1})
         models = [x["_id"] for x in cursor.sort([("score", {"$meta": "textScore"})])]
@@ -93,12 +92,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
-        print "<Quick Search: DB=%s, Query=%s>" % (db, query)
+        print("<Quick Search: DB=%s, Query=%s>" % (db, query))
         db = self.db_client[db]
         quick_search_results = Utils.quick_search(db, query, search_projection)
-        for x in quick_search_results:
-            if not isinstance(x['_id'], unicode):
-                x['_id'] = unicode(x['_id'])
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -112,8 +108,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
-        print "<Similarity Search: DB=%s, Structure=%s, MinTC=%s, FPType=%s, Limit=%s>" % (db, comp_structure,
-                                                                                            min_tc, fp_type, limit)
+        print("<Similarity Search: DB=%s, Structure=%s, MinTC=%s, FPType=%s, Limit=%s>" % (db, comp_structure,
+                                                                                            min_tc, fp_type, limit))
         similarity_search_results = []
         fp_type = str(fp_type)
         db = self.db_client[db]
@@ -147,7 +143,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: structure_search_results
         #BEGIN structure_search
-        print "<Structure Search: DB=%s, Structure=%s, Format=%s>" % (db, comp_structure, input_format)
+        print("<Structure Search: DB=%s, Structure=%s, Format=%s>" % (db, comp_structure, input_format))
         db = self.db_client[db]
         mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
@@ -167,7 +163,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
-        print "<Substructure Search: DB=%s, Structure=%s, Limit=%s>" % (db, substructure, limit)
+        print("<Substructure Search: DB=%s, Structure=%s, Limit=%s>" % (db, substructure, limit))
         substructure_search_results = []
         db = self.db_client[db]
         if "\n" in substructure:
@@ -198,7 +194,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
-        print "<Database Search: DB=%s, Query=%s>" % (db, mongo_query)
+        print("<Database Search: DB=%s, Query=%s>" % (db, mongo_query))
         if db != 'admin':  # we don't want users poking around here
             db = self.db_client[db]
             query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
@@ -330,7 +326,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ms_adduct_output
         #BEGIN ms_adduct_search
-        print "<MS Adduct Search: TextType=%s, Text=%s, Parameters=%s>" % (text_type, text, ms_params)
+        print("<MS Adduct Search: TextType=%s, Text=%s, Parameters=%s>" % (text_type, text, ms_params))
         name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
         if isinstance(ms_params, dict):
             ms_params = Struct(**ms_params)
@@ -371,7 +367,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: ms_adduct_output
         #BEGIN ms2_search
-        print "<MS Adduct Search: TextType=%s, Parameters=%s>" % (text_type, ms_params)
+        print("<MS Adduct Search: TextType=%s, Parameters=%s>" % (text_type, ms_params))
         name = text_type+time.strftime("_%d-%m-%Y_%H:%M:%S", time.localtime())
         if isinstance(ms_params, dict):
             ms_params = Struct(**ms_params)
@@ -424,12 +420,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: pathway_query_results
         #BEGIN pathway_search
         pathway_query_results = ['Not yet implemented']
-        """params = Pathway_query_params(db, start_comp, end_comp, len_limit, all_paths)
-        pathsearch = PathwaySearch(params)
-        if params.all_paths:
-            pathway_query_results = pathsearch.dfs()
-        else:
-            pathway_query_results = pathsearch.bfs()"""
         #END pathway_search
 
         #At some point might do deeper type checking...
