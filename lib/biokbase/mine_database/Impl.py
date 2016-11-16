@@ -111,12 +111,12 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: similarity_search_results
         #BEGIN similarity_search
         print("<Similarity Search: DB=%s, Structure=%s, MinTC=%s, FPType=%s, Limit=%s>" % (db, comp_structure,
-                                                                                            min_tc, fp_type, limit))
-        if db not in self.legacy_dbs:
-            return [queries.similarity_search(comp_structure, min_tc, fp_type, limit, search_projection)]
+                                                                                           min_tc, fp_type, limit))
+        db = self.db_client[db]
+        if db.name not in self.legacy_dbs:
+            return [queries.similarity_search(db, comp_structure, min_tc, fp_type, limit, search_projection)]
         similarity_search_results = []
         fp_type = str(fp_type)
-        db = self.db_client[db]
         if "\n" in comp_structure:
             mol = pybel.readstring('mol', str(comp_structure))
         else:
@@ -148,9 +148,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: structure_search_results
         #BEGIN structure_search
         print("<Structure Search: DB=%s, Structure=%s, Format=%s>" % (db, comp_structure, input_format))
-        if db not in self.legacy_dbs:
-            return [queries.structure_search(comp_structure, search_projection)]
         db = self.db_client[db]
+        if db.name not in self.legacy_dbs:
+            return [queries.structure_search(db, comp_structure, search_projection)]
         mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
         # sure, we could look for a matching SMILES but this is faster
@@ -170,10 +170,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: substructure_search_results
         #BEGIN substructure_search
         print("<Substructure Search: DB=%s, Structure=%s, Limit=%s>" % (db, substructure, limit))
-        if db not in self.legacy_dbs:
-            return [queries.substructure_search(substructure, limit, search_projection)]
-        substructure_search_results = []
         db = self.db_client[db]
+        if db.name not in self.legacy_dbs:
+            return [queries.substructure_search(db, substructure, limit, search_projection)]
+        substructure_search_results = []
         if "\n" in substructure:
             query_mol = pybel.readstring('mol', str(substructure))
         else:

@@ -262,6 +262,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
                              types=[basestring, list])
+        self.rpc_service.add(impl_mineDatabaseServices.get_ids,
+                             name='mineDatabaseServices.get_ids',
+                             types=[basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
                              name='mineDatabaseServices.get_rxns',
                              types=[basestring, list])

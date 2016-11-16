@@ -1,5 +1,5 @@
-__author__ = 'JGJeffryes'
-from lib.biokbase.mine_database.Client import mineDatabaseServices
+from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
+from nose.tools import assert_raises
 
 services = mineDatabaseServices(url='http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycPickaxe'
@@ -47,7 +47,8 @@ def test_quick_search():
 
 
 def test_database_query():
-    assert services.database_query('admin', '', "", "") == ['Illegal query']
+    with assert_raises(ServerError):
+        services.database_query('admin', '', "", "")
     assert services.database_query(test_db, "{'MINE_id': 917030}", "", "") == [glucose]
     assert services.database_query(test_db, "{'Inchikey': 'WQZGKKKJIJFFOK-GASJEMHNSA-N'}", "", "") == [glucose]
 
@@ -96,7 +97,7 @@ def test_ms_adduct_search():
     params = {'db': test_db, 'tolerance': 2.0, 'adducts': ['[M+H]+'], 'models': ['Bacteria'], 'ppm': False,
               'charge': True, 'halogens': False}
     result = services.ms_adduct_search("181.071188116\n0.0", "form", params)
-    assert len(result) == 31
+    assert len(result) == 101
     assert isinstance(result[0], dict)
 
 
@@ -107,8 +108,6 @@ def test_ms2_search():
     assert result2
     assert isinstance(result2[0], dict)
     print(result2[0])
-    keys = [u'SMILES', u'NP_likeness', u'logP', u'adduct', u'maxKovatsRI', u'MINE_id', u'Inchikey', u'Generation',
-            u'Formula', u'Spectral_score', u'minKovatsRI', u'_id', u'peak_name']
     assert u'Spectral_score' in result2[0].keys()
     result2_2 = services.ms2_search(open("./scripts/folate_form.txt").read(), "form", params)
     assert len(result2) == len(result2_2)
@@ -123,8 +122,8 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "FP2", 100, "", "")) == 28
-    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100, "", "")) == 7
+    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "MACCS", 100, "", "")) == 28
+    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'RDKit', 100, "", "")) == 7
 
 
 def test_substructure_search():

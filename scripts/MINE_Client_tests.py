@@ -1,5 +1,5 @@
-__author__ = 'JGJeffryes'
-from lib.biokbase.mine_database.Client import mineDatabaseServices
+from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
+from nose.tools import assert_raises
 
 services = mineDatabaseServices(url='http://bio-data-1.mcs.anl.gov/services/mine-database')
 test_db = 'EcoCycexp2'
@@ -21,7 +21,8 @@ def test_quick_search():
 
 
 def test_database_query():
-    assert services.database_query('admin', '', "", "") == ['Illegal query']
+    with assert_raises(ServerError):
+        services.database_query('admin', '', "", "")
     assert services.database_query(test_db, "{'MINE_id': 19160}", "", "") == [glucose]
     assert services.database_query(test_db, "{'Names': 'Glucose'}", "", "") == [glucose]
 
