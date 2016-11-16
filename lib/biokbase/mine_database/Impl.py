@@ -4,6 +4,7 @@ import time
 import Utils
 import BatchAdductQuery
 from ast import literal_eval
+from minedatabase import databases, queries
 
 
 class Pathway_query_params():
@@ -61,6 +62,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         self.db_client = Utils.establish_db_client()
         self.kbase_db = self.db_client['KBase']
         self.keggdb = self.db_client['KEGGdb']
+        self.legacy_dbs = {"CDMINE", "KEGGexp2", "YMDBexp2", "EcoCycexp2"}
         for model in self.kbase_db.models.find({}, {'Name': 1}):
             self.models.append((model['_id'], model['Name']))
         with open('./lib/biokbase/mine_database/Positive Adducts full.txt') as infile:
@@ -94,7 +96,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         print("<Quick Search: DB=%s, Query=%s>" % (db, query))
         db = self.db_client[db]
-        quick_search_results = Utils.quick_search(db, query, search_projection)
+        quick_search_results = queries.quick_search(db, query, search_projection)
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -110,6 +112,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN similarity_search
         print("<Similarity Search: DB=%s, Structure=%s, MinTC=%s, FPType=%s, Limit=%s>" % (db, comp_structure,
                                                                                             min_tc, fp_type, limit))
+        if db not in self.legacy_dbs:
+            return [queries.similarity_search(comp_structure, min_tc, fp_type, limit, search_projection)]
         similarity_search_results = []
         fp_type = str(fp_type)
         db = self.db_client[db]
@@ -144,6 +148,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: structure_search_results
         #BEGIN structure_search
         print("<Structure Search: DB=%s, Structure=%s, Format=%s>" % (db, comp_structure, input_format))
+        if db not in self.legacy_dbs:
+            return [queries.structure_search(comp_structure, search_projection)]
         db = self.db_client[db]
         mol = pybel.readstring(str(input_format), str(comp_structure))
         inchi_key = mol.write("inchikey").strip()
@@ -164,6 +170,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: substructure_search_results
         #BEGIN substructure_search
         print("<Substructure Search: DB=%s, Structure=%s, Limit=%s>" % (db, substructure, limit))
+        if db not in self.legacy_dbs:
+            return [queries.substructure_search(substructure, limit, search_projection)]
         substructure_search_results = []
         db = self.db_client[db]
         if "\n" in substructure:
@@ -195,12 +203,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return variables are: database_query_results
         #BEGIN database_query
         print("<Database Search: DB=%s, Query=%s>" % (db, mongo_query))
-        if db != 'admin':  # we don't want users poking around here
-            db = self.db_client[db]
-            query_dict = literal_eval(mongo_query)  # this transforms the string into a dictionary
-            database_query_results = [x for x in db.compounds.find(query_dict, search_projection)]
-        else:
-            database_query_results = ['Illegal query']
+        db = self.db_client[db]
+        database_query_results = queries.advanced_search(db, mongo_query, search_projection)
         database_query_results = Utils.score_compounds(db, database_query_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END database_query
 

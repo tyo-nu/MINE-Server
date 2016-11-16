@@ -14,17 +14,6 @@ glucose = {u'SMILES': u'OCC1OC(O)C(C(C1O)O)O', u'Inchikey': u'WQZGKKKJIJFFOK-UHF
 test_molfile = open("./scripts/xanthine.mol", "r").read()
 
 
-class MZParams():
-    def __init__(self):
-        self.db = 'KEGGexp2'
-        self.tolerance = 2.0
-        self.adducts = ['[M+H]+']
-        self.models = ['Bacteria']
-        self.ppm = False
-        self.charge = True
-        self.halogens = False
-
-
 class Options():
     def __init__(self):
         self.adduct_file = "lib/All Adducts.txt"
@@ -40,6 +29,7 @@ class Options():
 
 config = Options()
 services = mineDatabaseServices(None)
+
 
 def test_quick_search():
     assert services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')[0] == [glucose]
@@ -105,7 +95,7 @@ def test_ms2_search():
     result2_2 = services.ms2_search(open("./scripts/folate_form.txt").read(), "form", params)[0]
     assert len(result2) == len(result2_2)
     result2_2 = services.ms2_search(open("./scripts/2870575.msp").read(), "msp", params)[0]
-    print len(result2), len(result2_2)
+    print(len(result2), len(result2_2))
     assert len(result2) == len(result2_2)
 
 
@@ -122,18 +112,18 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    print services.similarity_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100, "", "")
-    print services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100, "", "")
+    print(services.similarity_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 0.8, 'FP2', 100, "", ""))
+    print(services.similarity_search(test_db, test_molfile, 0.8, 'FP4', 100, "", ""))
 
 
 def test_structure_search():
-    print services.structure_search("EcoCycexp2", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', "", "")
-    print services.structure_search("EcoCycexp2", "mol", test_molfile, "", "")
+    print(services.structure_search("EcoCycexp2", "smi", 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', "", ""))
+    print(services.structure_search("EcoCycexp2", "mol", test_molfile, "", ""))
 
 
 def test_substructure_search():
-    print services.substructure_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20, "", "")
-    print services.substructure_search('KEGGexp2', test_molfile, 20, "", "")
+    print(services.substructure_search(test_db, 'O=C1CC(OC1COP(=O)(OP(=O)(O)O)O)n1cc(C)c(nc1=O)O', 20, "", ""))
+    print(services.substructure_search('KEGGexp2', test_molfile, 20, "", ""))
 
 
 def test_model_search():

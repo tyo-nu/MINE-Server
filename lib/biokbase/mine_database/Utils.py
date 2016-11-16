@@ -71,6 +71,8 @@ def score_compounds(db, compounds, model_id, parent_frac=0.5, reaction_frac=0.5)
     if not model_id:
         return compounds
     model = db.models.find_one({"_id": model_id})
+    if not model:
+        return compounds
     parents = set(model["Compound_ids"])
     operators = dict((x[0], x[1]) for x in model['Operators'])
 
