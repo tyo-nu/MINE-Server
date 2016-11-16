@@ -243,46 +243,46 @@ class Application(object):
         self.rpc_service = JSONRPCServiceCustom()
         self.rpc_service.add(impl_mineDatabaseServices.model_search,
                              name='mineDatabaseServices.model_search',
-                             types=[str])
+                             types=[basestring])
         self.rpc_service.add(impl_mineDatabaseServices.quick_search,
                              name='mineDatabaseServices.quick_search',
-                             types=[str, str])
+                             types=[basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.similarity_search,
                              name='mineDatabaseServices.similarity_search',
-                             types=[str, str, float, str, int, str, str])
+                             types=[basestring, basestring, float, basestring, int, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.structure_search,
                              name='mineDatabaseServices.structure_search',
-                             types=[str, str, str, str, str])
+                             types=[basestring, basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.substructure_search,
                              name='mineDatabaseServices.substructure_search',
-                             types=[str, str, int, str, str])
+                             types=[basestring, basestring, int, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
-                             types=[str, str, str, str])
+                             types=[basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_comps,
                              name='mineDatabaseServices.get_comps',
-                             types=[str, list])
+                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
                              name='mineDatabaseServices.get_rxns',
-                             types=[str, list])
+                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_ops,
                              name='mineDatabaseServices.get_ops',
-                             types=[str, list])
+                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_operator,
                              name='mineDatabaseServices.get_operator',
-                             types=[str, str])
+                             types=[basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_adducts,
                              name='mineDatabaseServices.get_adducts',
                              types=[])
         self.rpc_service.add(impl_mineDatabaseServices.ms_adduct_search,
                              name='mineDatabaseServices.ms_adduct_search',
-                             types=[str, str, dict])
+                             types=[basestring, basestring, dict])
         self.rpc_service.add(impl_mineDatabaseServices.ms2_search,
                              name='mineDatabaseServices.ms2_search',
-                             types=[str, str, dict])
+                             types=[basestring, basestring, dict])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
-                             types=[str, str, str, int, int])
+                             types=[basestring, basestring, basestring, int, int])
 
     def __call__(self, environ, start_response):
         # Context object, equivalent to the perl impl CallContext
