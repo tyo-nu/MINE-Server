@@ -73,6 +73,10 @@ def test_ms_adduct_search():
     result = services.ms_adduct_search("181.071188116\n0.0", "form", params)
     assert len(result) == 31
     assert isinstance(result[0], dict)
+    params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': ['Bacteria'], 'ppm': False,
+              'charge': False, 'halogens': False}
+    result2 = services.ms_adduct_search(open("./scripts/folate.mgf").read(), "mgf", params)
+    assert result2
 
 
 def test_ms2_search():
@@ -110,7 +114,7 @@ def test_similarity_search():
 
 
 def test_substructure_search():
-    assert len(services.substructure_search(test_db, 'cccccc', 100, "", "")) == 100
+    assert len(services.substructure_search(test_db, 'c1ccccc1', 100, "", "")) == 100
     assert isinstance(services.substructure_search(test_db, 'Nc1ncnc2[nH]cnc12', 100, "", "")[0], dict)
 
 

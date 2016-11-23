@@ -96,7 +96,10 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         #BEGIN quick_search
         print("<Quick Search: DB=%s, Query=%s>" % (db, query))
         db = self.db_client[db]
-        quick_search_results = queries.quick_search(db, query, search_projection)
+        if db.name not in self.legacy_dbs:
+            quick_search_results = queries.quick_search(db, query, search_projection)
+        else:
+            quick_search_results = Utils.quick_search(db, query, search_projection)
         #END quick_search
 
         #At some point might do deeper type checking...

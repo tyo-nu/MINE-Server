@@ -39,7 +39,6 @@ glucose = {u'SMILES': u'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O', u'Inchikey': u'
            u'Formula': u'C6H12O6', u'_id': u'Ccffda1b2e82fcdb0e1e710cad4d5f70df7a5d74f'}
 
 
-
 def test_quick_search():
     assert glucose in services.quick_search(test_db, 'WQZGKKKJIJFFOK-GASJEMHNSA-N')
     assert services.quick_search(test_db, 'C00031') == [glucose]
@@ -122,13 +121,14 @@ def test_pathway_search():
 
 
 def test_similarity_search():
-    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "MACCS", 100, "", "")) == 28
-    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'RDKit', 100, "", "")) == 7
+    assert len(services.similarity_search(test_db, 'OCC1OC(O)C(C(C1O)O)O', 0.9, "MACCS", 100, "", "")) == 100
+    assert len(services.similarity_search(test_db, test_molfile, 0.8, 'MACCS', 100, "", "")) == 9
 
 
 def test_substructure_search():
-    assert len(services.substructure_search(test_db, 'cccccc', 100, "", "")) == 100
-    assert isinstance(services.substructure_search(test_db, 'Nc1ncnc2[nH]cnc12', 100, "", "")[0], dict)
+    meh = services.substructure_search(test_db, 'CCC', 50, "", "")
+    assert len(meh) == 50
+    assert isinstance(meh[0], dict)
 
 
 def test_model_search():
@@ -137,5 +137,4 @@ def test_model_search():
 
 
 def test_structure_search():
-    assert services.structure_search(test_db, "mol", test_molfile, "", "")[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
-    assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O', "", "") == [glucose]
+    assert services.structure_search(test_db, "smi", 'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O', "", "")[0][u'_id'] == u'Ccffda1b2e82fcdb0e1e710cad4d5f70df7a5d74f'
