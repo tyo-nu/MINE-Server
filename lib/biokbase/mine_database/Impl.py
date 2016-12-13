@@ -254,9 +254,9 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             else:
                 meh = db.compounds.find_one({'_id': x}, {"len_FP2": 0, "FP2": 0, "len_FP4": 0, "FP4": 0})
             # New MINEs won't have this precomputed
-            if 'Reactant_in' not in meh and 'Product_of' not in meh:
-                meh['Reactant_in'] = [x['_id'] for x in db.reactions.find("{Reactants.c_id:%s}" % meh['_id'])]
-                meh['Product_of'] = [x['_id'] for x in db.reactions.find("{Products.c_id:%s}" % meh['_id'])]
+            if meh and 'Reactant_in' not in meh and 'Product_of' not in meh:
+                meh['Reactant_in'] = [x['_id'] for x in db.reactions.find({'Reactants.c_id': meh['_id']})]
+                meh['Product_of'] = [x['_id'] for x in db.reactions.find({'Products.c_id': meh['_id']})]
             objects.append(meh)
         #END get_comps
 
