@@ -195,8 +195,8 @@ def read_msp(input_string, charge):
                 name = sl[1]
             #elif sl[0] == "RETENTIONTIME":
                 #r_time = sl[1]
-            elif sl[0] == "IONMODE":
-                charge = sl[1].capitalize()
+            #elif sl[0] == "IONMODE":
+                #charge = sl[1].capitalize()
             elif sl[0] == "INCHIKEY":
                 inchikey = sl[1]
             elif line and line[0].isdigit():
