@@ -223,7 +223,7 @@ module mineDatabaseServices {
 		the specified json query
 		Input parameters for the "database_query" function:
 		string db - the database against which the query will be performed
-		mongo_query query - A valid mongo query as a string
+		string mongo_query - A valid mongo query as a string
 		string parent_filter - require all results originate from compounds in this specified metabolic model
 		string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 	*/
@@ -235,7 +235,7 @@ module mineDatabaseServices {
         Input parameters for the "get_ids" function:
         string db - the database from which to retrieve ids
         string collection - the collection from which to retrieve ids
-		mongo_query query - A valid mongo query as a string
+		string query - A valid mongo query as a string
 
     */
     funcdef get_ids(string db, string collection, string query) returns (list<object_id> ids);
@@ -341,16 +341,15 @@ module mineDatabaseServices {
 
 		Input parameters for the "spectra_download" function:
 		string db - the database in which to search for spectra
-		mongo_query query - A valid mongo query as a string
+		string mongo_query - A valid mongo query as a string
 		string parent_filter - require all results originate from compounds in
 		this specified metabolic model
 		bool putative - should putative metabolites be included
 		list<spec_type> spectra_types - list of spectra types to download.
 		If empty, all types are downloaded
 	*/
-	funcdef spectra_download(string db, mongo_query query, string parent_filter, bool putative, list<spec_type> spec_type)
+	funcdef spectra_download(string db, string mongo_query, string parent_filter, bool putative, list<spec_type> spec_type)
 	returns (string spectral_library);
-};
 
     /*
 		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
