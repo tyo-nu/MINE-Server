@@ -426,6 +426,19 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [ms_adduct_output]
 
+    def spectra_download(self, db, mongo_query, parent_filter, putative, spec_type):
+        # self.ctx is set by the wsgi application class
+        # return variables are: spectral_library
+        #BEGIN spectra_download
+        #END spectra_download
+
+        #At some point might do deeper type checking...
+        if not isinstance(spectral_library, basestring):
+            raise ValueError('Method spectra_download return value ' +
+                             'spectral_library is not type basestring as required.')
+        # return the results
+        return [spectral_library]
+
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
         # self.ctx is set by the wsgi application class
         # return variables are: pathway_query_results

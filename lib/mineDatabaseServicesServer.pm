@@ -40,6 +40,7 @@ our %return_counts = (
         'get_adducts' => 1,
         'ms_adduct_search' => 1,
         'ms2_search' => 1,
+        'spectra_download' => 1,
         'pathway_search' => 1,
         'version' => 1,
 );
@@ -64,6 +65,7 @@ sub _build_valid_methods
         'get_adducts' => 1,
         'ms_adduct_search' => 1,
         'ms2_search' => 1,
+        'spectra_download' => 1,
         'pathway_search' => 1,
         'version' => 1,
     };

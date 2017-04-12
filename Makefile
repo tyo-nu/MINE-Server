@@ -2,7 +2,7 @@
 # if the directories are not already set:
 DEPLOY_RUNTIME ?= /vol/kbase/runtime/
 TARGET         ?= /vol/model-prod/deploy/
-TOOLS_DIR      ?= /homes/chenry/kbase/dev_container/tools
+TOOLS_DIR      ?= /homes/jjeffryes/dev_container/tools
 
 # Include standard makefile
 include $(TOOLS_DIR)/Makefile.common
@@ -158,4 +158,4 @@ compile-typespec:
 	rm -f lib/${SERVICE_NAME}Server.py
 	rm -rf Bio
 
-include /homes/chenry/kbase/dev_container/tools/Makefile.common.rules
+include /homes/jjeffryes/dev_container/tools/Makefile.common.rules
