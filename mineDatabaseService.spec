@@ -40,6 +40,12 @@ module mineDatabaseServices {
     /* A compound that is a component of a reaction as tuple of stoichiometric coefficient and _id  */
 	typedef tuple<int stoic, object_id id> rxn_comp;
 
+	/*
+	    A mass spectrum type descriptor. For example, (TRUE, 30) describes a
+	    30 eV spectrum acquired in positive ion mode
+	  */
+	typedef tuple<bool mode, int energy> spec_type;
+
     /* A list of all the compounds and reactions in a pathway */
 	typedef list<object_id> pathway;
     
@@ -328,6 +334,23 @@ module mineDatabaseServices {
     /*  performs a ms adduct search but also scores hits using the supplied ms2 data */
 
 	funcdef ms2_search(string text, string text_type, ms2Params ms_params) returns (list<ms_hit> ms_adduct_output);
+
+    /*
+		Creates spectral_library, a string containing query results in msp
+		format
+
+		Input parameters for the "spectra_download" function:
+		string db - the database in which to search for spectra
+		mongo_query query - A valid mongo query as a string
+		string parent_filter - require all results originate from compounds in
+		this specified metabolic model
+		bool putative - should putative metabolites be included
+		list<spec_type> spectra_types - list of spectra types to download.
+		If empty, all types are downloaded
+	*/
+	funcdef spectra_download(string db, mongo_query query, string parent_filter, bool putative, list<spec_type> spec_type)
+	returns (string spectral_library);
+};
 
     /*
 		Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)
