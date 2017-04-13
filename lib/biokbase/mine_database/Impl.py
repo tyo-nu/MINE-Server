@@ -5,19 +5,7 @@ import Utils
 import BatchAdductQuery
 from ast import literal_eval
 from minedatabase import databases, queries
-
-
-class Pathway_query_params():
-    def __init__(self, db, start, end, length, all_path):
-        self.db = db
-        self.start_comp = start
-        self.end_comp = end
-        self.len_limit = length
-        self.all_paths = all_path
-        self.np_min = -3
-        self.gibbs_cap = 100
-        self.verbose = False
-
+import ast
 
 class Struct:
     def __init__(self, **entries):
@@ -430,6 +418,63 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # self.ctx is set by the wsgi application class
         # return variables are: spectral_library
         #BEGIN spectra_download
+        def print_peaklist(peaklist):
+            text = ["Num Peaks: %s" % len(peaklist)]
+            for x in peaklist:
+                text.append("%s %s" % (x[0], x[1]))
+            text.append("")
+            return text
+
+        spectral_library = []
+        msp_projection = {'MINE_id': 1, 'Names': 1, 'Mass': 1, 'Generation': 1,
+                          'Inchikey': 1, 'Formula': 1, 'SMILES': 1,
+                          'Sources': 1, 'Pos_CFM_spectra': 1,
+                          'Neg_CFM_spectra': 1}
+        db = self.db_client[db]
+        if mongo_query:
+            query_dict = ast.literal_eval(mongo_query)
+        else:
+            query_dict = {}
+        if not putative:
+            query_dict['Generation'] = 0
+        if parent_filter:
+            model = db.models.find_one({"_id": parent_filter})
+            if not model:
+                raise ValueError('Invalid Model specified')
+            parents = model["Compound_ids"]
+            query_dict['$or'] = [{'_id': {'$in': parents}},
+                                 {'Sources.Compound': {'$in': parents}}]
+        results = db.compounds.find(query_dict, msp_projection)
+
+        for compound in results:
+            # make header
+            header = []
+            if "Names" in compound and len(compound['Names']):
+                header.append("Name: %s" % compound['Names'][0])
+                for alt in compound['Names'][1:]:
+                    header.append("Synonym: %s" % alt)
+            for k, v in compound.items():
+                if k not in {"Names", "Pos_CFM_spectra", "Neg_CFM_spectra"}:
+                    header.append("%s: %s" % (k, v))
+            header.append("Instrument: CFM-ID")
+
+            # add peak lists
+            if 'Pos_CFM_spectra' in compound:
+                for energy, spec in compound['Pos_CFM_spectra'].items():
+                    if not spec_type or (True, int(energy[:2])) in spec_type:
+                        spectral_library += header
+                        spectral_library += ["Ionization Mode: Positive",
+                                             "Energy: %s" % energy]
+                        spectral_library += print_peaklist(spec)
+
+            if 'Neg_CFM_spectra' in compound:
+                for energy, spec in compound['Neg_CFM_spectra'].items():
+                    if not spec_type or (False, int(energy[:2])) in spec_type:
+                        spectral_library += header
+                        spectral_library += ["Ionization Mode: Negative",
+                                             "Energy: %s" % energy]
+                        spectral_library += print_peaklist(spec)
+        spectral_library = "\n".join(spectral_library)
         #END spectra_download
 
         #At some point might do deeper type checking...
@@ -452,3 +497,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'pathway_query_results is not type list as required.')
         # return the results
         return [pathway_query_results]
+
+meh = mineDatabaseServices(None)
+meh.spectra_download('EcoCycexp2', False, False, False,
+                                    [(True, 20), (False, 40)])
