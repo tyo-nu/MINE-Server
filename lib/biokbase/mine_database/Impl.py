@@ -461,7 +461,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             # add peak lists
             if 'Pos_CFM_spectra' in compound:
                 for energy, spec in compound['Pos_CFM_spectra'].items():
-                    if not spec_type or (True, int(energy[:2])) in spec_type:
+                    if not spec_type or [True, int(energy[:2])] in spec_type:
                         spectral_library += header
                         spectral_library += ["Ionization Mode: Positive",
                                              "Energy: %s" % energy]
@@ -469,7 +469,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
 
             if 'Neg_CFM_spectra' in compound:
                 for energy, spec in compound['Neg_CFM_spectra'].items():
-                    if not spec_type or (False, int(energy[:2])) in spec_type:
+                    if not spec_type or [False, int(energy[:2])] in spec_type:
                         spectral_library += header
                         spectral_library += ["Ionization Mode: Negative",
                                              "Energy: %s" % energy]
@@ -497,7 +497,3 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'pathway_query_results is not type list as required.')
         # return the results
         return [pathway_query_results]
-
-meh = mineDatabaseServices(None)
-meh.spectra_download('EcoCycexp2', False, False, False,
-                                    [(True, 20), (False, 40)])

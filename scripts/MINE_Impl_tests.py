@@ -131,11 +131,11 @@ def test_model_search():
 
 
 def test_spectra_download():
-    one = services.spectra_download(test_db, False, False, False,
-                                    [(True, 20), (False, 40)])[0]
-    assert len(one)
+    one = services.spectra_download(test_db, "", "", False,
+                                    [[True, 20], [False, 40]])[0]
+    # assert len(one)
     two = services.spectra_download(test_db, "{'Formula': {'$regex': '^C6H'}}",
-                                    False, True, False)[0]
+                                    "", True, [])[0]
     assert len(two)
-    three = services.spectra_download(test_db, False, 'eco', True, False)[0]
+    three = services.spectra_download(test_db, "", 'eco', True, [])[0]
     assert len(three)
