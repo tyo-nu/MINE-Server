@@ -36,6 +36,7 @@
 		<li><a href="#get_adducts">get_adducts</a></li>
 		<li><a href="#ms_adduct_search">ms_adduct_search</a></li>
 		<li><a href="#ms2_search">ms2_search</a></li>
+		<li><a href="#spectra_download">spectra_download</a></li>
 		<li><a href="#pathway_search">pathway_search</a></li>
 	</ul>
 
@@ -46,6 +47,7 @@
 		<li><a href="#object_id">object_id</a></li>
 		<li><a href="#comp_stub">comp_stub</a></li>
 		<li><a href="#rxn_comp">rxn_comp</a></li>
+		<li><a href="#spec_type">spec_type</a></li>
 		<li><a href="#pathway">pathway</a></li>
 		<li><a href="#adduct_result">adduct_result</a></li>
 		<li><a href="#peak">peak</a></li>
@@ -235,7 +237,7 @@ object_id is a string</pre><dt><strong><a name="description6" class="item">Descr
 the specified json query
 Input parameters for the &quot;database_query&quot; function:
 string db - the database against which the query will be performed
-mongo_query query - A valid mongo query as a string
+string mongo_query - A valid mongo query as a string
 string parent_filter - require all results originate from compounds in this specified metabolic model
 string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model</p>
 </dd>
@@ -260,7 +262,7 @@ object_id is a string</pre><dt><strong><a name="description7" class="item">Descr
 Input parameters for the &quot;get_ids&quot; function:
 string db - the database from which to retrieve ids
 string collection - the collection from which to retrieve ids
-        mongo_query query - A valid mongo query as a string</p>
+        string query - A valid mongo query as a string</p>
 </dd>
 </dl>
 <p>
@@ -476,11 +478,44 @@ object_id is a string</pre><dt><strong><a name="description14" class="item">Desc
 </dl>
 <p>
 </p>
+<h2><a name="spectra_download">spectra_download</a></h2>
+<pre>
+  $spectral_library = $obj-&gt;spectra_download($db, $mongo_query, $parent_filter, $putative, $spec_type)</pre>
+<dl>
+<dt><strong><a name="parameter_and_return_types15" class="item">Parameter and return types</a></strong></dt>
+
+<pre>
+$db is a string
+$mongo_query is a string
+$parent_filter is a string
+$putative is a bool
+$spec_type is a reference to a list where each element is a spec_type
+$spectral_library is a string
+bool is an int
+spec_type is a reference to a list containing 2 items:
+	0: (mode) a bool
+	1: (energy) an int</pre><dt><strong><a name="description15" class="item">Description</a></strong></dt>
+
+<dd>
+<p>Creates spectral_library, a string containing query results in msp
+format</p>
+<p>Input parameters for the &quot;spectra_download&quot; function:
+string db - the database in which to search for spectra
+string mongo_query - A valid mongo query as a string
+string parent_filter - require all results originate from compounds in
+this specified metabolic model
+bool putative - should putative metabolites be included
+list&lt;spec_type&gt; spectra_types - list of spectra types to download.
+If empty, all types are downloaded</p>
+</dd>
+</dl>
+<p>
+</p>
 <h2><a name="pathway_search">pathway_search</a></h2>
 <pre>
   $pathway_query_results = $obj-&gt;pathway_search($db, $start_comp, $end_comp, $len_limit, $all_paths)</pre>
 <dl>
-<dt><strong><a name="parameter_and_return_types15" class="item">Parameter and return types</a></strong></dt>
+<dt><strong><a name="parameter_and_return_types16" class="item">Parameter and return types</a></strong></dt>
 
 <pre>
 $db is a string
@@ -491,7 +526,7 @@ $all_paths is a bool
 $pathway_query_results is a reference to a list where each element is a pathway
 object_id is a string
 bool is an int
-pathway is a reference to a list where each element is an object_id</pre><dt><strong><a name="description15" class="item">Description</a></strong></dt>
+pathway is a reference to a list where each element is an object_id</pre><dt><strong><a name="description16" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Creates pathway_query_results, a list of valid pathways (length one unless all_paths is true)</p>
@@ -511,7 +546,7 @@ object_id start_comp - the compound to begin the search from
 </p>
 <h2><a name="bool">bool</a></h2>
 <dl>
-<dt><strong><a name="description16" class="item">Description</a></strong></dt>
+<dt><strong><a name="description17" class="item">Description</a></strong></dt>
 
 <dd>
 <p>indicates true or false values, false = 0, true =1</p>
@@ -525,7 +560,7 @@ an int
 </p>
 <h2><a name="object_id">object_id</a></h2>
 <dl>
-<dt><strong><a name="description17" class="item">Description</a></strong></dt>
+<dt><strong><a name="description18" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Unique ID of a compound or reaction derived from a hexdigest of the sha1 hash of a unique feature.
@@ -540,7 +575,7 @@ a string
 </p>
 <h2><a name="comp_stub">comp_stub</a></h2>
 <dl>
-<dt><strong><a name="description18" class="item">Description</a></strong></dt>
+<dt><strong><a name="description19" class="item">Description</a></strong></dt>
 
 <dd>
 <p>A summery of a compound object which is returned from compound query</p>
@@ -562,7 +597,7 @@ Formula has a value which is a string</pre></dl>
 </p>
 <h2><a name="rxn_comp">rxn_comp</a></h2>
 <dl>
-<dt><strong><a name="description19" class="item">Description</a></strong></dt>
+<dt><strong><a name="description20" class="item">Description</a></strong></dt>
 
 <dd>
 <p>A compound that is a component of a reaction as tuple of stoichiometric coefficient and _id</p>
@@ -575,14 +610,30 @@ a reference to a list containing 2 items:
 1: (id) an object_id</pre></dl>
 <p>
 </p>
+<h2><a name="spec_type">spec_type</a></h2>
+<dl>
+<dt><strong><a name="description21" class="item">Description</a></strong></dt>
+
+<dd>
+<p>A mass spectrum type descriptor. For example, (TRUE, 30) describes a
+30 eV spectrum acquired in positive ion mode</p>
+</dd>
+<dt><strong><a name="definition5" class="item">Definition</a></strong></dt>
+
+<pre>
+a reference to a list containing 2 items:
+0: (mode) a bool
+1: (energy) an int</pre></dl>
+<p>
+</p>
 <h2><a name="pathway">pathway</a></h2>
 <dl>
-<dt><strong><a name="description20" class="item">Description</a></strong></dt>
+<dt><strong><a name="description22" class="item">Description</a></strong></dt>
 
 <dd>
 <p>A list of all the compounds and reactions in a pathway</p>
 </dd>
-<dt><strong><a name="definition5" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition6" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a list where each element is an object_id
@@ -591,7 +642,7 @@ a reference to a list where each element is an object_id
 </p>
 <h2><a name="adduct_result">adduct_result</a></h2>
 <dl>
-<dt><strong><a name="description21" class="item">Description</a></strong></dt>
+<dt><strong><a name="description23" class="item">Description</a></strong></dt>
 
 <dd>
 <p>The result of a single adduct query on the database</p>
@@ -600,7 +651,7 @@ a reference to a list where each element is an object_id
         string formula - the formula that was matched
         list&lt;object_id&gt; isomers - a list of the isomers of the formula present in the database</pre>
 </dd>
-<dt><strong><a name="definition6" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition7" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -611,7 +662,7 @@ isomers has a value which is a reference to a list where each element is a comp_
 </p>
 <h2><a name="peak">peak</a></h2>
 <dl>
-<dt><strong><a name="description22" class="item">Description</a></strong></dt>
+<dt><strong><a name="description24" class="item">Description</a></strong></dt>
 
 <dd>
 <p>An annotated ms peak output by a batch mass adduct query</p>
@@ -625,7 +676,7 @@ isomers has a value which is a reference to a list where each element is a comp_
         bool native_hit - if true, one of the compounds suggested matches an native compound from the metabolic model
         list&lt;adduct_result&gt; adducts - the adducts that match a given peak</pre>
 </dd>
-<dt><strong><a name="definition7" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition8" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -638,7 +689,7 @@ adducts has a value which is a reference to a list where each element is an addu
 </p>
 <h2><a name="ms_hit">ms_hit</a></h2>
 <dl>
-<dt><strong><a name="description23" class="item">Description</a></strong></dt>
+<dt><strong><a name="description25" class="item">Description</a></strong></dt>
 
 <dd>
 <p>A putative match for a metabolomics search
@@ -657,7 +708,7 @@ float minKovatsRI -
 float maxKovatsRI - values of the predicted Kovats Retention Index
 float NP_likeness - the natural product likeness score of the hit</p>
 </dd>
-<dt><strong><a name="definition8" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition9" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -678,7 +729,7 @@ NP_likeness has a value which is a float</pre></dl>
 </p>
 <h2><a name="compoundobject">CompoundObject</a></h2>
 <dl>
-<dt><strong><a name="description24" class="item">Description</a></strong></dt>
+<dt><strong><a name="description26" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Data structures for a compound object</p>
@@ -696,7 +747,7 @@ NP_likeness has a value which is a float</pre></dl>
         list&lt;object_id&gt; Reactant_in - Reactions in which the compound is a reactant
         list&lt;object_id&gt; Product_of - Reactions in which the compound is a product</pre>
 </dd>
-<dt><strong><a name="definition9" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition10" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -713,7 +764,7 @@ Product_of has a value which is a reference to a list where each element is an o
 </p>
 <h2><a name="reactionobject">ReactionObject</a></h2>
 <dl>
-<dt><strong><a name="description25" class="item">Description</a></strong></dt>
+<dt><strong><a name="description27" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Data structures for a reaction object</p>
@@ -728,7 +779,7 @@ Product_of has a value which is a reference to a list where each element is an o
         float Energy - Delta G of reaction calculated by group contribution theory
         float Error - Estimated error of above energy</pre>
 </dd>
-<dt><strong><a name="definition10" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition11" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -742,7 +793,7 @@ Error has a value which is a float</pre></dl>
 </p>
 <h2><a name="operatorobject">OperatorObject</a></h2>
 <dl>
-<dt><strong><a name="description26" class="item">Description</a></strong></dt>
+<dt><strong><a name="description28" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Data structures for a operator object</p>
@@ -756,7 +807,7 @@ Error has a value which is a float</pre></dl>
         float Specificity - The fraction of predicted reactions which match known reactions
         float Avg_delta_G - The Average Delta G of all predicted reactions</pre>
 </dd>
-<dt><strong><a name="definition11" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition12" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -767,7 +818,7 @@ Reaction_ids has a value which is a reference to a list where each element is an
 </p>
 <h2><a name="mzparams">mzParams</a></h2>
 <dl>
-<dt><strong><a name="description27" class="item">Description</a></strong></dt>
+<dt><strong><a name="description29" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Parameters for the ms adduct search function:</p>
@@ -784,7 +835,7 @@ string db - the database in which to search for M/S matches
         string parent_filter - require all results originate from compounds in this specified metabolic model
 string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model</p>
 </dd>
-<dt><strong><a name="definition12" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition13" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
@@ -803,7 +854,7 @@ halogen has a value which is a bool</pre></dl>
 </p>
 <h2><a name="ms2params">ms2Params</a></h2>
 <dl>
-<dt><strong><a name="description28" class="item">Description</a></strong></dt>
+<dt><strong><a name="description30" class="item">Description</a></strong></dt>
 
 <dd>
 <p>Parameters for the ms2 adduct search function:</p>
@@ -822,7 +873,7 @@ string db - the database in which to search for M/S matches
         string parent_filter - require all results originate from compounds in this specified metabolic model
 string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model</p>
 </dd>
-<dt><strong><a name="definition13" class="item">Definition</a></strong></dt>
+<dt><strong><a name="definition14" class="item">Definition</a></strong></dt>
 
 <pre>
 a reference to a hash where the following keys are defined:
