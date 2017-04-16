@@ -259,12 +259,12 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
                              types=[basestring, basestring, basestring, basestring])
-        self.rpc_service.add(impl_mineDatabaseServices.get_comps,
-                             name='mineDatabaseServices.get_comps',
-                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_ids,
                              name='mineDatabaseServices.get_ids',
                              types=[basestring, basestring, basestring])
+        self.rpc_service.add(impl_mineDatabaseServices.get_comps,
+                             name='mineDatabaseServices.get_comps',
+                             types=[basestring, list])
         self.rpc_service.add(impl_mineDatabaseServices.get_rxns,
                              name='mineDatabaseServices.get_rxns',
                              types=[basestring, list])
@@ -283,6 +283,9 @@ class Application(object):
         self.rpc_service.add(impl_mineDatabaseServices.ms2_search,
                              name='mineDatabaseServices.ms2_search',
                              types=[basestring, basestring, dict])
+        self.rpc_service.add(impl_mineDatabaseServices.spectra_download,
+                             name='mineDatabaseServices.spectra_download',
+                             types=[basestring, basestring, basestring, int, list])
         self.rpc_service.add(impl_mineDatabaseServices.pathway_search,
                              name='mineDatabaseServices.pathway_search',
                              types=[basestring, basestring, basestring, int, int])
@@ -333,7 +336,7 @@ class Application(object):
                            }
                     trace = jre.trace if hasattr(jre, 'trace') else None
                     rpc_result = self.process_error(err, ctx, req, trace)
-                except Exception as e:
+                except Exception, e:
                     err = {'error': {'code': 0,
                                      'name': 'Unexpected Server Error',
                                      'message': 'An unexpected server error ' +
@@ -404,7 +407,7 @@ try:
 # a wsgi container that has enabled gevent, such as
 # uwsgi with the --gevent option
     if config is not None and config.get('gevent_monkeypatch_all', False):
-        print("Monkeypatching std libraries for async")
+        print "Monkeypatching std libraries for async"
         from gevent import monkey
         monkey.patch_all()
     uwsgi.applications = {
@@ -430,7 +433,7 @@ def start_server(host='localhost', port=0, newprocess=False):
         raise RuntimeError('server is already running')
     httpd = make_server(host, port, application)
     port = httpd.server_address[1]
-    print("Listening on port %s" % port)
+    print "Listening on port %s" % port
     if newprocess:
         _proc = Process(target=httpd.serve_forever)
         _proc.daemon = True
@@ -450,7 +453,7 @@ if __name__ == "__main__":
         opts, args = getopt(sys.argv[1:], "", ["port=", "host="])
     except GetoptError as err:
         # print help information and exit:
-        print(str(err))  # will print something like "option -a not recognized"
+        print str(err)  # will print something like "option -a not recognized"
         sys.exit(2)
     port = 9999
     host = 'localhost'
@@ -459,7 +462,7 @@ if __name__ == "__main__":
             port = int(a)
         elif o == '--host':
             host = a
-            print("Host set to %s" % host)
+            print "Host set to %s" % host
         else:
             assert False, "unhandled option"
 

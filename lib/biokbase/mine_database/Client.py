@@ -54,8 +54,8 @@ def _read_rcfile(file=_os.environ['HOME'] + '/.authrc'):  # @ReservedAssignment
                 authdata = {x: rawdata.get(x) for x in (
                     'user_id', 'token', 'client_secret', 'keyfile',
                     'keyfile_passphrase', 'password')}
-        except Exception as e:
-            print("Error while reading authrc file %s: %s" % (file, e))
+        except Exception, e:
+            print "Error while reading authrc file %s: %s" % (file, e)
     return authdata
 
 
@@ -74,8 +74,8 @@ def _read_inifile(file=_os.environ.get(  # @ReservedAssignment
                         else None for x in ('user_id', 'token',
                                             'client_secret', 'keyfile',
                                             'keyfile_passphrase', 'password')}
-        except Exception as e:
-            print("Error while reading INI file %s: %s" % (file, e))
+        except Exception, e:
+            print "Error while reading INI file %s: %s" % (file, e)
     return authdata
 
 
@@ -233,6 +233,11 @@ class mineDatabaseServices(object):
     def ms2_search(self, text, text_type, ms_params):
         resp = self._call('mineDatabaseServices.ms2_search',
                           [text, text_type, ms_params])
+        return resp[0]
+
+    def spectra_download(self, db, mongo_query, parent_filter, putative, spec_type):
+        resp = self._call('mineDatabaseServices.spectra_download',
+                          [db, mongo_query, parent_filter, putative, spec_type])
         return resp[0]
 
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):

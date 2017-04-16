@@ -126,3 +126,14 @@ def test_model_search():
 def test_structure_search():
     assert services.structure_search(test_db, "mol", test_molfile, "", "")[0][u'_id'] == u'C84d297bb12c40a0996e449dfc54afd69ccc3dd54'
     assert services.structure_search(test_db, "smi", 'OCC1OC(O)C(C(C1O)O)O', "", "") == [glucose]
+
+
+def test_spectra_download():
+    one = services.spectra_download(test_db, "", "", False,
+                                    [[True, 20], [False, 40]])
+    assert len(one)
+    two = services.spectra_download(test_db, "{'Formula': {'$regex': '^C6H'}}",
+                                    "", True, [])
+    assert len(two)
+    three = services.spectra_download(test_db, "", 'eco', True, [])
+    assert len(three)

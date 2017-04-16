@@ -528,7 +528,7 @@ A general function which uses mongo's find to create database_query_results, a l
 the specified json query
 Input parameters for the "database_query" function:
 string db - the database against which the query will be performed
-mongo_query query - A valid mongo query as a string
+string mongo_query - A valid mongo query as a string
 string parent_filter - require all results originate from compounds in this specified metabolic model
 string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 
@@ -609,7 +609,7 @@ Return a list of object_ids in a specified collection in a specified db
 Input parameters for the "get_ids" function:
 string db - the database from which to retrieve ids
 string collection - the collection from which to retrieve ids
-        mongo_query query - A valid mongo query as a string
+        string query - A valid mongo query as a string
 
 =back
 
@@ -1322,6 +1322,102 @@ sub ms2_search
 
 
 
+=head2 spectra_download
+
+  $spectral_library = $obj->spectra_download($db, $mongo_query, $parent_filter, $putative, $spec_type)
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$db is a string
+$mongo_query is a string
+$parent_filter is a string
+$putative is a bool
+$spec_type is a reference to a list where each element is a spec_type
+$spectral_library is a string
+bool is an int
+spec_type is a reference to a list containing 2 items:
+	0: (mode) a bool
+	1: (energy) an int
+
+</pre>
+
+=end html
+
+=begin text
+
+$db is a string
+$mongo_query is a string
+$parent_filter is a string
+$putative is a bool
+$spec_type is a reference to a list where each element is a spec_type
+$spectral_library is a string
+bool is an int
+spec_type is a reference to a list containing 2 items:
+	0: (mode) a bool
+	1: (energy) an int
+
+
+=end text
+
+
+
+=item Description
+
+Creates spectral_library, a string containing query results in msp
+format
+
+Input parameters for the "spectra_download" function:
+string db - the database in which to search for spectra
+string mongo_query - A valid mongo query as a string
+string parent_filter - require all results originate from compounds in
+this specified metabolic model
+bool putative - should putative metabolites be included
+list<spec_type> spectra_types - list of spectra types to download.
+If empty, all types are downloaded
+
+=back
+
+=cut
+
+sub spectra_download
+{
+    my $self = shift;
+    my($db, $mongo_query, $parent_filter, $putative, $spec_type) = @_;
+
+    my @_bad_arguments;
+    (!ref($db)) or push(@_bad_arguments, "Invalid type for argument \"db\" (value was \"$db\")");
+    (!ref($mongo_query)) or push(@_bad_arguments, "Invalid type for argument \"mongo_query\" (value was \"$mongo_query\")");
+    (!ref($parent_filter)) or push(@_bad_arguments, "Invalid type for argument \"parent_filter\" (value was \"$parent_filter\")");
+    (!ref($putative)) or push(@_bad_arguments, "Invalid type for argument \"putative\" (value was \"$putative\")");
+    (ref($spec_type) eq 'ARRAY') or push(@_bad_arguments, "Invalid type for argument \"spec_type\" (value was \"$spec_type\")");
+    if (@_bad_arguments) {
+	my $msg = "Invalid arguments passed to spectra_download:\n" . join("", map { "\t$_\n" } @_bad_arguments);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'spectra_download');
+    }
+
+    my $ctx = $mineDatabaseServicesServer::CallContext;
+    my($spectral_library);
+    #BEGIN spectra_download
+    #END spectra_download
+    my @_bad_returns;
+    (!ref($spectral_library)) or push(@_bad_returns, "Invalid type for return variable \"spectral_library\" (value was \"$spectral_library\")");
+    if (@_bad_returns) {
+	my $msg = "Invalid returns passed to spectra_download:\n" . join("", map { "\t$_\n" } @_bad_returns);
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error => $msg,
+							       method_name => 'spectra_download');
+    }
+    return($spectral_library);
+}
+
+
+
+
 =head2 pathway_search
 
   $pathway_query_results = $obj->pathway_search($db, $start_comp, $end_comp, $len_limit, $all_paths)
@@ -1589,6 +1685,44 @@ a reference to a list containing 2 items:
 a reference to a list containing 2 items:
 0: (stoic) an int
 1: (id) an object_id
+
+
+=end text
+
+=back
+
+
+
+=head2 spec_type
+
+=over 4
+
+
+
+=item Description
+
+A mass spectrum type descriptor. For example, (TRUE, 30) describes a
+30 eV spectrum acquired in positive ion mode
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a list containing 2 items:
+0: (mode) a bool
+1: (energy) an int
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a list containing 2 items:
+0: (mode) a bool
+1: (energy) an int
 
 
 =end text
