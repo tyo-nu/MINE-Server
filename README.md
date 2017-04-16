@@ -22,4 +22,4 @@ An example in Python accessing the API.
 	[{u'SMILES': u'OC1C(COP(=O)(OP(=O)(OP(=O)(O)O)O)O)OC(C1O)n1cnc2c1ncnc2N', u'NP_likeness': 1.0719, u'Generation': 0.0, u'MINE_id': 12815, u'Inchikey': u'ZKHQWZAMYRWXGA-UHFFFAOYSA-N', u'Mass': 506.99574548699997, u'Names': [u'ATP', u"Adenosine 5'-triphosphate"], u'Formula': u'C10H16N5O13P3', u'_id': u'C25a9fafebc1b08a0ae0fec015803771c73485a61'}]
 
 * To learn more about the MINE databases, visit http://minedatabase.mcs.anl.gov/. 
-* For specific API documentation, please refer to the docs.html file or http://jamesjeffryes.github.io/MINE-API/
+* For API documentation, please refer to the [API specification](http://jamesjeffryes.github.io/MINE-Server/)
