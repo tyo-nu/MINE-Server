@@ -453,6 +453,8 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 header.append("Name: %s" % compound['Names'][0])
                 for alt in compound['Names'][1:]:
                     header.append("Synonym: %s" % alt)
+            else:
+                header.append("Name: MINE Compound %s" % compound['MINE_id'])
             for k, v in compound.items():
                 if k not in {"Names", "Pos_CFM_spectra", "Neg_CFM_spectra"}:
                     header.append("%s: %s" % (k, v))
@@ -463,7 +465,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 for energy, spec in compound['Pos_CFM_spectra'].items():
                     if not spec_type or [True, int(energy[:2])] in spec_type:
                         spectral_library += header
-                        spectral_library += ["Ionization Mode: Positive",
+                        spectral_library += ["Ionization: Positive",
                                              "Energy: %s" % energy]
                         spectral_library += print_peaklist(spec)
 
