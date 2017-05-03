@@ -5,7 +5,19 @@ import Utils
 import BatchAdductQuery
 from ast import literal_eval
 from minedatabase import databases, queries
-import ast
+
+
+class Pathway_query_params():
+    def __init__(self, db, start, end, length, all_path):
+        self.db = db
+        self.start_comp = start
+        self.end_comp = end
+        self.len_limit = length
+        self.all_paths = all_path
+        self.np_min = -3
+        self.gibbs_cap = 100
+        self.verbose = False
+
 
 class Struct:
     def __init__(self, **entries):
@@ -78,7 +90,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [models]
 
-    def quick_search(self, db, query, parent_filter):
+    def quick_search(self, db, query):
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
@@ -97,7 +109,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
@@ -134,7 +146,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def structure_search(self, db, input_format, comp_structure, parent_filter):
+    def structure_search(self, db, input_format, comp_structure, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: structure_search_results
         #BEGIN structure_search
@@ -156,7 +168,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [structure_search_results]
 
-    def substructure_search(self, db, substructure, limit, parent_filter):
+    def substructure_search(self, db, substructure, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
@@ -189,7 +201,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [substructure_search_results]
 
-    def database_query(self, db, mongo_query, parent_filter):
+    def database_query(self, db, mongo_query, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
@@ -413,78 +425,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                              'ms_adduct_output is not type list as required.')
         # return the results
         return [ms_adduct_output]
-
-    def spectra_download(self, db, mongo_query, parent_filter, putative, spec_type):
-        # self.ctx is set by the wsgi application class
-        # return variables are: spectral_library
-        #BEGIN spectra_download
-        def print_peaklist(peaklist):
-            text = ["Num Peaks: %s" % len(peaklist)]
-            for x in peaklist:
-                text.append("%s %s" % (x[0], x[1]))
-            text.append("")
-            return text
-
-        spectral_library = []
-        msp_projection = {'MINE_id': 1, 'Names': 1, 'Mass': 1, 'Generation': 1,
-                          'Inchikey': 1, 'Formula': 1, 'SMILES': 1,
-                          'Sources': 1, 'Pos_CFM_spectra': 1,
-                          'Neg_CFM_spectra': 1}
-        db = self.db_client[db]
-        if mongo_query:
-            query_dict = ast.literal_eval(mongo_query)
-        else:
-            query_dict = {}
-        if not putative:
-            query_dict['Generation'] = 0
-        if parent_filter:
-            model = db.models.find_one({"_id": parent_filter})
-            if not model:
-                raise ValueError('Invalid Model specified')
-            parents = model["Compound_ids"]
-            query_dict['$or'] = [{'_id': {'$in': parents}},
-                                 {'Sources.Compound': {'$in': parents}}]
-        results = db.compounds.find(query_dict, msp_projection)
-
-        for compound in results:
-            # make header
-            header = []
-            if "Names" in compound and len(compound['Names']):
-                header.append("Name: %s" % compound['Names'][0])
-                for alt in compound['Names'][1:]:
-                    header.append("Synonym: %s" % alt)
-            else:
-                header.append("Name: MINE Compound %s" % compound['MINE_id'])
-            for k, v in compound.items():
-                if k not in {"Names", "Pos_CFM_spectra", "Neg_CFM_spectra"}:
-                    header.append("%s: %s" % (k, v))
-            header.append("Instrument: CFM-ID")
-
-            # add peak lists
-            if 'Pos_CFM_spectra' in compound:
-                for energy, spec in compound['Pos_CFM_spectra'].items():
-                    if not spec_type or [True, int(energy[:2])] in spec_type:
-                        spectral_library += header
-                        spectral_library += ["Ionization: Positive",
-                                             "Energy: %s" % energy]
-                        spectral_library += print_peaklist(spec)
-
-            if 'Neg_CFM_spectra' in compound:
-                for energy, spec in compound['Neg_CFM_spectra'].items():
-                    if not spec_type or [False, int(energy[:2])] in spec_type:
-                        spectral_library += header
-                        spectral_library += ["Ionization Mode: Negative",
-                                             "Energy: %s" % energy]
-                        spectral_library += print_peaklist(spec)
-        spectral_library = "\n".join(spectral_library)
-        #END spectra_download
-
-        #At some point might do deeper type checking...
-        if not isinstance(spectral_library, basestring):
-            raise ValueError('Method spectra_download return value ' +
-                             'spectral_library is not type basestring as required.')
-        # return the results
-        return [spectral_library]
 
     def pathway_search(self, db, start_comp, end_comp, len_limit, all_paths):
         # self.ctx is set by the wsgi application class
