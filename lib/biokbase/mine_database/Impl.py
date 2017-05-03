@@ -88,6 +88,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             quick_search_results = queries.quick_search(db, query, search_projection)
         else:
             quick_search_results = Utils.quick_search(db, query, search_projection)
+            quick_search_results = Utils.score_compounds(db, quick_search_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END quick_search
 
         #At some point might do deeper type checking...
