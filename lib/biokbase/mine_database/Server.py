@@ -246,19 +246,19 @@ class Application(object):
                              types=[basestring])
         self.rpc_service.add(impl_mineDatabaseServices.quick_search,
                              name='mineDatabaseServices.quick_search',
-                             types=[basestring, basestring])
+                             types=[basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.similarity_search,
                              name='mineDatabaseServices.similarity_search',
-                             types=[basestring, basestring, float, basestring, int, basestring, basestring])
+                             types=[basestring, basestring, float, basestring, int, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.structure_search,
                              name='mineDatabaseServices.structure_search',
-                             types=[basestring, basestring, basestring, basestring, basestring])
+                             types=[basestring, basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.substructure_search,
                              name='mineDatabaseServices.substructure_search',
-                             types=[basestring, basestring, int, basestring, basestring])
+                             types=[basestring, basestring, int, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.database_query,
                              name='mineDatabaseServices.database_query',
-                             types=[basestring, basestring, basestring, basestring])
+                             types=[basestring, basestring, basestring])
         self.rpc_service.add(impl_mineDatabaseServices.get_ids,
                              name='mineDatabaseServices.get_ids',
                              types=[basestring, basestring, basestring])
