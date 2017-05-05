@@ -78,7 +78,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [models]
 
-    def quick_search(self, db, query, parent_filter):
+    def quick_search(self, db, query):
         # self.ctx is set by the wsgi application class
         # return variables are: quick_search_results
         #BEGIN quick_search
@@ -88,7 +88,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
             quick_search_results = queries.quick_search(db, query, search_projection)
         else:
             quick_search_results = Utils.quick_search(db, query, search_projection)
-            quick_search_results = Utils.score_compounds(db, quick_search_results, parent_filter, parent_frac=.75, reaction_frac=.25)
         #END quick_search
 
         #At some point might do deeper type checking...
@@ -98,7 +97,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [quick_search_results]
 
-    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter):
+    def similarity_search(self, db, comp_structure, min_tc, fp_type, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: similarity_search_results
         #BEGIN similarity_search
@@ -135,7 +134,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [similarity_search_results]
 
-    def structure_search(self, db, input_format, comp_structure, parent_filter):
+    def structure_search(self, db, input_format, comp_structure, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: structure_search_results
         #BEGIN structure_search
@@ -157,7 +156,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [structure_search_results]
 
-    def substructure_search(self, db, substructure, limit, parent_filter):
+    def substructure_search(self, db, substructure, limit, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: substructure_search_results
         #BEGIN substructure_search
@@ -190,7 +189,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
         # return the results
         return [substructure_search_results]
 
-    def database_query(self, db, mongo_query, parent_filter):
+    def database_query(self, db, mongo_query, parent_filter, reaction_filter):
         # self.ctx is set by the wsgi application class
         # return variables are: database_query_results
         #BEGIN database_query
@@ -454,8 +453,6 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 header.append("Name: %s" % compound['Names'][0])
                 for alt in compound['Names'][1:]:
                     header.append("Synonym: %s" % alt)
-            else:
-                header.append("Name: MINE Compound %s" % compound['MINE_id'])
             for k, v in compound.items():
                 if k not in {"Names", "Pos_CFM_spectra", "Neg_CFM_spectra"}:
                     header.append("%s: %s" % (k, v))
@@ -466,7 +463,7 @@ match the m/z of an unknown compound. Pathway queries return either the shortest
                 for energy, spec in compound['Pos_CFM_spectra'].items():
                     if not spec_type or [True, int(energy[:2])] in spec_type:
                         spectral_library += header
-                        spectral_library += ["Ionization: Positive",
+                        spectral_library += ["Ionization Mode: Positive",
                                              "Energy: %s" % energy]
                         spectral_library += print_peaklist(spec)
 
