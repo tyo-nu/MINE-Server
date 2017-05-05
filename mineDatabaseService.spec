@@ -191,32 +191,31 @@ module mineDatabaseServices {
 
     /*
 		Creates quick_search_results, a list of comp_stubs which match the query string. Searches for matches to KEGG
-		Codes, Inchi Keys, Brenda IDs and Names. Also accepts a metabolic model with which to filter acceptable
-		source compounds.
+		Codes, Inchi Keys, Brenda IDs and Names.
 	*/
-	funcdef quick_search(string db, string query, string parent_filter) returns (list<comp_stub> quick_search_results);
+	funcdef quick_search(string db, string query) returns (list<comp_stub> quick_search_results);
 
 	/*
 		Creates similarity_search_results, a list of comp_stubs shorter than the limit whose Tannimoto coefficient to
 		the comp_structure (as SMILES or molfile) is greater that the user set threshold. Uses open babel FP2 or FP4
 		fingerprints to perform the Tannimoto calculation. Also accepts a metabolic model with which to filter acceptable
-		source compounds.
+		source compounds or reaction types.
 	*/
-	funcdef similarity_search(string db, string comp_structure, float min_tc, string fp_type, int limit, string parent_filter)
+	funcdef similarity_search(string db, string comp_structure, float min_tc, string fp_type, int limit, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> similarity_search_results);
 	/*
 		Creates structure_search_result, a list of comp_stubs in the specified database that matches the the supplied
 		comp_structure. The input_format may be any format recognised by OpenBabel (i.e. mol, smi, inchi). Also accepts
-		a metabolic model with which to filter acceptable source compounds.
+		a metabolic model with which to filter acceptable source compounds or reaction types.
 	*/
-	funcdef structure_search(string db, string input_format, string comp_structure, string parent_filter)
+	funcdef structure_search(string db, string input_format, string comp_structure, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> structure_search_results);
 
 	/*
 		Creates substructure_search_results, a list of comp_stubs under the limit who contain the specified substructure
-		(as SMILES or molfile) Also accepts a metabolic model with which to filter acceptable source compounds.
+		(as SMILES or molfile) Also accepts a metabolic model with which to filter acceptable source compounds or reaction types.
 	*/
-	funcdef substructure_search(string db, string substructure, int limit, string parent_filter)
+	funcdef substructure_search(string db, string substructure, int limit, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> substructure_search_results);
 
     /*
@@ -226,8 +225,9 @@ module mineDatabaseServices {
 		string db - the database against which the query will be performed
 		string mongo_query - A valid mongo query as a string
 		string parent_filter - require all results originate from compounds in this specified metabolic model
+		string reaction_filter - require all results originate from operators which map to reactions in this specified metabolic model
 	*/
-	funcdef database_query(string db, string mongo_query, string parent_filter)
+	funcdef database_query(string db, string mongo_query, string parent_filter, string reaction_filter)
 	returns (list<comp_stub> database_query_results);
 
     /*
