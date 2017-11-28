@@ -1,7 +1,7 @@
 from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 from nose.tools import assert_raises
 
-services = mineDatabaseServices(url='http://bio-data-1.mcs.anl.gov/services/mine-database')
+services = mineDatabaseServices(url='http://modelseed.org/services/mine-database')
 test_db = 'EcoCycexp2'
 test_molfile = open("scripts/xanthine.mol", "r").read()
 glucose = {u'SMILES': u'OCC1OC(O)C(C(C1O)O)O', u'Inchikey': u'WQZGKKKJIJFFOK-UHFFFAOYSA-N', u'Generation': 0.0,
@@ -93,7 +93,6 @@ def test_ms2_search():
     assert len(result2) == len(result2_2)
     result2_2 = services.ms2_search(open("./scripts/2870575.msp").read(), "msp", params)
     assert len(result2) == len(result2_2)
-
 
 
 def test_pathway_search():

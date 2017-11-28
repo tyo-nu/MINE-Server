@@ -86,16 +86,22 @@ def test_ms_adduct_search():
 
 def test_ms2_search():
     params = {'db': test_db, 'tolerance': 5.0, 'adducts': ['[M-H]-'], 'models': ['Bacteria'], 'ppm': False,
-              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 1}
+              'charge': False, 'halogens': False, 'scoring_function': 'dot_product', 'energy_level': 20}
     result2 = services.ms2_search(open("./scripts/folate.mgf").read(), "mgf", params)[0]
     assert isinstance(result2[0], dict)
     assert result2
-    print(result2[0])
     result2_2 = services.ms2_search(open("./scripts/folate_form.txt").read(), "form", params)[0]
     assert len(result2) == len(result2_2)
     result2_2 = services.ms2_search(open("./scripts/2870575.msp").read(), "msp", params)[0]
-    print(len(result2), len(result2_2))
     assert len(result2) == len(result2_2)
+    result3 = services.ms2_search(open("./scripts/biotin.mgf").read(), "mgf",
+                                  {'db': test_db, 'tolerance': 5.0,
+                                   'adducts': ['[M+H]+'],
+                                   'models': ['Bacteria'], 'ppm': False,
+                                   'charge': True, 'halogens': False,
+                                   'scoring_function': 'dot_product',
+                                   'energy_level': 20})
+    pass
 
 
 def test_pathway_search():
@@ -139,3 +145,5 @@ def test_spectra_download():
     assert len(two)
     three = services.spectra_download(test_db, "", 'eco', True, [])[0]
     assert len(three)
+
+test_ms2_search()

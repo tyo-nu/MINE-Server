@@ -1,7 +1,7 @@
 from lib.biokbase.mine_database.Client import mineDatabaseServices, ServerError
 from nose.tools import assert_raises
 
-services = mineDatabaseServices(url='http://bio-data-1.mcs.anl.gov/services/mine-database')
+services = mineDatabaseServices(url='http://modelseed.org/services/mine-database')
 test_db = 'EcoCycPickaxe'
 test_molfile = open("scripts/xanthine.mol", "r").read()
 glucose = {u'SMILES': u'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O', u'Inchikey': u'WQZGKKKJIJFFOK-GASJEMHNSA-N',

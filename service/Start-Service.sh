@@ -14,6 +14,7 @@ env_push PYTHONPATH /vol/model-prod/Python2.7.2/lib
 env_push PYTHONPATH /vol/model-prod/Python2.7.2/lib/python2.7
 env_push PYTHONPATH /vol/model-prod/Python2.7.2/lib/python2.7/site-packages
 env_push PYTHONPATH /vol/model-prod/anaconda2/lib/python2.7/site-packages
+env_push PYTHONPATH /vol/model-prod/MINE-Database
 env_push LD_LIBRARY_PATH /vol/model-prod/Python2.7.2/lib/python2.7/site-packages/openbabel/lib
 export PATH
 export PYTHONPATH
