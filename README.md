@@ -2,7 +2,7 @@ Server code for the MINE Databases
 
 ## MINE-API
 
-This repository contains API clients for the MINE databases. The MINE databases use JSON remote procedure call protocal adapted from the US Department of Energy's KBase project. The service is available at http://bio-data-1.mcs.anl.gov/services/mine-database 
+This repository contains API clients for the MINE databases. The MINE databases use JSON remote procedure call protocal adapted from the US Department of Energy's KBase project. The service is available at http://modelseed.org/services/mine-database
 
 Clients are available in
 * [Python](lib/biokbase/mine_database/Client.py)
