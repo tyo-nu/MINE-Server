@@ -17,7 +17,7 @@ The following databases are featured on the MINE website:
 An example in Python accessing the API.
 
 	>>> from Client import mineDatabaseServices
-	>>> service = mineDatabaseServices("http://bio-data-1.mcs.anl.gov/services/mine-database")
+	>>> service = mineDatabaseServices("http://modelseed.org/services/mine-database")
 	>>> service.quick_search("EcoCycexp2","ATP")
 	[{u'SMILES': u'OC1C(COP(=O)(OP(=O)(OP(=O)(O)O)O)O)OC(C1O)n1cnc2c1ncnc2N', u'NP_likeness': 1.0719, u'Generation': 0.0, u'MINE_id': 12815, u'Inchikey': u'ZKHQWZAMYRWXGA-UHFFFAOYSA-N', u'Mass': 506.99574548699997, u'Names': [u'ATP', u"Adenosine 5'-triphosphate"], u'Formula': u'C10H16N5O13P3', u'_id': u'C25a9fafebc1b08a0ae0fec015803771c73485a61'}]
 
