@@ -1,6 +1,6 @@
 Server code for the MINE Databases
 
-## MINE-API
+## MINE-Server
 
 This repository contains the RESTful API client for the MINE databases, written in Flask. The API also serves as the backend for the MINE website.
 
