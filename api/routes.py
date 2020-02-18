@@ -3,20 +3,26 @@ all actual logic is imported from the minedatabase package."""
 
 from ast import literal_eval
 
+from flask import Blueprint
+from flask import current_app as app
 from flask import jsonify, request
 
-from app import app, mongo
-from app.exceptions import InvalidUsage
-from minedatabase.metabolomics import (ms_adduct_search, read_adduct_names,
-                                       spectra_download)
+from api.database import mongo
+from api.exceptions import InvalidUsage
+from minedatabase.metabolomics import (ms2_search, ms_adduct_search,
+                                       read_adduct_names, spectra_download)
 from minedatabase.queries import (advanced_search, get_comps, get_ids,
                                   get_op_w_rxns, get_ops, get_rxns,
                                   quick_search, similarity_search,
                                   structure_search, substructure_search)
 from minedatabase.utils import score_compounds
 
+# pylint: disable=invalid-name
+mineserver_api = Blueprint('mineserver_api', __name__)
+# pylint: enable=invalid-name
 
-@app.errorhandler(InvalidUsage)
+
+@mineserver_api.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     """Makes it so user can receive an informative error message rather than
     a default internal server error."""
@@ -25,7 +31,7 @@ def handle_invalid_usage(error):
     return response
 
 
-@app.route('/mineserver/quick-search/<db_name>/q=<query>')
+@mineserver_api.route('/quick-search/<db_name>/q=<query>')
 def quick_search_api(db_name, query):
     """Perform a quick search and return results.
 
@@ -48,13 +54,13 @@ def quick_search_api(db_name, query):
     return json_results
 
 
-@app.route('/mineserver/similarity-search/<db_name>/smiles=<smiles>')
-@app.route('/mineserver/similarity-search/<db_name>/smiles=<smiles>'
-           '/<float:min_tc>')
-@app.route('/mineserver/similarity-search/<db_name>/smiles=<smiles>'
-           '/<int:limit>')
-@app.route('/mineserver/similarity-search/<db_name>/smiles=<smiles>'
-           '/<float:min_tc>/<int:limit>')
+@mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>')
+@mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
+                      '/<float:min_tc>')
+@mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
+                      '/<int:limit>')
+@mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
+                      '/<float:min_tc>/<int:limit>')
 def similarity_search_api(db_name, smiles, min_tc=0.7, limit=-1):
     """Perform a similarity search and return results.
 
@@ -82,9 +88,9 @@ def similarity_search_api(db_name, smiles, min_tc=0.7, limit=-1):
     return json_results
 
 
-@app.route('/mineserver/structure-search/<db_name>/smiles=<smiles>')
-@app.route('/mineserver/structure-search/<db_name>/smiles=<smiles>'
-           '/stereo=<stereo>')
+@mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>')
+@mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>'
+                      '/stereo=<stereo>')
 def structure_search_api(db_name, smiles, stereo=True):
     """Perform an exact structure search and return results.
 
@@ -109,9 +115,9 @@ def structure_search_api(db_name, smiles, stereo=True):
     return json_results
 
 
-@app.route('/mineserver/substructure-search/<db_name>/smiles=<smiles>')
-@app.route('/mineserver/substructure-search/<db_name>/smiles=<smiles>'
-           '/<int:limit>')
+@mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>')
+@mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>'
+                      '/<int:limit>')
 def substructure_search_api(db_name, smiles, limit=-1):
     """Perform a substructure search and return results.
 
@@ -137,7 +143,7 @@ def substructure_search_api(db_name, smiles, limit=-1):
     return json_results
 
 
-@app.route('/mineserver/database-query/<db_name>/q=<mongo_query>')
+@mineserver_api.route('/database-query/<db_name>/q=<mongo_query>')
 def database_query_api(db_name, mongo_query):
     """Perform a direct query built with Mongo syntax.
 
@@ -162,8 +168,8 @@ def database_query_api(db_name, mongo_query):
     return json_results
 
 
-@app.route('/mineserver/get-ids/<db_name>/<collection_name>')
-@app.route('/mineserver/get-ids/<db_name>/<collection_name>/q=<query>')
+@mineserver_api.route('/get-ids/<db_name>/<collection_name>')
+@mineserver_api.route('/get-ids/<db_name>/<collection_name>/q=<query>')
 def get_ids_api(db_name, collection_name, query=None):
     """Get Mongo IDs for a subset of a given database collection.
 
@@ -189,7 +195,7 @@ def get_ids_api(db_name, collection_name, query=None):
     return json_results
 
 
-@app.route('/mineserver/get-comps/<db_name>', methods=['POST'])
+@mineserver_api.route('/get-comps/<db_name>', methods=['POST'])
 def get_comps_api(db_name):
     """Get compounds for specified ids in database.
 
@@ -207,7 +213,7 @@ def get_comps_api(db_name):
     json_results : flask.Response
         List of compound JSON documents.
     """
-    id_list = literal_eval(request.form.get('id_list'))
+    id_list = request.get_json()['id_list']
 
     db = mongo.cx[db_name]
     results = get_comps(db, id_list)
@@ -216,7 +222,7 @@ def get_comps_api(db_name):
     return json_results
 
 
-@app.route('/mineserver/get-rxns/<db_name>', methods=['POST'])
+@mineserver_api.route('/get-rxns/<db_name>', methods=['POST'])
 def get_rxns_api(db_name):
     """Get reactions for specified ids in database.
 
@@ -234,7 +240,7 @@ def get_rxns_api(db_name):
     json_results : flask.Response
         List of reaction JSON documents.
     """
-    id_list = literal_eval(request.form.get('id_list'))
+    id_list = request.get_json()['id_list']
 
     db = mongo.cx[db_name]
     results = get_rxns(db, id_list)
@@ -243,7 +249,7 @@ def get_rxns_api(db_name):
     return json_results
 
 
-@app.route('/mineserver/get-ops/<db_name>', methods=['POST'])
+@mineserver_api.route('/get-ops/<db_name>', methods=['POST'])
 def get_ops_api(db_name):
     """Get operators for specified ids in database.
 
@@ -262,8 +268,8 @@ def get_ops_api(db_name):
     json_results : flask.Response
         List of operator JSON documents.
     """
-    if 'id_list' in request.form:
-        id_list = literal_eval(request.form.get('id_list'))
+    if request.get_json():
+        id_list = request.get_json()['id_list']
     else:
         id_list = None
 
@@ -274,7 +280,7 @@ def get_ops_api(db_name):
     return json_results
 
 
-@app.route('/mineserver/get-op-w-rxns/<db_name>/<op_id>')
+@mineserver_api.route('/get-op-w-rxns/<db_name>/<op_id>')
 def get_op_w_rxns_api(db_name, op_id):
     """Get operator with all its associated reactions in selected database.
 
@@ -299,7 +305,7 @@ def get_op_w_rxns_api(db_name, op_id):
         raise InvalidUsage('Operator with ID \"{}\" not found.'.format(op_id))
 
 
-@app.route('/mineserver/get-adduct-names/<adduct_type>')
+@mineserver_api.route('/get-adduct-names/<adduct_type>')
 def get_adduct_names_api(adduct_type):
     """Get names of all adducts for the specified adduct type.
 
@@ -327,11 +333,11 @@ def get_adduct_names_api(adduct_type):
     return json_results
 
 
-@app.route('/mineserver/ms-adduct-search/<db_name>', methods=['POST'])
+@mineserver_api.route('/ms-adduct-search/<db_name>', methods=['POST'])
 def ms_adduct_search_api(db_name):
     """Search for commpound-adducts matching precursor mass(es).
 
-    Attach all arguments besides db_name as form data in POST request.
+    Attach all arguments besides db_name as JSON data in POST request.
 
     Parameters
     ----------
@@ -341,7 +347,8 @@ def ms_adduct_search_api(db_name):
         Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
         ppm is set to True.
     charge_mode: bool
-        Positive or negative mode. (True for positive, False for negative).
+        Positive or negative mode. ("Positive" for positive, "Negative" for
+        negative).
     text : str
         Text as in metabolomics datafile for specific peak.
     text_type : str, optional (default: None)
@@ -349,7 +356,7 @@ def ms_adduct_search_api(db_name):
         None, assumes m/z values are separated by newlines.
     adducts: list, optional (default: None)
         List of adducts to use. If not specified, uses all adducts.
-    models: list, optional (default: None) 
+    models: list, optional (default: None)
         List of model _ids. If supplied, score compounds higher if  present
         in metabolic model.
     ppm: bool, optional (default: False)
@@ -363,6 +370,8 @@ def ms_adduct_search_api(db_name):
     halogens: bool, optional (default: False)
         Specifies whether to filter out compounds containing F, Cl, or Br.
         Filtered out if set to True.
+    verbose: bool, optional (default: False)
+        If True, verbose output.
 
     Returns
     -------
@@ -370,60 +379,68 @@ def ms_adduct_search_api(db_name):
         JSON array of compounds that match m/z within defined tolerance and
         after passing other defined filters (such as kovats or logP).
     """
-    if 'tolerance' in request.form:
-        tolerance = float(request.form.get('tolerance'))
+    json_data = request.get_json()
+
+    if 'tolerance' in json_data:
+        tolerance = float(json_data['tolerance'])
     else:
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
-    if 'charge_mode' in request.form:
-        charge = int(request.form.get('charge_mode'))
+    if 'charge_mode' in json_data:
+        charge = json_data['charge_mode']
     else:
-        raise InvalidUsage('<charge_mode> argument must be specified. True '
-                           'for positive mode, False for negative mode.')
+        raise InvalidUsage('<charge_mode> argument must be specified. '
+                           '"Positive" for positive mode, "Negative" for '
+                           'negative mode.')
 
-    if 'text' in request.form:
-        text = request.form.get('text')
+    if 'text' in json_data:
+        text = json_data['text']
     else:
         raise InvalidUsage('<text> argument must be specified.')
 
-    if 'text_type' in request.form:
-        text_type = request.form.get('text_type')
+    if 'text_type' in json_data:
+        text_type = json_data['text_type']
     else:
-        text_type = None
+        text_type = 'form'
 
-    if 'adducts' in request.form:
-        adducts = literal_eval(request.form.get('adducts'))
+    if 'adducts' in json_data:
+        adducts = literal_eval(json_data['adducts'])
         assert isinstance(adducts, list)
     else:
         adducts = None
 
-    if 'models' in request.form:
-        models = literal_eval(request.form.get('models'))
+    if 'models' in json_data:
+        models = literal_eval(json_data['models'])
         assert isinstance(models, list)
     else:
         models = None
 
-    if 'ppm' in request.form:
-        ppm = bool(request.form.get('ppm'))
+    if 'ppm' in json_data:
+        ppm = bool(json_data['ppm'])
     else:
         ppm = None
 
-    if 'kovats' in request.form:
-        kovats = literal_eval(request.form.get('kovats'))
+    if 'kovats' in json_data:
+        kovats = literal_eval(json_data['kovats'])
         assert isinstance(kovats, tuple)
     else:
         kovats = None
 
-    if 'logp' in request.form:
-        logp = literal_eval(request.form.get('logp'))
+    if 'logp' in json_data:
+        logp = literal_eval(json_data['logp'])
         assert isinstance(logp, tuple)
     else:
         logp = None
 
-    if 'halogens' in request.form:
-        halogens = bool(request.form.get('halogens'))
+    if 'halogens' in json_data:
+        halogens = bool(json_data['halogens'])
     else:
         halogens = None
+
+    if 'verbose' in json_data:
+        verbose = bool(json_data['verbose'])
+    else:
+        verbose = False
 
     ms_params = {
         'tolerance': tolerance,
@@ -433,19 +450,23 @@ def ms_adduct_search_api(db_name):
         'ppm': ppm,
         'kovats': kovats,
         'logp': logp,
-        'halogens': halogens
+        'halogens': halogens,
+        'verbose': verbose
     }
 
     db = mongo.cx[db_name]
     keggdb = mongo.cx[app.config['KEGG_DB_NAME']]
 
     results = ms_adduct_search(db, keggdb, text, text_type, ms_params)
+    for i in results[:1]:
+        for key, val in i.items():
+            print(key, val, type(key), type(val))
     json_results = jsonify(results)
 
     return json_results
 
 
-@app.route('/mineserver/ms2-search/<db_name>', methods=['POST'])
+@mineserver_api.route('/ms2-search/<db_name>', methods=['POST'])
 def ms2_search_api(db_name):
     """Search for commpound-adducts matching precursor mass(es).
 
@@ -492,72 +513,80 @@ def ms2_search_api(db_name):
         JSON array of compounds that match m/z within defined tolerance and
         after passing other defined filters (such as kovats or logP).
     """
-    if 'tolerance' in request.form:
-        tolerance = float(request.form.get('tolerance'))
+    json_data = request.get_json()
+
+    if 'tolerance' in json_data:
+        tolerance = float(json_data['tolerance'])
     else:
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
-    if 'charge_mode' in request.form:
-        charge = int(request.form.get('charge_mode'))
+    if 'charge_mode' in json_data:
+        charge = json_data['charge_mode']
     else:
-        raise InvalidUsage('<charge_mode> argument must be specified. True '
-                           'for positive mode, False for negative mode.')
+        raise InvalidUsage('<charge_mode> argument must be specified. '
+                           '"Positive" for positive mode, "Negative" for '
+                           'negative mode.')
 
-    if 'energy_level' in request.form:
-        energy_level = int(request.form.get('energy_level'))
+    if 'energy_level' in json_data:
+        energy_level = int(json_data['energy_level'])
     else:
         raise InvalidUsage('<energy_level> argument must be specified. '
                            'Possible values are 10, 20, or 40.')
 
-    if 'scoring_function' in request.form:
-        scoring_function = request.form.get('scoring_function')
+    if 'scoring_function' in json_data:
+        scoring_function = json_data['scoring_function']
     else:
         raise InvalidUsage("<scoring_function> argument must be specified. "
                            "Possible values are 'jaccard' and 'dot product'.")
 
-    if 'text' in request.form:
-        text = request.form.get('text')
+    if 'text' in json_data:
+        text = json_data['text']
     else:
         raise InvalidUsage('<text> argument must be specified.')
 
-    if 'text_type' in request.form:
-        text_type = request.form.get('text_type')
+    if 'text_type' in json_data:
+        text_type = json_data['text_type']
     else:
         text_type = None
 
-    if 'adducts' in request.form:
-        adducts = literal_eval(request.form.get('adducts'))
+    if 'adducts' in json_data:
+        adducts = literal_eval(json_data['adducts'])
         assert isinstance(adducts, list)
     else:
         adducts = None
 
-    if 'models' in request.form:
-        models = literal_eval(request.form.get('models'))
+    if 'models' in json_data:
+        models = literal_eval(json_data['models'])
         assert isinstance(models, list)
     else:
         models = None
 
-    if 'ppm' in request.form:
-        ppm = bool(request.form.get('ppm'))
+    if 'ppm' in json_data:
+        ppm = bool(json_data['ppm'])
     else:
         ppm = None
 
-    if 'kovats' in request.form:
-        kovats = literal_eval(request.form.get('kovats'))
+    if 'kovats' in json_data:
+        kovats = literal_eval(json_data['kovats'])
         assert isinstance(kovats, tuple)
     else:
         kovats = None
 
-    if 'logp' in request.form:
-        logp = literal_eval(request.form.get('logp'))
+    if 'logp' in json_data:
+        logp = literal_eval(json_data['logp'])
         assert isinstance(logp, tuple)
     else:
         logp = None
 
-    if 'halogens' in request.form:
-        halogens = bool(request.form.get('halogens'))
+    if 'halogens' in json_data:
+        halogens = bool(json_data['halogens'])
     else:
         halogens = None
+
+    if 'verbose' in json_data:
+        verbose = bool(json_data['verbose'])
+    else:
+        verbose = False
 
     ms_params = {
         'tolerance': tolerance,
@@ -569,21 +598,23 @@ def ms2_search_api(db_name):
         'ppm': ppm,
         'kovats': kovats,
         'logp': logp,
-        'halogens': halogens
+        'halogens': halogens,
+        'verbose': verbose
     }
 
     db = mongo.cx[db_name]
     keggdb = mongo.cx[app.config['KEGG_DB_NAME']]
 
-    results = ms_adduct_search(db, keggdb, text, text_type, ms_params)
+    results = ms2_search(db, keggdb, text, text_type, ms_params)
     json_results = jsonify(results)
 
     return json_results
 
 
-@app.route('/mineserver/spectra-download/<db_name>')
-@app.route('/mineserver/spectra-download/<db_name>/q=<mongo_query>')
-def spectra_download_api(db_name, mongo_query):
+@mineserver_api.route('/spectra-download/<db_name>', methods=['GET', 'POST'])
+@mineserver_api.route('/spectra-download/<db_name>/q=<mongo_query>',
+                      methods=['GET', 'POST'])
+def spectra_download_api(db_name, mongo_query=None):
     """Download one or more spectra for compounds matching a given query.
 
     Parameters
@@ -603,17 +634,18 @@ def spectra_download_api(db_name, mongo_query):
     Returns
     -------
     results : flask.Response
-        Text of all matching spectra, including headers and peak lists. 
+        Text of all matching spectra, including headers and peak lists.
     """
-    if 'parent_filter' in request.form:
-        parent_filter = request.form.get('parent_filter')
-    else:
-        parent_filter = None
+    parent_filter = None
+    putative = None
+    if request.method == 'POST':
+        json_data = request.get_json()
 
-    if 'putative' in request.form:
-        putative = bool(request.form.get('putative'))
-    else:
-        putative = None
+        if 'parent_filter' in json_data:
+            parent_filter = json_data['parent_filter']
+
+        if 'putative' in json_data:
+            putative = bool(json_data['putative'])
 
     db = mongo.cx[db_name]
     results = spectra_download(db, mongo_query=mongo_query,
