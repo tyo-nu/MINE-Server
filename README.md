@@ -10,7 +10,7 @@ TODO: update database list here
 * Yeast - “YMDBexp2”
 * KEGG - “KEGGexp2”
 
-An example in Python accessing the API.
+An example in Python accessing the API. TODO: Update examples
 
 	>>> from Client import mineDatabaseServices
 	>>> service = mineDatabaseServices("http://modelseed.org/services/mine-database")
