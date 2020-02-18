@@ -2,14 +2,10 @@ Server code for the MINE Databases
 
 ## MINE-API
 
-This repository contains API clients for the MINE databases. The MINE databases use JSON remote procedure call protocal adapted from the US Department of Energy's KBase project. The service is available at http://modelseed.org/services/mine-database
-
-Clients are available in
-* [Python](lib/biokbase/mine_database/Client.py)
-* [JavaScript](lib/javascript/mine_database/Client.js)
-* [Perl](lib/Bio/KBase/mine_database/Client.pm)
+This repository contains the RESTful API client for the MINE databases, written in Flask. The API also serves as the backend for the MINE website.
 
 The following databases are featured on the MINE website:
+TODO: update database list here
 * E. coli - “EcoCycexp2”
 * Yeast - “YMDBexp2”
 * KEGG - “KEGGexp2”
