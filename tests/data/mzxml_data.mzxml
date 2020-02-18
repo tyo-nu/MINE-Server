@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<mzXML xmlns = "http://sashimi.sourceforge.net/schema_revision/mzXML_2.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_2.0 http://sashimi.sourceforge.net/schema_revision/mzXML_2.0/mzXML_idx_2.0.xsd">
+    <msRun scanCount="1" startTime="PT0.0S" endTime="PT10.0S">
+        <scan num="1" msLevel="2" peaksCount="19" polarity="-" scanType="CID" filterLine="ITMS - c ESI d Full ms2 156.01@cid35.00 [50.00-170.00]" retentionTime="PT0.6749S" lowMz="57.2999610900879" highMz="156.066741943359" basePeakMz="92.0902328491211" basePeakIntensity="10415.1181640625" totIonCurrent="11550.7685546875">
+            <precursorMz precursorScanNum="1" precursorIntensity="597853.125" activationMethod="CID" precursorCharge="1">156.012664794922</precursorMz>
+            <peaks precision="32" byteOrder="network" pairOrder="m/z-int">QmUzKUIeAoZCgCEQQfe2GEKgVVxBCLSuQqh4VEFCT3pCrENWQZXD8EK4LjNGIrx5QsAmfEGjoNhCw/X2QT1uwELaPAxBFdxtQt5krkMRfpxC4GCmQ5Gzd0LiNZBBgOfTQuSuTkFxB0pC5f7gQaqPPEL6KZJBOKxHQwA6KkMoZ3xDCBSFQMPpKUMJ3OJCPvYoQxwRFkOCdNQ=</peaks>
+        </scan>
+    </msRun>
+</mzXML>

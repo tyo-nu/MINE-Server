@@ -2,10 +2,12 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-from app.config import Config
+from api.config import Config
 from flask import Flask
 from flask.logging import default_handler
-from flask_pymongo import PyMongo
+from api.database import mongo
+
+from api.routes import mineserver_api
 
 
 def create_app(instance_config=Config):
@@ -26,10 +28,11 @@ def create_app(instance_config=Config):
     app = Flask(__name__)
     app.config.from_object(instance_config)
 
-    # Connect to MySQL database
-    # For Flask-SQLAlchemy - when db connections are made automatically during
-    # requests
-    mongo = PyMongo(app)
+    # Register routes
+    app.register_blueprint(mineserver_api, url_prefix='/mineserver')
+
+    # Connect to Mongo Database
+    mongo.init_app(app)
 
     # Initialize logger
     root = logging.getLogger()
@@ -45,7 +48,6 @@ def create_app(instance_config=Config):
     root.addHandler(default_handler)
 
     app.logger.setLevel(logging.DEBUG)
-
     app.logger.info('MINE-Server startup')
 
     if app.config['MODE'] == 'development':
@@ -58,9 +60,9 @@ def create_app(instance_config=Config):
         raise ValueError('MODE in config.py must be one of the following: ',
                          '"production", "development", or "testing".')
 
-    return app, mongo
+    return app
 
 
-app, mongo = create_app()
-
-from app import routes
+if __name__ == "__main__":
+    app = create_app()
+    app.run(debug=True)
