@@ -13,9 +13,11 @@ from minedatabase.metabolomics import (ms2_search, ms_adduct_search,
                                        read_adduct_names, spectra_download)
 from minedatabase.queries import (advanced_search, get_comps, get_ids,
                                   get_op_w_rxns, get_ops, get_rxns,
-                                  quick_search, similarity_search,
-                                  structure_search, substructure_search)
-from minedatabase.utils import score_compounds
+                                  model_search, quick_search,
+                                  similarity_search, structure_search,
+                                  substructure_search)
+from minedatabase.utils import score_compounds, get_smiles_from_mol_string
+
 
 # pylint: disable=invalid-name
 mineserver_api = Blueprint('mineserver_api', __name__)
@@ -54,6 +56,15 @@ def quick_search_api(db_name, query):
     return json_results
 
 
+# Routes for mol input
+@mineserver_api.route('/similarity-search/<db_name>', methods=['POST'])
+@mineserver_api.route('/similarity-search/<db_name>/<float:min_tc>',
+                      methods=['POST'])
+@mineserver_api.route('/similarity-search/<db_name>/<int:limit>',
+                      methods=['POST'])
+@mineserver_api.route('/similarity-search/<db_name>/<float:min_tc>'
+                      '/<int:limit>', methods=['POST'])
+# Routes for smiles input
 @mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>')
 @mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
                       '/<float:min_tc>')
@@ -61,37 +72,71 @@ def quick_search_api(db_name, query):
                       '/<int:limit>')
 @mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
                       '/<float:min_tc>/<int:limit>')
-def similarity_search_api(db_name, smiles, min_tc=0.7, limit=-1):
-    """Perform a similarity search and return results.
+def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=-1):
+    """Perform a similarity search for a SMILES string and return results.
+
+    Either a SMILES string or mol object string is required. SMILES is the
+    recommended format.
 
     Parameters
     ----------
     db_name : str
         Name of Mongo database to query against.
     smiles : str
-        SMILES string describing molecular structure of query molecule.
-    min_tc : float (default: 0.7)
+        SMILES string describing molecular structure of query molecule. Either
+        smiles or mol arg is required (smiles arg recommended over mol arg).
+    mol : str, optional (default: None)
+        mol object in str format (should contain a lot of strange chars like
+        "%20" and end with "END"). Used only for the MINE website backend
+        because MarvinJS on the front end only generates mol objects from
+        input structures, and cannot convert it to SMILES. Captured from form
+        data.
+    min_tc : float, optional (default: 0.7)
         Minimum Tanimoto Coefficient required for similarity match.
-    limit : int (default: -1)
+    limit : int, optional (default: -1)
         Maximum number of results (compounds) to return. By default, returns
         all results.
+    model : str, optional (default: None)
+        KEGG organism code (e.g. 'hsa'). Adds annotations to each compound
+        based on whether it is in or could be derived from the KEGG compounds
+        in this organism (provided in the 'Likelihood_score' field of each
+        compound document).
 
     Returns
     -------
     json_results : flask.Response
         JSON Documents of similar compounds.
     """
+    json_data = request.get_json()
+
+    if json_data and 'mol' in json_data:
+        mol_str = str(json_data['mol'])
+        smiles = get_smiles_from_mol_string(mol_str)
+
+    if json_data and 'model' in json_data:
+        model = str(json_data['model'])
+    else:
+        model = None
+
+    model_db = mongo.cx[app.config['KEGG_DB_NAME']]
+
     db = mongo.cx[db_name]
-    results = similarity_search(db, smiles, min_tc=min_tc, limit=limit)
+    results = similarity_search(db, smiles, min_tc=min_tc, limit=limit,
+                                model_db=model_db, parent_filter=model)
     json_results = jsonify(results)
 
     return json_results
 
 
+# Routes for mol input
+@mineserver_api.route('/structure-search/<db_name>', methods=['POST'])
+@mineserver_api.route('/structure-search/<db_name>/sterio=<sterio>',
+                      methods=['POST'])
+# Routes for smiles input
 @mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>')
 @mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>'
                       '/stereo=<stereo>')
-def structure_search_api(db_name, smiles, stereo=True):
+def structure_search_api(db_name, smiles=None, stereo=True):
     """Perform an exact structure search and return results.
 
     Parameters
@@ -100,25 +145,55 @@ def structure_search_api(db_name, smiles, stereo=True):
         Name of Mongo database to query against.
     smiles : str
         SMILES string describing molecular structure of query molecule.
-    stereo : bool (default: True)
+    mol : str, optional (default: None)
+        mol object in str format (should contain a lot of strange chars like
+        "%20" and end with "END"). Used only for the MINE website backend
+        because MarvinJS on the front end only generates mol objects from
+        input structures, and cannot convert it to SMILES. Captured from form
+        data.
+    stereo : bool, optional (default: True)
         If true, uses sterochemistry in finding exact match.
+    model : str, optional (default: None)
+        KEGG organism code (e.g. 'hsa'). Adds annotations to each compound
+        based on whether it is in or could be derived from the KEGG compounds
+        in this organism (provided in the 'Likelihood_score' field of each
+        compound document).
 
     Returns
     -------
     json_results : flask.Response
         JSON Document of match (empty if no match).
     """
+    json_data = request.get_json()
+
+    if json_data and 'mol' in json_data:
+        mol_str = str(json_data['mol'])
+        smiles = get_smiles_from_mol_string(mol_str)
+
+    if json_data and 'model' in json_data:
+        model = str(json_data['model'])
+    else:
+        model = None
+
+    model_db = mongo.cx[app.config['KEGG_DB_NAME']]
+
     db = mongo.cx[db_name]
-    results = structure_search(db, smiles, stereo=stereo)
+    results = structure_search(db, smiles, stereo=stereo, model_db=model_db,
+                               parent_filter=model)
     json_results = jsonify(results)
 
     return json_results
 
 
+# Routes for mol input
+@mineserver_api.route('/substructure-search/<db_name>', methods=['POST'])
+@mineserver_api.route('/substructure-search/<db_name>/<int:limit>',
+                      methods=['POST'])
+# Routes for smiles input
 @mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>')
 @mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>'
                       '/<int:limit>')
-def substructure_search_api(db_name, smiles, limit=-1):
+def substructure_search_api(db_name, smiles=None, limit=-1):
     """Perform a substructure search and return results.
 
     Parameters
@@ -127,6 +202,12 @@ def substructure_search_api(db_name, smiles, limit=-1):
         Name of Mongo database to query against.
     smiles : str
         SMILES string describing molecular substructure to search for.
+    mol : str, optional (default: None)
+        mol object in str format (may contain a lot of whitespace hex-chars
+        like "%20" and end with "END"). Used only for the MINE website backend
+        because MarvinJS on the front end only generates mol objects from
+        input structures, and cannot convert it to SMILES. Captured from form
+        data.
     limit : int (default: -1)
         Maximum number of results (compounds) to return. By default, returns
         all results.
@@ -136,8 +217,40 @@ def substructure_search_api(db_name, smiles, limit=-1):
     json_results : flask.Response
         JSON Documents of compounds containing given substructure.
     """
+    json_data = request.get_json()
+
+    if json_data and 'mol' in json_data:
+        mol_str = str(json_data['mol'])
+        smiles = get_smiles_from_mol_string(mol_str)
+
+    if json_data and 'model' in json_data:
+        model = str(json_data['model'])
+    else:
+        model = None
+
+    model_db = mongo.cx[app.config['KEGG_DB_NAME']]
+
     db = mongo.cx[db_name]
-    results = substructure_search(db, smiles, limit=limit)
+    results = substructure_search(db, smiles, limit=limit, model_db=model_db,
+                                  parent_filter=model)
+    json_results = jsonify(results)
+
+    return json_results
+
+
+@mineserver_api.route('/model-search/q=<query>')
+def model_search_api(query):
+    """Perform a model search and return results.
+
+    Parameters
+    ----------
+    query : str
+        KEGG Org Code or Org Name of model(s) to search for (e.g. 'hsa' or
+        'yeast'). Can provide multiple search terms by separating each term
+        with a space.  TODO: change from space delimiter to something else
+    """
+    db = mongo.cx[app.config['KEGG_DB_NAME']]
+    results = model_search(db, query)
     json_results = jsonify(results)
 
     return json_results
@@ -305,28 +418,35 @@ def get_op_w_rxns_api(db_name, op_id):
         raise InvalidUsage('Operator with ID \"{}\" not found.'.format(op_id))
 
 
+@mineserver_api.route('/get-adduct-names')
 @mineserver_api.route('/get-adduct-names/<adduct_type>')
-def get_adduct_names_api(adduct_type):
+def get_adduct_names_api(adduct_type='all'):
     """Get names of all adducts for the specified adduct type.
 
     Parameters
     ----------
     adduct_type : str
-        Options are 'positive' or 'negative'.
+        Options are 'positive', 'negative', or 'all'.
 
     Returns
     -------
     json_results : flask.Response
-        JSON array of adduct names.
+        JSON array of adduct names. If adduct_type == 'all', then this is an
+        array of two arrays, with the first element being positive adducts and
+        the second adduct being negative adducts.
     """
 
     if adduct_type.lower() == 'positive':
         results = read_adduct_names(app.config['POS_ADDUCT_PATH'])
     elif adduct_type.lower() == 'negative':
         results = read_adduct_names(app.config['NEG_ADDUCT_PATH'])
+    elif adduct_type == 'all':
+        pos_results = read_adduct_names(app.config['POS_ADDUCT_PATH'])
+        neg_results = read_adduct_names(app.config['NEG_ADDUCT_PATH'])
+        results = [pos_results, neg_results]
     else:
-        raise InvalidUsage('URI argument <adduct_type> must be "positive" or '
-                           '"negative".')
+        raise InvalidUsage('URL param <adduct_type> must be "all", "pos", or '
+                           '"neg".')
 
     json_results = jsonify(results)
 
@@ -346,9 +466,8 @@ def ms_adduct_search_api(db_name):
     tolerance: float
         Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
         ppm is set to True.
-    charge_mode: bool
-        Positive or negative mode. ("Positive" for positive, "Negative" for
-        negative).
+    charge: bool
+        Positive or negative mode. (True for positive, False for negative).
     text : str
         Text as in metabolomics datafile for specific peak.
     text_type : str, optional (default: None)
@@ -361,9 +480,6 @@ def ms_adduct_search_api(db_name):
         in metabolic model.
     ppm: bool, optional (default: False)
         Specifies whether tolerance is in ppm.
-    kovats: tuple, optional (default: None)
-        Length 2 tuple specifying min and max kovats retention index to filter
-        compounds (e.g. (500, 1000)).
     logp: tuple, optional (default: None)
         Length 2 tuple specifying min and max logp to filter compounds (e.g.
         (-1, 2)).
@@ -377,7 +493,7 @@ def ms_adduct_search_api(db_name):
     -------
     json_results : flask.Response
         JSON array of compounds that match m/z within defined tolerance and
-        after passing other defined filters (such as kovats or logP).
+        after passing other defined filters (such as logP).
     """
     json_data = request.get_json()
 
@@ -386,12 +502,11 @@ def ms_adduct_search_api(db_name):
     else:
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
-    if 'charge_mode' in json_data:
-        charge = json_data['charge_mode']
+    if 'charge' in json_data:
+        charge = bool(json_data['charge'])
     else:
-        raise InvalidUsage('<charge_mode> argument must be specified. '
-                           '"Positive" for positive mode, "Negative" for '
-                           'negative mode.')
+        raise InvalidUsage('<charge> argument must be specified. "Positive" '
+                           'for positive mode, "Negative" for negative mode.')
 
     if 'text' in json_data:
         text = json_data['text']
@@ -404,14 +519,16 @@ def ms_adduct_search_api(db_name):
         text_type = 'form'
 
     if 'adducts' in json_data:
-        adducts = literal_eval(json_data['adducts'])
+        adducts = literal_eval(str(json_data['adducts']))
         assert isinstance(adducts, list)
     else:
         adducts = None
 
     if 'models' in json_data:
-        models = literal_eval(json_data['models'])
+        models = literal_eval(str(json_data['models']))
         assert isinstance(models, list)
+        if models == []:
+            models = None
     else:
         models = None
 
@@ -420,14 +537,8 @@ def ms_adduct_search_api(db_name):
     else:
         ppm = None
 
-    if 'kovats' in json_data:
-        kovats = literal_eval(json_data['kovats'])
-        assert isinstance(kovats, tuple)
-    else:
-        kovats = None
-
     if 'logp' in json_data:
-        logp = literal_eval(json_data['logp'])
+        logp = literal_eval(str(json_data['logp']))
         assert isinstance(logp, tuple)
     else:
         logp = None
@@ -448,7 +559,6 @@ def ms_adduct_search_api(db_name):
         'adducts': adducts,
         'models': models,
         'ppm': ppm,
-        'kovats': kovats,
         'logp': logp,
         'halogens': halogens,
         'verbose': verbose
@@ -458,10 +568,10 @@ def ms_adduct_search_api(db_name):
     keggdb = mongo.cx[app.config['KEGG_DB_NAME']]
 
     results = ms_adduct_search(db, keggdb, text, text_type, ms_params)
-    for i in results[:1]:
-        for key, val in i.items():
-            print(key, val, type(key), type(val))
     json_results = jsonify(results)
+
+    if results:
+        app.logger.info(f'MS Search successful ({len(results)} results found)')
 
     return json_results
 
@@ -479,7 +589,7 @@ def ms2_search_api(db_name):
     tolerance: float
         Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
         ppm is set to True.
-    charge_mode: bool
+    charge: bool
         Positive or negative mode. (True for positive, False for negative).
     energy_level: int
         Fragmentation energy level to use. May be 10, 20, or 40.
@@ -497,9 +607,6 @@ def ms2_search_api(db_name):
         in metabolic model.
     ppm: bool, optional (default: False)
         Specifies whether tolerance is in ppm.
-    kovats: tuple, optional (default: None)
-        Length 2 tuple specifying min and max kovats retention index to filter
-        compounds (e.g. (500, 1000)).
     logp: tuple, optional (default: None)
         Length 2 tuple specifying min and max logp to filter compounds (e.g.
         (-1, 2)).
@@ -511,7 +618,7 @@ def ms2_search_api(db_name):
     -------
     json_results : flask.Response
         JSON array of compounds that match m/z within defined tolerance and
-        after passing other defined filters (such as kovats or logP).
+        after passing other defined filters (such as logP).
     """
     json_data = request.get_json()
 
@@ -520,12 +627,11 @@ def ms2_search_api(db_name):
     else:
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
-    if 'charge_mode' in json_data:
-        charge = json_data['charge_mode']
+    if 'charge' in json_data:
+        charge = bool(json_data['charge'])
     else:
-        raise InvalidUsage('<charge_mode> argument must be specified. '
-                           '"Positive" for positive mode, "Negative" for '
-                           'negative mode.')
+        raise InvalidUsage('<charge> argument must be specified. "Positive" '
+                           'for positive mode, "Negative" for negative mode.')
 
     if 'energy_level' in json_data:
         energy_level = int(json_data['energy_level'])
@@ -550,14 +656,16 @@ def ms2_search_api(db_name):
         text_type = None
 
     if 'adducts' in json_data:
-        adducts = literal_eval(json_data['adducts'])
+        adducts = literal_eval(str(json_data['adducts']))
         assert isinstance(adducts, list)
     else:
         adducts = None
 
     if 'models' in json_data:
-        models = literal_eval(json_data['models'])
+        models = literal_eval(str(json_data['models']))
         assert isinstance(models, list)
+        if models == []:
+            models = None
     else:
         models = None
 
@@ -565,12 +673,6 @@ def ms2_search_api(db_name):
         ppm = bool(json_data['ppm'])
     else:
         ppm = None
-
-    if 'kovats' in json_data:
-        kovats = literal_eval(json_data['kovats'])
-        assert isinstance(kovats, tuple)
-    else:
-        kovats = None
 
     if 'logp' in json_data:
         logp = literal_eval(json_data['logp'])
@@ -596,7 +698,6 @@ def ms2_search_api(db_name):
         'adducts': adducts,
         'models': models,
         'ppm': ppm,
-        'kovats': kovats,
         'logp': logp,
         'halogens': halogens,
         'verbose': verbose
