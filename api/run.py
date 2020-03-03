@@ -1,12 +1,22 @@
+"""This is the main file that runs the app. FLASK_APP env variable should be
+set to a path to this file (e.g. on Windows "set FLASK_APP=api/run.py")."""
+
 import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-from api.config import Config
 from flask import Flask
 from flask.logging import default_handler
-from api.database import mongo
+from flask_cors import CORS
 
+import sys
+
+
+sys.path.insert(0, 'api')  # required in deployment to import api modules
+
+
+from api.config import Config
+from api.database import mongo
 from api.routes import mineserver_api
 
 
@@ -34,6 +44,9 @@ def create_app(instance_config=Config):
     # Connect to Mongo Database
     mongo.init_app(app)
 
+    # Allow CORS so we can have front end and back end on same server
+    CORS(app)
+
     # Initialize logger
     root = logging.getLogger()
     if not os.path.exists('logs'):
@@ -44,25 +57,16 @@ def create_app(instance_config=Config):
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.DEBUG)
 
-    # Add other (e.g. cobrapy) logs to flask logs
+    # Add any other (e.g. rdkit) logs to flask logs
     root.addHandler(default_handler)
 
     app.logger.setLevel(logging.DEBUG)
     app.logger.info('MINE-Server startup')
-
-    if app.config['MODE'] == 'development':
-        app.logger.info('Running in development mode at 127.0.0.1:5000')
-    elif app.config['MODE'] == 'production':
-        app.logger.info('Running in production mode.')
-    elif app.config['MODE'] == 'testing':
-        app.logger.info('Running in testing mode.')
-    else:
-        raise ValueError('MODE in config.py must be one of the following: ',
-                         '"production", "development", or "testing".')
+    app.logger.info('Running at http://127.0.0.1:5000')
 
     return app
 
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    application = create_app()
+    application.run(debug=True)

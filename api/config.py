@@ -11,12 +11,6 @@ MINEDB_DIR = os.path.dirname(minedatabase.__file__)
 
 class Config(object):
     """Class to configure important filepaths and settings."""
-    # ---------------------------- Main Settings ---------------------------- #
-    # Main settings for MINE-Server API - things most likely to be changed
-
-    #: Mode - options are 'production' or 'development'
-    MODE = 'development'
-
     # ------------------------------ Filepaths ------------------------------ #
     # Local filepaths are defined here
 

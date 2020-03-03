@@ -5,9 +5,18 @@ tests."""
 
 import json
 
+import pytest
 from flask import url_for
 
 from api.config import Config
+
+
+@pytest.fixture
+def mol_str():
+    """Test Mol object (for 4-Aminobutanal) in string format."""
+    with open(Config.TEST_DATA_DIR + '/mol_text.txt', 'r') as infile:
+        mol_string = infile.read()
+    return mol_string
 
 
 def assert_response_fields(response, status_code=200):
@@ -61,7 +70,7 @@ def test_quick_search_api(client):
     assert_response_fields(response)
 
 
-def test_similarity_search_api(client):
+def test_similarity_search_api(client, mol_str):
     """
     GIVEN a compound to query using similarity search via the API
     WHEN a response is received
@@ -89,8 +98,20 @@ def test_similarity_search_api(client):
     response = client.get(url)
     assert_response_fields(response)
 
+    url = url_for('mineserver_api.similarity_search_api', db_name='mongotest',
+                  min_tc=0.1, limit=1)
+    json_dict = {'mol': mol_str}
+    response = post_json(client, url, json_dict)
+    assert_response_fields(response)
 
-def test_structure_search_api(client):
+    url = url_for('mineserver_api.similarity_search_api', db_name='mongotest',
+                  min_tc=0.1, limit=1)
+    json_dict = {'mol': mol_str, 'model': 'eco'}
+    response = post_json(client, url, json_dict)
+    assert_response_fields(response)
+
+
+def test_structure_search_api(client, mol_str):
     """
     GIVEN a structure in SMILES format
     WHEN that structure is queried against a MINE DB
@@ -108,8 +129,13 @@ def test_structure_search_api(client):
     response = client.get(url)
     assert_response_fields(response)
 
+    url = url_for('mineserver_api.structure_search_api', db_name='mongotest')
+    json_dict = {'mol': mol_str}
+    response = post_json(client, url, json_dict)
+    assert_response_fields(response)
 
-def test_substructure_search_api(client):
+
+def test_substructure_search_api(client, mol_str):
     """
     GIVEN a substructure in SMILES format
     WHEN that substructure is queried against a MINE DB
@@ -126,6 +152,28 @@ def test_substructure_search_api(client):
                   db_name='mongotest', smiles=smiles, limit=2)
     response = client.get(url)
     assert_response_fields(response)
+
+    url = url_for('mineserver_api.substructure_search_api',
+                  db_name='mongotest')
+    json_dict = {'mol': mol_str}
+    response = post_json(client, url, json_dict)
+    assert_response_fields(response)
+
+
+def test_model_search_api(client):
+    """
+    GIVEN a KEGG model org code or name
+    WHEN models matching that code or name or queried from the KEGG models DB
+    THEN ensure that the correct results are returned
+    """
+    single_queries = ["hsa", "Acidovorax", "TMW2.1153"]
+    multiple_queries = ["hsa aaa", "Acidovorax TMW2.1153", "hsa Acidovorax"]
+
+    for query in single_queries + multiple_queries:
+        print(query)
+        url = url_for('mineserver_api.model_search_api', query=query)
+        response = client.get(url)
+        assert_response_fields(response)
 
 
 def test_database_query_api(client):
@@ -229,6 +277,15 @@ def test_get_adduct_names_api(client):
     response = client.get(url)
     assert_response_fields(response)
 
+    url = url_for('mineserver_api.get_adduct_names_api',
+                  adduct_type='positive')
+    response = client.get(url)
+    assert_response_fields(response)
+
+    url = url_for('mineserver_api.get_adduct_names_api')
+    response = client.get(url)
+    assert_response_fields(response)
+
 
 def test_ms_adduct_search_api(client):
     """
@@ -239,8 +296,28 @@ def test_ms_adduct_search_api(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 1000,
-        'charge_mode': 'Positive',
+        'charge': True,
         'text': '161'
+    }
+    response = post_json(client, url, json_dict)
+    assert_response_fields(response)
+
+
+def test_ms_adduct_search_api_w_default_website_vals(client):
+    """
+    GIVEN a request with an MS1 adduct search query is made using default vals
+    WHEN a response is received
+    THEN make sure the response is healthy and contains response data
+    """
+    url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
+    json_dict = {
+        'tolerance': 30000.000000000000001,  # Made this really big to get hit
+        'charge': False,
+        'text': '163.039200',
+        'adducts': "['[M-H]-']",
+        'models': "[]",
+        'energy_level': '10',
+        'scoring_function': 'dot_product',
     }
     response = post_json(client, url, json_dict)
     assert_response_fields(response)
@@ -255,7 +332,7 @@ def test_ms_adduct_search_api_error(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 10,
-        'charge_mode': True,
+        'charge': True,
         'text': '161',
     }
     for key in json_dict:
@@ -280,7 +357,7 @@ def test_ms_adduct_search_api_mgf(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 1000,
-        'charge_mode': True,
+        'charge': True,
         'text': mgf_text,
         'text_type': 'mgf'
     }
@@ -301,7 +378,7 @@ def test_ms_adduct_search_api_mzxml(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 1000,
-        'charge_mode': True,
+        'charge': True,
         'text': mzxml_text,
         'text_type': 'mzxml'
     }
@@ -323,7 +400,7 @@ def test_ms_adduct_search_api_msp(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 1000,
-        'charge_mode': True,
+        'charge': True,
         'text': msp_text,
         'text_type': 'msp'
     }
@@ -340,15 +417,13 @@ def test_ms_adduct_search_api_all_params(client):
     url = url_for('mineserver_api.ms_adduct_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 10,
-        'charge_mode': False,
+        'charge': False,
         'text': '259.02244262600003',
         'text_type': 'form',
         'adducts': "['[M-H]-']",
         'models': "['eco']",
         'ppm': False,
-        # TODO: add kovats and logp data to mongotest MINE
-        # 'kovats': "(0, 20000)",
-        # 'logp': "(-35, 35)",
+        #'logp': "(-10, 10)",
         'halogens': True,
         'verbose': True
     }
@@ -365,7 +440,7 @@ def test_ms2_search_api(client):
     url = url_for('mineserver_api.ms2_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 10,
-        'charge_mode': True,
+        'charge': True,
         'energy_level': 20,
         'scoring_function': 'dot product',
         'text': '261.037\n43.0189 1\n59.013 1\n96.970 10',
@@ -384,7 +459,7 @@ def test_ms2_search_api_error(client):
     url = url_for('mineserver_api.ms2_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 10,
-        'charge_mode': True,
+        'charge': True,
         'energy_level': 20,
         'scoring_function': 'dot product',
         'text': '261.037\n43.0189 1\n59.013 1\n96.970 10',
@@ -402,10 +477,10 @@ def test_ms2_search_api_all_params(client):
     WHEN a response is received
     THEN make sure the response is healthy and contains response data
     """
-    url = url_for('mineserver_api.ms2_search_api', db_name='UniversalMINE')
+    url = url_for('mineserver_api.ms2_search_api', db_name='mongotest')
     json_dict = {
         'tolerance': 10,
-        'charge_mode': True,
+        'charge': True,
         'energy_level': 20,
         'scoring_function': 'dot product',
         'text': '261.037\n43.0189 1\n59.013 1\n96.970 10',
@@ -413,9 +488,7 @@ def test_ms2_search_api_all_params(client):
         'adducts': "['[M+H]+']",
         'models': "['hsa']",
         'ppm': True,
-        # TODO: add kovats and logp data to mongotest MINE
-        # 'kovats': (0, 1),
-        # 'logp': (0, 1),
+        #'logp': "(-35, 35)",
         'halogens': True,
         'verbose': True
     }
