@@ -1,6 +1,6 @@
 Server code for the MINE Databases
 
-Note: this is all deprecated - need to update.
+Note: this README is deprecated - need to update.
 
 ## MINE-Server
 
