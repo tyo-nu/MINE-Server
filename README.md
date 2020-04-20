@@ -8,7 +8,7 @@ TODO: update database list here
 * Yeast - “YMDBexp2”
 * KEGG - “KEGGexp2”
 
-* To learn more about the MINE databases, visit https://minedatabase.ci.northwestern.edu.
-* See docs/API Examples.ipynb for example API usage.
-* For API documentation, please refer to docs/build/index.html (load in your browser).
+To learn more about the MINE databases, visit https://minedatabase.ci.northwestern.edu.
+
+See docs/API Examples.ipynb for example API usage. For API documentation, please refer to docs/build/index.html (load in your browser).
 TODO: Host documentation
