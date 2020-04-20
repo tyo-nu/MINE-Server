@@ -1,0 +1,834 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>api.routes &#8212; MINE-Server  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MINE-Server  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for api.routes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Here, routes are defined for all possible API requests. Note that nearly</span>
+<span class="sd">all actual logic is imported from the minedatabase package.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ast</span> <span class="kn">import</span> <span class="n">literal_eval</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span> <span class="k">as</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="kn">from</span> <span class="nn">api.database</span> <span class="kn">import</span> <span class="n">mongo</span>
+<span class="kn">from</span> <span class="nn">api.exceptions</span> <span class="kn">import</span> <span class="n">InvalidUsage</span>
+<span class="kn">from</span> <span class="nn">minedatabase.metabolomics</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ms2_search</span><span class="p">,</span> <span class="n">ms_adduct_search</span><span class="p">,</span>
+                                       <span class="n">read_adduct_names</span><span class="p">,</span> <span class="n">spectra_download</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">minedatabase.queries</span> <span class="kn">import</span> <span class="p">(</span><span class="n">advanced_search</span><span class="p">,</span> <span class="n">get_comps</span><span class="p">,</span> <span class="n">get_ids</span><span class="p">,</span>
+                                  <span class="n">get_op_w_rxns</span><span class="p">,</span> <span class="n">get_ops</span><span class="p">,</span> <span class="n">get_rxns</span><span class="p">,</span>
+                                  <span class="n">model_search</span><span class="p">,</span> <span class="n">quick_search</span><span class="p">,</span>
+                                  <span class="n">similarity_search</span><span class="p">,</span> <span class="n">structure_search</span><span class="p">,</span>
+                                  <span class="n">substructure_search</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">minedatabase.utils</span> <span class="kn">import</span> <span class="n">score_compounds</span><span class="p">,</span> <span class="n">get_smiles_from_mol_string</span>
+
+
+<span class="c1"># pylint: disable=invalid-name</span>
+<span class="n">mineserver_api</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;mineserver_api&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="c1"># pylint: enable=invalid-name</span>
+
+
+<div class="viewcode-block" id="handle_invalid_usage"><a class="viewcode-back" href="../../api.html#api.routes.handle_invalid_usage">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="n">InvalidUsage</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handle_invalid_usage</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes it so user can receive an informative error message rather than</span>
+<span class="sd">    a default internal server error.&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">status_code</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+
+
+<div class="viewcode-block" id="quick_search_api"><a class="viewcode-back" href="../../api.html#api.routes.quick_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/quick-search/&lt;db_name&gt;/q=&lt;query&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">quick_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a quick search and return results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    query : str</span>
+<span class="sd">        A MINE id, KEGG code, ModelSEED id, Inchikey, or Name.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON Documents matching query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">quick_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<span class="c1"># Routes for mol input</span>
+<div class="viewcode-block" id="similarity_search_api"><a class="viewcode-back" href="../../api.html#api.routes.similarity_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/&lt;float:min_tc&gt;&#39;</span><span class="p">,</span>
+                      <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/&lt;int:limit&gt;&#39;</span><span class="p">,</span>
+                      <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/&lt;float:min_tc&gt;&#39;</span>
+                      <span class="s1">&#39;/&lt;int:limit&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="c1"># Routes for smiles input</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span>
+                      <span class="s1">&#39;/&lt;float:min_tc&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span>
+                      <span class="s1">&#39;/&lt;int:limit&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/similarity-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span>
+                      <span class="s1">&#39;/&lt;float:min_tc&gt;/&lt;int:limit&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">similarity_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">smiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_tc</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">limit</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a similarity search for a SMILES string and return results.</span>
+
+<span class="sd">    Either a SMILES string or mol object string is required. SMILES is the</span>
+<span class="sd">    recommended format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    smiles : str</span>
+<span class="sd">        SMILES string describing molecular structure of query molecule. Either</span>
+<span class="sd">        smiles or mol arg is required (smiles arg recommended over mol arg).</span>
+<span class="sd">    mol : str, optional (default: None)</span>
+<span class="sd">        mol object in str format (should contain a lot of strange chars like</span>
+<span class="sd">        &quot;%20&quot; and end with &quot;END&quot;). Used only for the MINE website backend</span>
+<span class="sd">        because MarvinJS on the front end only generates mol objects from</span>
+<span class="sd">        input structures, and cannot convert it to SMILES. Captured from form</span>
+<span class="sd">        data.</span>
+<span class="sd">    min_tc : float, optional (default: 0.7)</span>
+<span class="sd">        Minimum Tanimoto Coefficient required for similarity match.</span>
+<span class="sd">    limit : int, optional (default: -1)</span>
+<span class="sd">        Maximum number of results (compounds) to return. By default, returns</span>
+<span class="sd">        all results.</span>
+<span class="sd">    model : str, optional (default: None)</span>
+<span class="sd">        KEGG organism code (e.g. &#39;hsa&#39;). Adds annotations to each compound</span>
+<span class="sd">        based on whether it is in or could be derived from the KEGG compounds</span>
+<span class="sd">        in this organism (provided in the &#39;Likelihood_score&#39; field of each</span>
+<span class="sd">        compound document).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON Documents of similar compounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;mol&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">mol_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">])</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="n">get_smiles_from_mol_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;model&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">model_db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">similarity_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">min_tc</span><span class="o">=</span><span class="n">min_tc</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                                <span class="n">model_db</span><span class="o">=</span><span class="n">model_db</span><span class="p">,</span> <span class="n">parent_filter</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<span class="c1"># Routes for mol input</span>
+<div class="viewcode-block" id="structure_search_api"><a class="viewcode-back" href="../../api.html#api.routes.structure_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/structure-search/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/structure-search/&lt;db_name&gt;/stereo=&lt;stereo&gt;&#39;</span><span class="p">,</span>
+                      <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="c1"># Routes for smiles input</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/structure-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/structure-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span>
+                      <span class="s1">&#39;/stereo=&lt;stereo&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">structure_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">smiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stereo</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform an exact structure search and return results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    smiles : str</span>
+<span class="sd">        SMILES string describing molecular structure of query molecule.</span>
+<span class="sd">    mol : str, optional (default: None)</span>
+<span class="sd">        mol object in str format (should contain a lot of strange chars like</span>
+<span class="sd">        &quot;%20&quot; and end with &quot;END&quot;). Used only for the MINE website backend</span>
+<span class="sd">        because MarvinJS on the front end only generates mol objects from</span>
+<span class="sd">        input structures, and cannot convert it to SMILES. Captured from form</span>
+<span class="sd">        data.</span>
+<span class="sd">    stereo : bool, optional (default: True)</span>
+<span class="sd">        If true, uses sterochemistry in finding exact match.</span>
+<span class="sd">    model : str, optional (default: None)</span>
+<span class="sd">        KEGG organism code (e.g. &#39;hsa&#39;). Adds annotations to each compound</span>
+<span class="sd">        based on whether it is in or could be derived from the KEGG compounds</span>
+<span class="sd">        in this organism (provided in the &#39;Likelihood_score&#39; field of each</span>
+<span class="sd">        compound document).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON Document of match (empty if no match).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;mol&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">mol_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">])</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="n">get_smiles_from_mol_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;model&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">model_db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">structure_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">stereo</span><span class="o">=</span><span class="n">stereo</span><span class="p">,</span> <span class="n">model_db</span><span class="o">=</span><span class="n">model_db</span><span class="p">,</span>
+                               <span class="n">parent_filter</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<span class="c1"># Routes for mol input</span>
+<div class="viewcode-block" id="substructure_search_api"><a class="viewcode-back" href="../../api.html#api.routes.substructure_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/substructure-search/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/substructure-search/&lt;db_name&gt;/&lt;int:limit&gt;&#39;</span><span class="p">,</span>
+                      <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="c1"># Routes for smiles input</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/substructure-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/substructure-search/&lt;db_name&gt;/smiles=&lt;smiles&gt;&#39;</span>
+                      <span class="s1">&#39;/&lt;int:limit&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">substructure_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">smiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a substructure search and return results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    smiles : str</span>
+<span class="sd">        SMILES string describing molecular substructure to search for.</span>
+<span class="sd">    mol : str, optional (default: None)</span>
+<span class="sd">        mol object in str format (may contain a lot of whitespace hex-chars</span>
+<span class="sd">        like &quot;%20&quot; and end with &quot;END&quot;). Used only for the MINE website backend</span>
+<span class="sd">        because MarvinJS on the front end only generates mol objects from</span>
+<span class="sd">        input structures, and cannot convert it to SMILES. Captured from form</span>
+<span class="sd">        data.</span>
+<span class="sd">    limit : int (default: -1)</span>
+<span class="sd">        Maximum number of results (compounds) to return. By default, returns</span>
+<span class="sd">        all results.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON Documents of compounds containing given substructure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;mol&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">mol_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">])</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="n">get_smiles_from_mol_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">json_data</span> <span class="ow">and</span> <span class="s1">&#39;model&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">model_db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">substructure_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">model_db</span><span class="o">=</span><span class="n">model_db</span><span class="p">,</span>
+                                  <span class="n">parent_filter</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="model_search_api"><a class="viewcode-back" href="../../api.html#api.routes.model_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/model-search/q=&lt;query&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">model_search_api</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a model search and return results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    query : str</span>
+<span class="sd">        KEGG Org Code or Org Name of model(s) to search for (e.g. &#39;hsa&#39; or</span>
+<span class="sd">        &#39;yeast&#39;). Can provide multiple search terms by separating each term</span>
+<span class="sd">        with a space.  TODO: change from space delimiter to something else</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">model_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="database_query_api"><a class="viewcode-back" href="../../api.html#api.routes.database_query_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/database-query/&lt;db_name&gt;/q=&lt;mongo_query&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">database_query_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">mongo_query</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a direct query built with Mongo syntax.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    mongo_query : str</span>
+<span class="sd">        A valid Mongo query (e.g. .../q={&quot;ID&quot;: &quot;cpd00001&quot;}).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON Documents matching provided Mongo query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">advanced_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">mongo_query</span><span class="p">)</span>
+    <span class="c1"># TODO: add model to score_compounds (where None currently is)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">score_compounds</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="get_ids_api"><a class="viewcode-back" href="../../api.html#api.routes.get_ids_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-ids/&lt;db_name&gt;/&lt;collection_name&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-ids/&lt;db_name&gt;/&lt;collection_name&gt;/q=&lt;query&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_ids_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get Mongo IDs for a subset of a given database collection.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    collection_name : str</span>
+<span class="sd">        Name of Mongo collection within database to query against.</span>
+<span class="sd">    query : str (default: None)</span>
+<span class="sd">        Specifies subset of collection to retrieve ids for. Formatted as a</span>
+<span class="sd">        python dict as you would have in argument to db.collection.find().</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        List of ids matching query in JSON format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">get_ids</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="get_comps_api"><a class="viewcode-back" href="../../api.html#api.routes.get_comps_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-comps/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_comps_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get compounds for specified ids in database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    id_list : list</span>
+<span class="sd">        List of compound ids. Attach as &quot;dict&quot; to POST request. For example,</span>
+<span class="sd">        requests.post(&lt;this_uri&gt;, data=&quot;{&#39;id_list&#39;: [&#39;id1&#39;, &#39;id2&#39;, &#39;id3&#39;]}&quot;).</span>
+<span class="sd">        IDs can be either MINE IDs or Mongo IDs (_id).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        List of compound JSON documents.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">id_list</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()[</span><span class="s1">&#39;id_list&#39;</span><span class="p">]</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">get_comps</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="get_rxns_api"><a class="viewcode-back" href="../../api.html#api.routes.get_rxns_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-rxns/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_rxns_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get reactions for specified ids in database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    id_list : list</span>
+<span class="sd">        List of reaction ids. Attach as &quot;dict&quot; to POST request. For example,</span>
+<span class="sd">        requests.post(&lt;this_uri&gt;, data=&quot;{&#39;id_list&#39;: [&#39;id1&#39;, &#39;id2&#39;, &#39;id3&#39;]}&quot;).</span>
+<span class="sd">        IDs must be Mongo IDs (_id).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        List of reaction JSON documents.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">id_list</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()[</span><span class="s1">&#39;id_list&#39;</span><span class="p">]</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">get_rxns</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="get_ops_api"><a class="viewcode-back" href="../../api.html#api.routes.get_ops_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-ops/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_ops_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get operators for specified ids in database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    id_list : list, optional (default: None)</span>
+<span class="sd">        List of operator ids. Attach as &quot;dict&quot; to POST request. For example,</span>
+<span class="sd">        requests.post(&lt;this_uri&gt;, data=&quot;{&#39;id_list&#39;: [&#39;id1&#39;, &#39;id2&#39;, &#39;id3&#39;]}&quot;).</span>
+<span class="sd">        IDs can be either operator ids (e.g. 1.1.-1.h) or Mongo IDs (_id). If</span>
+<span class="sd">        not provided, all operators are returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        List of operator JSON documents.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">():</span>
+        <span class="n">id_list</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()[</span><span class="s1">&#39;id_list&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">id_list</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">get_ops</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">id_list</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="get_op_w_rxns_api"><a class="viewcode-back" href="../../api.html#api.routes.get_op_w_rxns_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-op-w-rxns/&lt;db_name&gt;/&lt;op_id&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_op_w_rxns_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">op_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get operator with all its associated reactions in selected database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    op_id : str</span>
+<span class="sd">        Either operator id (e.g. 1.1.-1.h) or Mongo ID (_id) for operator.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        Operator JSON document (including associated reactions).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">get_op_w_rxns</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">op_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json_results</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;Operator with ID </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s1"> not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op_id</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_adduct_names_api"><a class="viewcode-back" href="../../api.html#api.routes.get_adduct_names_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-adduct-names&#39;</span><span class="p">)</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get-adduct-names/&lt;adduct_type&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_adduct_names_api</span><span class="p">(</span><span class="n">adduct_type</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get names of all adducts for the specified adduct type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adduct_type : str</span>
+<span class="sd">        Options are &#39;positive&#39;, &#39;negative&#39;, or &#39;all&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON array of adduct names. If adduct_type == &#39;all&#39;, then this is an</span>
+<span class="sd">        array of two arrays, with the first element being positive adducts and</span>
+<span class="sd">        the second adduct being negative adducts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">adduct_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;positive&#39;</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">read_adduct_names</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;POS_ADDUCT_PATH&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">adduct_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;negative&#39;</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">read_adduct_names</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;NEG_ADDUCT_PATH&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">adduct_type</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">pos_results</span> <span class="o">=</span> <span class="n">read_adduct_names</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;POS_ADDUCT_PATH&#39;</span><span class="p">])</span>
+        <span class="n">neg_results</span> <span class="o">=</span> <span class="n">read_adduct_names</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;NEG_ADDUCT_PATH&#39;</span><span class="p">])</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos_results</span><span class="p">,</span> <span class="n">neg_results</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;URL param &lt;adduct_type&gt; must be &quot;all&quot;, &quot;pos&quot;, or &#39;</span>
+                           <span class="s1">&#39;&quot;neg&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="ms_adduct_search_api"><a class="viewcode-back" href="../../api.html#api.routes.ms_adduct_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/ms-adduct-search/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">ms_adduct_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Search for commpound-adducts matching precursor mass(es).</span>
+
+<span class="sd">    Attach all arguments besides db_name as JSON data in POST request.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    tolerance: float</span>
+<span class="sd">        Specifies tolerance for m/z, in mDa by default. Can specify in ppm if</span>
+<span class="sd">        ppm is set to True.</span>
+<span class="sd">    charge: bool</span>
+<span class="sd">        Positive or negative mode. (True for positive, False for negative).</span>
+<span class="sd">    text : str</span>
+<span class="sd">        Text as in metabolomics datafile for specific peak.</span>
+<span class="sd">    text_type : str, optional (default: None)</span>
+<span class="sd">        Type of metabolomics datafile (mgf, mzXML, and msp are supported). If</span>
+<span class="sd">        None, assumes m/z values are separated by newlines.</span>
+<span class="sd">    adducts: list, optional (default: None)</span>
+<span class="sd">        List of adducts to use. If not specified, uses all adducts.</span>
+<span class="sd">    models: list, optional (default: None)</span>
+<span class="sd">        List of model _ids. If supplied, score compounds higher if  present</span>
+<span class="sd">        in metabolic model.</span>
+<span class="sd">    ppm: bool, optional (default: False)</span>
+<span class="sd">        Specifies whether tolerance is in ppm.</span>
+<span class="sd">    logp: tuple, optional (default: None)</span>
+<span class="sd">        Length 2 tuple specifying min and max logp to filter compounds (e.g.</span>
+<span class="sd">        (-1, 2)).</span>
+<span class="sd">    halogens: bool, optional (default: False)</span>
+<span class="sd">        Specifies whether to filter out compounds containing F, Cl, or Br.</span>
+<span class="sd">        Filtered out if set to True.</span>
+<span class="sd">    verbose: bool, optional (default: False)</span>
+<span class="sd">        If True, verbose output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON array of compounds that match m/z within defined tolerance and</span>
+<span class="sd">        after passing other defined filters (such as logP).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">&#39;tolerance&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">tolerance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;tolerance&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;tolerance&gt; argument must be specified (in mDa).&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;charge&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;charge&gt; argument must be specified. &quot;Positive&quot; &#39;</span>
+                           <span class="s1">&#39;for positive mode, &quot;Negative&quot; for negative mode.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;text&gt; argument must be specified.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;text_type&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">text_type</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;text_type&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">text_type</span> <span class="o">=</span> <span class="s1">&#39;form&#39;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;adducts&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">adducts</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;adducts&#39;</span><span class="p">]))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adducts</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adducts</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;models&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">models</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;ppm&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">ppm</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;ppm&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppm</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;logp&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;logp&#39;</span><span class="p">]))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;halogens&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">halogens</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;halogens&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">halogens</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;verbose&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">ms_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;tolerance&#39;</span><span class="p">:</span> <span class="n">tolerance</span><span class="p">,</span>
+        <span class="s1">&#39;charge&#39;</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span>
+        <span class="s1">&#39;adducts&#39;</span><span class="p">:</span> <span class="n">adducts</span><span class="p">,</span>
+        <span class="s1">&#39;models&#39;</span><span class="p">:</span> <span class="n">models</span><span class="p">,</span>
+        <span class="s1">&#39;ppm&#39;</span><span class="p">:</span> <span class="n">ppm</span><span class="p">,</span>
+        <span class="s1">&#39;logp&#39;</span><span class="p">:</span> <span class="n">logp</span><span class="p">,</span>
+        <span class="s1">&#39;halogens&#39;</span><span class="p">:</span> <span class="n">halogens</span><span class="p">,</span>
+        <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="n">verbose</span>
+    <span class="p">}</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">keggdb</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ms_adduct_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">keggdb</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text_type</span><span class="p">,</span> <span class="n">ms_params</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MS Search successful (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s1"> results found)&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="ms2_search_api"><a class="viewcode-back" href="../../api.html#api.routes.ms2_search_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/ms2-search/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">ms2_search_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Search for commpound-adducts matching precursor mass(es).</span>
+
+<span class="sd">    Attach all arguments besides db_name as form data in POST request.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_name : str</span>
+<span class="sd">        Name of Mongo database to query against.</span>
+<span class="sd">    tolerance: float</span>
+<span class="sd">        Specifies tolerance for m/z, in mDa by default. Can specify in ppm if</span>
+<span class="sd">        ppm is set to True.</span>
+<span class="sd">    charge: bool</span>
+<span class="sd">        Positive or negative mode. (True for positive, False for negative).</span>
+<span class="sd">    energy_level: int</span>
+<span class="sd">        Fragmentation energy level to use. May be 10, 20, or 40.</span>
+<span class="sd">    scoring_function: str</span>
+<span class="sd">        Scoring function to use. Can be either &#39;jaccard&#39; or &#39;dot product&#39;.</span>
+<span class="sd">    text : str</span>
+<span class="sd">        Text as in metabolomics datafile for specific peak.</span>
+<span class="sd">    text_type : str, optional (default: None)</span>
+<span class="sd">        Type of metabolomics datafile (mgf, mzXML, and msp are supported). If</span>
+<span class="sd">        None, assumes m/z values are separated by newlines.</span>
+<span class="sd">    adducts: list, optional (default: None)</span>
+<span class="sd">        List of adducts to use. If not specified, uses all adducts.</span>
+<span class="sd">    models: list, optional (default: None)</span>
+<span class="sd">        List of model _ids. If supplied, score compounds higher if  present</span>
+<span class="sd">        in metabolic model.</span>
+<span class="sd">    ppm: bool, optional (default: False)</span>
+<span class="sd">        Specifies whether tolerance is in ppm.</span>
+<span class="sd">    logp: tuple, optional (default: None)</span>
+<span class="sd">        Length 2 tuple specifying min and max logp to filter compounds (e.g.</span>
+<span class="sd">        (-1, 2)).</span>
+<span class="sd">    halogens: bool, optional (default: False)</span>
+<span class="sd">        Specifies whether to filter out compounds containing F, Cl, or Br.</span>
+<span class="sd">        Filtered out if set to True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    json_results : flask.Response</span>
+<span class="sd">        JSON array of compounds that match m/z within defined tolerance and</span>
+<span class="sd">        after passing other defined filters (such as logP).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">&#39;tolerance&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">tolerance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;tolerance&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;tolerance&gt; argument must be specified (in mDa).&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;charge&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;charge&gt; argument must be specified. &quot;Positive&quot; &#39;</span>
+                           <span class="s1">&#39;for positive mode, &quot;Negative&quot; for negative mode.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;energy_level&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">energy_level</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;energy_level&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;energy_level&gt; argument must be specified. &#39;</span>
+                           <span class="s1">&#39;Possible values are 10, 20, or 40.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;scoring_function&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">scoring_function</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;scoring_function&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s2">&quot;&lt;scoring_function&gt; argument must be specified. &quot;</span>
+                           <span class="s2">&quot;Possible values are &#39;jaccard&#39; and &#39;dot product&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUsage</span><span class="p">(</span><span class="s1">&#39;&lt;text&gt; argument must be specified.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;text_type&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">text_type</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;text_type&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">text_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;adducts&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">adducts</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;adducts&#39;</span><span class="p">]))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adducts</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adducts</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;models&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">models</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;ppm&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">ppm</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;ppm&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppm</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;logp&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="n">literal_eval</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;logp&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logp</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logp</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;halogens&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">halogens</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;halogens&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">halogens</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s1">&#39;verbose&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">ms_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;tolerance&#39;</span><span class="p">:</span> <span class="n">tolerance</span><span class="p">,</span>
+        <span class="s1">&#39;charge&#39;</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span>
+        <span class="s1">&#39;energy_level&#39;</span><span class="p">:</span> <span class="n">energy_level</span><span class="p">,</span>
+        <span class="s1">&#39;scoring_function&#39;</span><span class="p">:</span> <span class="n">scoring_function</span><span class="p">,</span>
+        <span class="s1">&#39;adducts&#39;</span><span class="p">:</span> <span class="n">adducts</span><span class="p">,</span>
+        <span class="s1">&#39;models&#39;</span><span class="p">:</span> <span class="n">models</span><span class="p">,</span>
+        <span class="s1">&#39;ppm&#39;</span><span class="p">:</span> <span class="n">ppm</span><span class="p">,</span>
+        <span class="s1">&#39;logp&#39;</span><span class="p">:</span> <span class="n">logp</span><span class="p">,</span>
+        <span class="s1">&#39;halogens&#39;</span><span class="p">:</span> <span class="n">halogens</span><span class="p">,</span>
+        <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="n">verbose</span>
+    <span class="p">}</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">keggdb</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;KEGG_DB_NAME&#39;</span><span class="p">]]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ms2_search</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">keggdb</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text_type</span><span class="p">,</span> <span class="n">ms_params</span><span class="p">)</span>
+    <span class="n">json_results</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_results</span></div>
+
+
+<div class="viewcode-block" id="spectra_download_api"><a class="viewcode-back" href="../../api.html#api.routes.spectra_download_api">[docs]</a><span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/spectra-download/&lt;db_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@mineserver_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/spectra-download/&lt;db_name&gt;/q=&lt;mongo_query&gt;&#39;</span><span class="p">,</span>
+                      <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">spectra_download_api</span><span class="p">(</span><span class="n">db_name</span><span class="p">,</span> <span class="n">mongo_query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Download one or more spectra for compounds matching a given query.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db : Mongo DB</span>
+<span class="sd">        Contains compound documents to search.</span>
+<span class="sd">    mongo_query : str, optional (default: None)</span>
+<span class="sd">        A valid Mongo query as a literal string. If None, all compound spectra</span>
+<span class="sd">        are returned.</span>
+<span class="sd">    parent_filter : str, optional (default: None)</span>
+<span class="sd">        If set to a metabolic model&#39;s Mongo _id, only get spectra for compounds</span>
+<span class="sd">        in or derived from that metabolic model.</span>
+<span class="sd">    putative : bool, optional (default: True)</span>
+<span class="sd">        If False, only find known compounds (i.e. in Generation 0). Otherwise,</span>
+<span class="sd">        finds both known and predicted compounds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : flask.Response</span>
+<span class="sd">        Text of all matching spectra, including headers and peak lists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parent_filter</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">putative</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s1">&#39;parent_filter&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">parent_filter</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;parent_filter&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;putative&#39;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">putative</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;putative&#39;</span><span class="p">])</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">cx</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">spectra_download</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">mongo_query</span><span class="o">=</span><span class="n">mongo_query</span><span class="p">,</span>
+                               <span class="n">parent_filter</span><span class="o">=</span><span class="n">parent_filter</span><span class="p">,</span> <span class="n">putative</span><span class="o">=</span><span class="n">putative</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">response_class</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MINE-Server  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, James Jeffryes, Jonathan Strutz.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+    </div>
+  </body>
+</html>
