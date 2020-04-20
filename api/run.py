@@ -13,6 +13,7 @@ import sys
 
 
 sys.path.insert(0, 'api')  # required in deployment to import api modules
+sys.path.insert(0, '..')  # required in deployment to import api modules
 
 
 from api.config import Config

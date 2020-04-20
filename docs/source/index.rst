@@ -22,7 +22,7 @@ for some resources, multiple endpoints exist (e.g. 'Exact structure search' has
 ordered by path rather than resource.
 
 For example usage, see this Jupyter Notebook at `the MINE-Server GitHub repo 
-<https://github.com/tyo-nu/MINE-Server/blob/master/docs/APIExamples.ipynb>`_.
+<https://github.com/tyo-nu/MINE-Server/blob/master/docs/API%20Examples.ipynb>`_.
 
 .. qrefflask:: api.run:create_app()
    :blueprints: mineserver_api
