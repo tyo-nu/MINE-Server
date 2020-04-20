@@ -1,0 +1,624 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>api package &#8212; MINE-Server  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">MINE-Server  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-package">
+<h1>api package<a class="headerlink" href="#api-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-api.config">
+<span id="api-config-module"></span><h2>api.config module<a class="headerlink" href="#module-api.config" title="Permalink to this headline">¶</a></h2>
+<p>Configuration file. All settings are stored in Config class which gets
+instantiated in __init__.py.</p>
+<dl class="class">
+<dt id="api.config.Config">
+<em class="property">class </em><code class="sig-prename descclassname">api.config.</code><code class="sig-name descname">Config</code><a class="headerlink" href="#api.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to configure important filepaths and settings.</p>
+<dl class="attribute">
+<dt id="api.config.Config.KEGG_DB_NAME">
+<code class="sig-name descname">KEGG_DB_NAME</code><em class="property"> = 'kegg'</em><a class="headerlink" href="#api.config.Config.KEGG_DB_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of KEGG database with models collection</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.config.Config.MONGO_URI">
+<code class="sig-name descname">MONGO_URI</code><em class="property"> = 'mongodb://localhost/'</em><a class="headerlink" href="#api.config.Config.MONGO_URI" title="Permalink to this definition">¶</a></dt>
+<dd><p>URI to MINE MongoDB</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.config.Config.NEG_ADDUCT_PATH">
+<code class="sig-name descname">NEG_ADDUCT_PATH</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Database\\minedatabase\\data/adducts/Negative Adducts full.txt'</em><a class="headerlink" href="#api.config.Config.NEG_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to “Negative Adducts full.txt”</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.config.Config.POS_ADDUCT_PATH">
+<code class="sig-name descname">POS_ADDUCT_PATH</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Database\\minedatabase\\data/adducts/Positive Adducts full.txt'</em><a class="headerlink" href="#api.config.Config.POS_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to “Positive Adducts full.txt”</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.config.Config.TEST_DATA_DIR">
+<code class="sig-name descname">TEST_DATA_DIR</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Server\\api\\../tests/data'</em><a class="headerlink" href="#api.config.Config.TEST_DATA_DIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to directory with test data</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.database">
+<span id="api-database-module"></span><h2>api.database module<a class="headerlink" href="#module-api.database" title="Permalink to this headline">¶</a></h2>
+<p>Used just to create the mongo connection. See Stack Overflow question
+33166612 for details on why this needs to be its own file.</p>
+</div>
+<div class="section" id="module-api.exceptions">
+<span id="api-exceptions-module"></span><h2>api.exceptions module<a class="headerlink" href="#module-api.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Module for all Exception subclassses.</p>
+<dl class="exception">
+<dt id="api.exceptions.InvalidUsage">
+<em class="property">exception </em><code class="sig-prename descclassname">api.exceptions.</code><code class="sig-name descname">InvalidUsage</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">status_code=400</em>, <em class="sig-param">payload=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Custom Exception handler for the API. See source at
+<a class="reference external" href="http://flask.pocoo.org/docs/1.0/patterns/apierrors/">http://flask.pocoo.org/docs/1.0/patterns/apierrors/</a> for more info.</p>
+<dl class="attribute">
+<dt id="api.exceptions.InvalidUsage.message">
+<code class="sig-name descname">message</code><a class="headerlink" href="#api.exceptions.InvalidUsage.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human readable string describing the exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.exceptions.InvalidUsage.status_code">
+<code class="sig-name descname">status_code</code><a class="headerlink" href="#api.exceptions.InvalidUsage.status_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP status code - defaults to 400 (Bad Request).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.exceptions.InvalidUsage.payload">
+<code class="sig-name descname">payload</code><a class="headerlink" href="#api.exceptions.InvalidUsage.payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra information on the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.exceptions.InvalidUsage.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert payload to dict with message.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.routes">
+<span id="api-routes-module"></span><h2>api.routes module<a class="headerlink" href="#module-api.routes" title="Permalink to this headline">¶</a></h2>
+<p>Here, routes are defined for all possible API requests. Note that nearly
+all actual logic is imported from the minedatabase package.</p>
+<dl class="function">
+<dt id="api.routes.database_query_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">database_query_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">mongo_query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.database_query_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a direct query built with Mongo syntax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>mongo_query</strong> (<em>str</em>) – A valid Mongo query (e.g. …/q={“ID”: “cpd00001”}).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents matching provided Mongo query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_adduct_names_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_adduct_names_api</code><span class="sig-paren">(</span><em class="sig-param">adduct_type='all'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_adduct_names_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get names of all adducts for the specified adduct type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>adduct_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Options are ‘positive’, ‘negative’, or ‘all’. Defaults to ‘all’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of adduct names. If adduct_type == ‘all’, then this is an
+array of two arrays, with the first element being positive adducts and
+the second adduct being negative adducts.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_comps_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_comps_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_comps_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get compounds for specified ids in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em>) – List of compound ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
+IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of compound JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_ids_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_ids_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">collection_name</em>, <em class="sig-param">query=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ids_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Mongo IDs for a subset of a given database collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>collection_name</strong> (<em>str</em>) – Name of Mongo collection within database to query against.</p></li>
+<li><p><strong>query</strong> (<em>str</em><em>,</em><em>optional</em>) – Specifies subset of collection to retrieve ids for. Formatted as a
+python dict as you would have in argument to db.collection.find().
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of ids matching query in JSON format.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_op_w_rxns_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_op_w_rxns_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">op_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_op_w_rxns_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get operator with all its associated reactions in selected database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>op_id</strong> (<em>str</em>) – Either operator id (e.g. 1.1.-1.h) or Mongo ID (_id) for operator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Operator JSON document (including associated reactions).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_ops_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_ops_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ops_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get operators for specified ids in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em><em>,</em><em>optional</em>) – List of operator ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
+IDs can be either operator ids (e.g. 1.1.-1.h) or Mongo IDs (_id). If
+not provided, all operators are returned (id_list=None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of operator JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.get_rxns_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">get_rxns_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_rxns_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get reactions for specified ids in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em>) – List of reaction ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
+IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.handle_invalid_usage">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">handle_invalid_usage</code><span class="sig-paren">(</span><em class="sig-param">error</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.handle_invalid_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes it so user can receive an informative error message rather than
+a default internal server error.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.model_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">model_search_api</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.model_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a model search and return results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – KEGG Org Code or Org Name of model(s) to search for (e.g. ‘hsa’ or
+‘yeast’). Can provide multiple search terms by separating each term
+with a space.  TODO: change from space delimiter to something else</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document with KEGG org codes matching query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.ms2_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">ms2_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms2_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for commpound-adducts matching precursor mass(es).</p>
+<p>Attach all arguments besides db_name as form data in POST request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
+ppm is set to True.</p></li>
+<li><p><strong>charge</strong> (<em>bool</em>) – Positive or negative mode. (True for positive, False for negative).</p></li>
+<li><p><strong>energy_level</strong> (<em>int</em>) – Fragmentation energy level to use. May be 10, 20, or 40.</p></li>
+<li><p><strong>scoring_function</strong> (<em>str</em>) – Scoring function to use. Can be either ‘jaccard’ or ‘dot product’.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text as in metabolomics datafile for specific peak.</p></li>
+<li><p><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
+None, assumes m/z values are separated by newlines. Default is None.</p></li>
+<li><p><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) – List of adducts to use. If not specified, uses all adducts.
+(adducts=None)</p></li>
+<li><p><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) – List of model _ids. If supplied, score compounds higher if present
+in metabolic model. Defaults to None.</p></li>
+<li><p><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether tolerance is in ppm. Defaults to False.</p></li>
+<li><p><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) – Length 2 tuple specifying min and max logp to filter compounds (e.g.
+(-1, 2)). Defaults to None.</p></li>
+<li><p><strong>halogens</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether to filter out compounds containing F, Cl, or Br.
+Filtered out if set to True. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of compounds that match m/z within defined tolerance and
+after passing other defined filters (such as logP).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.ms_adduct_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">ms_adduct_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms_adduct_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for commpound-adducts matching precursor mass(es).</p>
+<p>Attach all arguments besides db_name as JSON data in POST request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
+ppm is set to True.</p></li>
+<li><p><strong>charge</strong> (<em>bool</em>) – Positive or negative mode. (True for positive, False for negative).</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text as in metabolomics datafile for specific peak.</p></li>
+<li><p><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
+None, assumes m/z values are separated by newlines. Default is None.</p></li>
+<li><p><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) – List of adducts to use. If not specified, uses all adducts
+(adducts=None).</p></li>
+<li><p><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) – List of model _ids. If supplied, score compounds higher if present
+in metabolic model. Defaults to None.</p></li>
+<li><p><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether tolerance is in ppm. Defaults to False.</p></li>
+<li><p><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) – Length 2 tuple specifying min and max logp to filter compounds (e.g.
+(-1, 2)). Defaults to None.</p></li>
+<li><p><strong>halogen</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether to filter out compounds containing F, Cl, or Br.
+Filtered out if set to True. Defaults to False.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>,</em><em>optional</em>) – If True, verbose output. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of compounds that match m/z within defined tolerance and
+after passing other defined filters (such as logP).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.quick_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">quick_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.quick_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a quick search and return results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – A MINE id, KEGG code, ModelSEED id, Inchikey, or Name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents matching query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.similarity_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">similarity_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">smiles=None</em>, <em class="sig-param">min_tc=0.7</em>, <em class="sig-param">limit=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.similarity_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a similarity search for a SMILES string and return results.</p>
+<p>Either a SMILES string or mol object string is required. SMILES is the
+recommended format. If GET request, uses smiles. If POST, uses mol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule. Either
+smiles or mol arg is required (smiles arg recommended over mol arg).</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
+because MarvinJS on the front end only generates mol objects from input
+structures, and cannot convert it to SMILES. Captured from form data.
+Defaults to None.</p></li>
+<li><p><strong>min_tc</strong> (<em>float</em><em>,</em><em>optional</em>) – Minimum Tanimoto Coefficient required for similarity match. Defaults to
+0.7.</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>,</em><em>optional</em>) – Maximum number of results (compounds) to return. By default, returns
+all results (limit=-1).</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
+based on whether it is in or could be derived from the KEGG compounds
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document of similar compounds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.spectra_download_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">spectra_download_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">mongo_query=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.spectra_download_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download one or more spectra for compounds matching a given query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of DB containing compound documents to search.</p></li>
+<li><p><strong>mongo_query</strong> (<em>str</em><em>,</em><em>optional</em>) – A valid Mongo query as a literal string. If None, all compound spectra
+are returned. Defaults to None.</p></li>
+<li><p><strong>parent_filter</strong> (<em>str</em><em>,</em><em>optional</em>) – If set to a metabolic model’s Mongo _id, only get spectra for compounds
+in or derived from that metabolic model. Defaults to None.</p></li>
+<li><p><strong>putative</strong> (<em>bool</em><em>,</em><em>optional</em>) – If False, only find known compounds (i.e. in Generation 0). Otherwise,
+finds both known and predicted compounds. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Text of all matching spectra, including headers and peak lists.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.structure_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">structure_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">smiles=None</em>, <em class="sig-param">stereo=True</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.structure_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an exact structure search and return results.</p>
+<p>If GET request, uses smiles. If POST, uses mol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
+because MarvinJS on the front end only generates mol objects from input
+structures, and cannot convert it to SMILES. Captured from form data.
+Defaults to None.</p></li>
+<li><p><strong>stereo</strong> (<em>bool</em><em>,</em><em>optional</em>) – If true, uses sterochemistry in finding exact match. Defaults to True.</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
+based on whether it is in or could be derived from the KEGG compounds
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.routes.substructure_search_api">
+<code class="sig-prename descclassname">api.routes.</code><code class="sig-name descname">substructure_search_api</code><span class="sig-paren">(</span><em class="sig-param">db_name</em>, <em class="sig-param">smiles=None</em>, <em class="sig-param">limit=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.substructure_search_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a substructure search and return results.</p>
+<p>If GET request, uses smiles. If POST, uses mol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular substructure to search for.</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (may contain a lot of whitespace hex-chars
+like “%20” and end with “END”). Used only for the MINE website backend
+because MarvinJS on the front end only generates mol objects from
+input structures, and cannot convert it to SMILES. Captured from form
+data. Defaults to None.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Maximum number of results (compounds) to return. By default, returns
+all results (limit=-1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents of compounds containing given substructure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.run">
+<span id="api-run-module"></span><h2>api.run module<a class="headerlink" href="#module-api.run" title="Permalink to this headline">¶</a></h2>
+<p>This is the main file that runs the app. FLASK_APP env variable should be
+set to a path to this file (e.g. on Windows “set FLASK_APP=api/run.py”).</p>
+<dl class="function">
+<dt id="api.run.create_app">
+<code class="sig-prename descclassname">api.run.</code><code class="sig-name descname">create_app</code><span class="sig-paren">(</span><em class="sig-param">instance_config=&lt;class 'api.config.Config'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#api.run.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Flask instance of MINE-Server with a specified configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instance_config</strong> (<a class="reference internal" href="#api.config.Config" title="api.config.Config"><em>Config</em></a><em> (</em><em>default: app.config.Config</em><em>)</em>) – Specifies configuration for this instance. Useful to change when
+running unit tests (see app.config_unittest.ConfigUnitTest).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method is automatically called by Flask upon startup.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">api package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-api.config">api.config module</a></li>
+<li><a class="reference internal" href="#module-api.database">api.database module</a></li>
+<li><a class="reference internal" href="#module-api.exceptions">api.exceptions module</a></li>
+<li><a class="reference internal" href="#module-api.routes">api.routes module</a></li>
+<li><a class="reference internal" href="#module-api.run">api.run module</a></li>
+<li><a class="reference internal" href="#module-api">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">MINE-Server  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, James Jeffryes, Jonathan Strutz.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+    </div>
+  </body>
+</html>
