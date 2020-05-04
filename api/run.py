@@ -13,8 +13,12 @@ import sys
 
 
 sys.path.insert(0, 'api')  # required in deployment to import api modules
+<<<<<<< HEAD
 sys.path.insert(0, '..')
 sys.path.insert(0, '../../MINE-Database')
+=======
+sys.path.insert(0, '..')  # required in deployment to import api modules
+>>>>>>> 832c0d5093655ff4deef0b6e81389a18efe0c541
 
 
 from api.config import Config
