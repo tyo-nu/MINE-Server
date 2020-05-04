@@ -13,6 +13,8 @@ import sys
 
 
 sys.path.insert(0, 'api')  # required in deployment to import api modules
+sys.path.insert(0, '..')
+sys.path.insert(0, '../../MINE-Database')
 
 
 from api.config import Config
@@ -48,6 +50,11 @@ def create_app(instance_config=Config):
     CORS(app)
 
     # Initialize logger
+    if __name__ != '__main__':
+        gunicorn_logger = logging.getLogger('gunicorn.error')
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
+
     root = logging.getLogger()
     if not os.path.exists('logs'):
         os.mkdir('logs')
@@ -56,6 +63,11 @@ def create_app(instance_config=Config):
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.DEBUG)
+    root.addHandler(file_handler)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(stream_handler)
 
     # Add any other (e.g. rdkit) logs to flask logs
     root.addHandler(default_handler)
@@ -69,4 +81,4 @@ def create_app(instance_config=Config):
 
 if __name__ == "__main__":
     application = create_app()
-    application.run(debug=True)
+    application.run(debug=False)
