@@ -34,8 +34,6 @@ jupyter-core==4.6.3
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-mkl-random==1.1.0
-mkl-service==2.3.0
 more-itertools==8.0.2
 numpy==1.17.4
 olefile==0.46
