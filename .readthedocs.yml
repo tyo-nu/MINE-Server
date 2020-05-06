@@ -8,3 +8,10 @@ version: 2
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/source/conf.py
+
+# install python requirements
+python:
+    version: 3.7
+    install:
+        - requirements: requirements.txt
+    system_packages: false
