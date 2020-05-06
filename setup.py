@@ -13,7 +13,7 @@ setup(name='mine-server',
       author_email='jonstrutz11@gmail.com',
       license='MIT',
       packages=setuptools.find_packages(),
-      install_requires=['pymongo'],
+      install_requires=['pymongo', 'sphinxcontrib-httpdomain'],
       extras_require={},
       classifiers=[
           'Development Status :: 5 - Production/Stable',
