@@ -56,4 +56,4 @@ html_theme = 'classic'
 html_static_path = []
 
 # Can't install C binaries on readthedocs.org
-autodoc_mock_imports = ["rdkit"]
+autodoc_mock_imports = ["rdkit", "rdkit.Chem"]
