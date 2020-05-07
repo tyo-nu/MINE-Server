@@ -10,5 +10,4 @@ TODO: update database list here
 
 To learn more about the MINE databases, visit https://minedatabase.ci.northwestern.edu.
 
-See docs/API Examples.ipynb for example API usage. For API documentation, please refer to docs/build/index.html (load in your browser).
-TODO: Host documentation
+See docs/API Examples.ipynb for example API usage. For API documentation, please see https://mine-api.readthedocs.io/en/latest/.
