@@ -4,6 +4,10 @@ instantiated in __init__.py."""
 import os
 import minedatabase
 
+try:
+    from api.credentials import MONGO_USERNAME, MONGO_PASSWORD
+except ImportError:
+    raise FileNotFoundError("MINE-Server/api/credentials.py not found.")
 
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 MINEDB_DIR = os.path.dirname(minedatabase.__file__)
@@ -29,7 +33,7 @@ class Config(object):
     # Settings for interface with MongoDB
 
     #: URI to MINE MongoDB
-    MONGO_URI = 'mongodb://localhost/'
+    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@localhost/'
 
     #: Name of KEGG database with models collection
     KEGG_DB_NAME = 'kegg'
