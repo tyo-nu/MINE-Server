@@ -28,7 +28,7 @@ ipython-genutils==0.2.0
 isort==4.3.21
 itsdangerous==1.1.0
 jedi==0.16.0
-Jinja2==2.11.1
+Jinja2==2.11.3
 jupyter-client==6.1.2
 jupyter-core==4.6.3
 lazy-object-proxy==1.4.3
