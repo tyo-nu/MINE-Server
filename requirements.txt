@@ -75,7 +75,7 @@ sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
 tornado==6.0.4
 traitlets==4.3.3
-urllib3==1.25.8
+urllib3==1.26.5
 wcwidth==0.1.7
 Werkzeug==0.16.0
 win-inet-pton==1.1.0
