@@ -42,8 +42,7 @@ class Config(object):
     # Settings for interface with MongoDB and PostgreSQL
 
     #: URI to MINE MongoDB  # TODO: change this back to port 27017
-    #MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@localhost:27017/'
-    MONGO_URI = f'mongodb://jrs9291:password@minedatabase.ci.northwestern.edu:27017'
+    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@localhost:27017/'
 
     #: URI to Thermo PostgreSQL DB
     POSTGRES_URI = f'postgres://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@minedatabase.ci.northwestern.edu:5432/eq_compounds'
