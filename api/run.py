@@ -19,7 +19,7 @@ sys.path.insert(0, '..')  # required in deployment to import api modules
 
 from api.config import Config
 from api.database import mongo
-from api.routes import mineserver_api
+
 
 
 def create_app(instance_config=Config):
@@ -39,15 +39,6 @@ def create_app(instance_config=Config):
     # Initialize app
     app = Flask(__name__)
     app.config.from_object(instance_config)
-
-    # Register routes
-    app.register_blueprint(mineserver_api, url_prefix='/mineserver')
-
-    # Connect to Mongo Database
-    mongo.init_app(app)
-
-    # Allow CORS so we can have front end and back end on same server
-    CORS(app)
 
     # Initialize logger
     if __name__ != '__main__':
@@ -73,6 +64,22 @@ def create_app(instance_config=Config):
     root.addHandler(default_handler)
 
     app.logger.setLevel(logging.DEBUG)
+
+    app.logger.info('Initializing app...')
+
+    app.logger.info('Loading routes and thermo database')
+    from api.routes import mineserver_api
+    app.logger.info('Routes and thermo database done loading')
+
+    # Register routes
+    app.register_blueprint(mineserver_api, url_prefix='/mineserver')
+
+    # Connect to Mongo Database
+    mongo.init_app(app)
+
+    # Allow CORS so we can have front end and back end on same server
+    CORS(app)
+
     app.logger.info('MINE-Server startup')
     app.logger.info('Running at http://127.0.0.1:5000')
 

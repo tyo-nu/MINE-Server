@@ -3,21 +3,27 @@ all actual logic is imported from the minedatabase package."""
 
 from ast import literal_eval
 
+import requests
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify, request
+from flask.helpers import send_from_directory
+from minedatabase.metabolomics import (ms2_search, ms_adduct_search, read_adduct_names,
+                                       spectra_download)
+from minedatabase.utils import score_compounds
 
+from api.config import Config
 from api.database import mongo
 from api.exceptions import InvalidUsage
-from minedatabase.metabolomics import (ms2_search, ms_adduct_search,
-                                       read_adduct_names, spectra_download)
-from minedatabase.queries import (advanced_search, get_comps, get_ids,
-                                  get_op_w_rxns, get_ops, get_rxns,
-                                  model_search, quick_search,
-                                  similarity_search, structure_search,
-                                  substructure_search)
-from minedatabase.utils import score_compounds, get_smiles_from_mol_string
+from api.queries import (advanced_search, get_comps, get_ids, get_op_w_rxns, get_ops, get_rxns,
+                         get_rxns_for_cpd, model_search, quick_search, similarity_search,
+                         structure_search, substructure_search)
 
+if Config.THERMO_ON:
+    from api.database_thermo import mine_thermo
+
+from api.utils import (extract_enzyme_pathway_from_kegg_data, get_extra_info,
+                       get_smiles_from_mol_string)
 
 # pylint: disable=invalid-name
 mineserver_api = Blueprint('mineserver_api', __name__)
@@ -48,7 +54,8 @@ def quick_search_api(db_name, query):
     :rtype: flask.Response
     """
     db = mongo.cx[db_name]
-    results = quick_search(db, query)
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
+    results = quick_search(db, core_db, query)
     json_results = jsonify(results)
 
     return json_results
@@ -116,10 +123,10 @@ def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=-1):
         model = None
 
     model_db = mongo.cx[app.config['KEGG_DB_NAME']]
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
 
-    db = mongo.cx[db_name]
-    results = similarity_search(db, smiles, min_tc=min_tc, limit=limit,
-                                model_db=model_db, parent_filter=model)
+    results = similarity_search(db_name, core_db, smiles, min_tc=min_tc, limit=limit,
+                                parent_filter=model, model_db=model_db)
     json_results = jsonify(results)
 
     return json_results
@@ -127,13 +134,9 @@ def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=-1):
 
 # Routes for mol input
 @mineserver_api.route('/structure-search/<db_name>', methods=['POST'])
-@mineserver_api.route('/structure-search/<db_name>/stereo=<stereo>',
-                      methods=['POST'])
 # Routes for smiles input
 @mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>')
-@mineserver_api.route('/structure-search/<db_name>/smiles=<smiles>'
-                      '/stereo=<stereo>')
-def structure_search_api(db_name, smiles=None, stereo=True):
+def structure_search_api(db_name, smiles=None):
     """Perform an exact structure search and return results.
 
     .. :quickref: Compound; Exact structure search
@@ -150,8 +153,6 @@ def structure_search_api(db_name, smiles=None, stereo=True):
         because MarvinJS on the front end only generates mol objects from input
         structures, and cannot convert it to SMILES. Captured from form data.
         Defaults to None.
-    :param bool,optional stereo:
-        If true, uses sterochemistry in finding exact match. Defaults to True.
     :param str,optional model:
         KEGG organism code (e.g. 'hsa'). Adds annotations to each compound
         based on whether it is in or could be derived from the KEGG compounds
@@ -175,8 +176,10 @@ def structure_search_api(db_name, smiles=None, stereo=True):
     model_db = mongo.cx[app.config['KEGG_DB_NAME']]
 
     db = mongo.cx[db_name]
-    results = structure_search(db, smiles, stereo=stereo, model_db=model_db,
-                               parent_filter=model)
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
+    ref_db = mongo.cx[app.config['REF_DB_NAME']]
+    results = structure_search(db, smiles, model_db=model_db, parent_filter=model)
+    results = get_extra_info(db, core_db, ref_db, results)
     json_results = jsonify(results)
 
     return json_results
@@ -226,9 +229,10 @@ def substructure_search_api(db_name, smiles=None, limit=-1):
         model = None
 
     model_db = mongo.cx[app.config['KEGG_DB_NAME']]
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
 
     db = mongo.cx[db_name]
-    results = substructure_search(db, smiles, limit=limit, model_db=model_db,
+    results = substructure_search(db, core_db, smiles, limit=limit, model_db=model_db,
                                   parent_filter=model)
     json_results = jsonify(results)
 
@@ -279,6 +283,25 @@ def database_query_api(db_name, mongo_query):
     return json_results
 
 
+@mineserver_api.route('/get-kegg-info/q=<kegg_id>')
+def get_kegg_info(kegg_id):
+    """Get EC numbers and Pathway names from KEGG API.
+
+    .. :quickref: KEGG; Get KEGG info for compound
+
+    :param str kegg_id:
+        Compound KEGG ID (must start with C).
+    """
+    if not kegg_id.startswith('C'):
+        return None
+    uri = f'http://rest.kegg.jp/get/cpd:{kegg_id}'
+    r = requests.get(uri)
+    data = r.text
+    enzymes, pathways = extract_enzyme_pathway_from_kegg_data(data)
+    json_results = jsonify({'Enzymes': enzymes, 'Pathways': pathways})
+    return json_results
+
+
 @mineserver_api.route('/get-ids/<db_name>/<collection_name>')
 @mineserver_api.route('/get-ids/<db_name>/<collection_name>/q=<query>')
 def get_ids_api(db_name, collection_name, query=None):
@@ -317,17 +340,33 @@ def get_comps_api(db_name):
         List of compound ids. Attach as "dict" to POST request. For example,
         requests.post(<this_uri>, data="{'id_list': ['id1', 'id2', 'id3']}").
         IDs can be either MINE IDs or Mongo IDs (_id).
+    :param list,optional return_extra_info:
+        If provided get extra info on this compound from the core and reference
+        databases based on the fields in the list. Possible fields are
+        "spectra", "DB links", and "RDKit_fp".
 
     :return: List of compound JSON documents.
     :rtype: flask.Response
     """
     id_list = request.get_json()['id_list']
 
+    if id_list == ['']:
+        id_list = []
+
+    return_extra_info = request.get_json()['return_extra_info']
+
     if not id_list:
         raise InvalidUsage('id_list must be specified in form data.')
 
     db = mongo.cx[db_name]
-    results = get_comps(db, id_list)
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
+    ref_db = mongo.cx[app.config['REF_DB_NAME']]
+    results = get_comps(db, id_list, core_db)
+
+    print(results)
+    if return_extra_info and results and all(results):
+        results = get_extra_info(db, core_db, ref_db, results)
+
     json_results = jsonify(results)
 
     return json_results
@@ -353,6 +392,48 @@ def get_rxns_api(db_name):
 
     db = mongo.cx[db_name]
     results = get_rxns(db, id_list)
+    json_results = jsonify(results)
+
+    return json_results
+
+
+@mineserver_api.route('/get-rxns-product-of/<db_name>/<cpd_id>')
+def get_rxns_product_of_api(db_name, cpd_id):
+    """Get reactions producing compound.
+
+    .. :quickref: Reaction; Get MINE reactions producing a compound.
+
+    :param str db_name:
+        Name of Mongo database to query against.
+    :param str cpd_id:
+        Mongo ID of compound.
+
+    :return: List of reaction JSON documents.
+    :rtype: flask.Response
+    """
+    db = mongo.cx[db_name]
+    results = get_rxns_for_cpd(db, cpd_id, mode='product_of')
+    json_results = jsonify(results)
+
+    return json_results
+
+
+@mineserver_api.route('/get-rxns-reactant-in/<db_name>/<cpd_id>')
+def get_rxns_reactant_in_api(db_name, cpd_id):
+    """Get reactions consuming compound.
+
+    .. :quickref: Reaction; Get MINE reactions consuming a compound.
+
+    :param str db_name:
+        Name of Mongo database to query against.
+    :param str cpd_id:
+        Mongo ID of compound.
+
+    :return: List of reaction JSON documents.
+    :rtype: flask.Response
+    """
+    db = mongo.cx[db_name]
+    results = get_rxns_for_cpd(db, cpd_id, mode='reactant_in')
     json_results = jsonify(results)
 
     return json_results
@@ -408,6 +489,43 @@ def get_op_w_rxns_api(db_name, op_id):
         return json_results
     else:
         raise InvalidUsage('Operator with ID \"{}\" not found.'.format(op_id))
+
+
+@mineserver_api.route('/get-op-image/<rule_name>')
+def get_op_image_api(rule_name):
+    """Get image of operator's reaction produced using ChemAxon software.
+
+    .. :quickref: Operator; Get SMARTS image for operator
+
+    :param str rule_name:
+        Name of rule from MetaCyc generalized operator set (e.g. "rule0361").
+
+    :return: Image of operator reaction (.jpg)
+    :rtype: flask.Response
+    """
+    app.logger.info(f"Sending operator image: {rule_name}.jpg")
+    return send_from_directory(app.config['OP_IMG_DIR'], f"{rule_name}.jpg")
+
+
+@mineserver_api.route('/get-thermo-info/<c_id>')
+def get_thermo_info(c_id):
+    """Get dG formation for compound.
+
+    .. :quickref: Compound; Get dG formation for compound
+
+    :param str c_id:
+        Mongo ID of compound.
+
+    :return: JSON dict with dG formation.
+    :rtype: flask.Response:
+    """
+    if app.config['THERMO_ON']:
+        dG = mine_thermo.standard_dg_formation_from_cid(c_id)
+        thermo_dict = {'dG': dG[0]}
+    else:
+        thermo_dict = {'dG': -9999}
+    json_results = jsonify(thermo_dict)
+    return json_results
 
 
 @mineserver_api.route('/get-adduct-names')
@@ -494,7 +612,11 @@ def ms_adduct_search_api(db_name):
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
     if 'charge' in json_data:
-        charge = bool(json_data['charge'])
+        charge_pos = bool(json_data['charge'])
+        if charge_pos:
+            charge = "+"
+        else:
+            charge = "-"
     else:
         raise InvalidUsage('<charge> argument must be specified. "Positive" '
                            'for positive mode, "Negative" for negative mode.')
@@ -528,9 +650,8 @@ def ms_adduct_search_api(db_name):
     else:
         ppm = None
 
-    if 'logp' in json_data:
-        logp = literal_eval(str(json_data['logp']))
-        assert isinstance(logp, tuple)
+    if 'logP' in json_data:
+        logp = tuple(literal_eval(str(json_data['logP'])))
     else:
         logp = None
 
@@ -554,11 +675,13 @@ def ms_adduct_search_api(db_name):
         'halogens': halogens,
         'verbose': verbose
     }
+    print(ms_params)
 
     db = mongo.cx[db_name]
     keggdb = mongo.cx[app.config['KEGG_DB_NAME']]
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
 
-    results = ms_adduct_search(db, keggdb, text, text_type, ms_params)
+    results = ms_adduct_search(db, core_db, keggdb, text, text_type, ms_params)
     json_results = jsonify(results)
 
     if results:
@@ -619,7 +742,11 @@ def ms2_search_api(db_name):
         raise InvalidUsage('<tolerance> argument must be specified (in mDa).')
 
     if 'charge' in json_data:
-        charge = bool(json_data['charge'])
+        charge_pos = bool(json_data['charge'])
+        if charge_pos:
+            charge = "+"
+        else:
+            charge = "-"
     else:
         raise InvalidUsage('<charge> argument must be specified. "Positive" '
                            'for positive mode, "Negative" for negative mode.')
@@ -665,9 +792,8 @@ def ms2_search_api(db_name):
     else:
         ppm = None
 
-    if 'logp' in json_data:
-        logp = literal_eval(json_data['logp'])
-        assert isinstance(logp, tuple)
+    if 'logP' in json_data:
+        logp = tuple(literal_eval(str(json_data['logP'])))
     else:
         logp = None
 
@@ -696,8 +822,9 @@ def ms2_search_api(db_name):
 
     db = mongo.cx[db_name]
     keggdb = mongo.cx[app.config['KEGG_DB_NAME']]
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
 
-    results = ms2_search(db, keggdb, text, text_type, ms_params)
+    results = ms2_search(db, core_db, keggdb, text, text_type, ms_params)
     json_results = jsonify(results)
 
     return json_results
