@@ -5,10 +5,21 @@ tests."""
 
 import json
 
+import pymongo
 import pytest
-from flask import url_for
-
 from api.config import Config
+from flask import url_for
+from pymongo.errors import ServerSelectionTimeoutError
+
+try:
+    client = pymongo.MongoClient(ServerSelectionTimeoutMS=2000)
+    client.server_info()
+    del client
+    is_mongo = True
+except ServerSelectionTimeoutError as err:
+    is_mongo = False
+
+valid_db = pytest.mark.skipif(not is_mongo, reason="No MongoDB Connection")
 
 
 @pytest.fixture
@@ -58,6 +69,7 @@ def post_json(client, url, json_dict):
     return response
 
 
+@valid_db
 def test_quick_search_api(client):
     """
     GIVEN a compound to query using quick search via the API
@@ -70,6 +82,7 @@ def test_quick_search_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_similarity_search_api(client, mol_str):
     """
     GIVEN a compound to query using similarity search via the API
@@ -111,6 +124,7 @@ def test_similarity_search_api(client, mol_str):
     assert_response_fields(response)
 
 
+@valid_db
 def test_structure_search_api(client, mol_str):
     """
     GIVEN a structure in SMILES format
@@ -135,6 +149,7 @@ def test_structure_search_api(client, mol_str):
     assert_response_fields(response)
 
 
+@valid_db
 def test_substructure_search_api(client, mol_str):
     """
     GIVEN a substructure in SMILES format
@@ -160,6 +175,7 @@ def test_substructure_search_api(client, mol_str):
     assert_response_fields(response)
 
 
+@valid_db
 def test_model_search_api(client):
     """
     GIVEN a KEGG model org code or name
@@ -176,6 +192,7 @@ def test_model_search_api(client):
         assert_response_fields(response)
 
 
+@valid_db
 def test_database_query_api(client):
     """
     GIVEN a direct query (using Mongo syntax) to a MINE DB
@@ -189,6 +206,7 @@ def test_database_query_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_get_ids_api(client):
     """
     GIVEN a MINE DB and collection name within that DB
@@ -207,6 +225,7 @@ def test_get_ids_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_get_comps_api(client):
     """
     GIVEN a MINE DB
@@ -220,6 +239,7 @@ def test_get_comps_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_get_rxns_api(client):
     """
     GIVEN a MINE DB
@@ -233,6 +253,7 @@ def test_get_rxns_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_get_ops_api(client):
     """
     GIVEN a MINE DB
@@ -249,6 +270,7 @@ def test_get_ops_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_get_op_w_rxns_api(client):
     """
     GIVEN a MINE DB and operator ID
@@ -287,6 +309,7 @@ def test_get_adduct_names_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api(client):
     """
     GIVEN a request with an MS1 adduct search query is made
@@ -303,6 +326,7 @@ def test_ms_adduct_search_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api_w_default_website_vals(client):
     """
     GIVEN a request with an MS1 adduct search query is made using default vals
@@ -323,6 +347,7 @@ def test_ms_adduct_search_api_w_default_website_vals(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api_error(client):
     """
     GIVEN a request with an invalid MS1 search query
@@ -342,6 +367,7 @@ def test_ms_adduct_search_api_error(client):
         assert_response_fields(response, status_code=400)
 
 
+@valid_db
 def test_ms_adduct_search_api_mgf(client):
     """
     GIVEN a request with an MS1 adduct search query is made in MGF format
@@ -365,6 +391,7 @@ def test_ms_adduct_search_api_mgf(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api_mzxml(client):
     """
     GIVEN a request with an MS1 adduct search query is made in mzXML format
@@ -386,6 +413,7 @@ def test_ms_adduct_search_api_mzxml(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api_msp(client):
     """
     GIVEN a request with an MS1 adduct search query is made in MSP format
@@ -408,6 +436,7 @@ def test_ms_adduct_search_api_msp(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms_adduct_search_api_all_params(client):
     """
     GIVEN a request with an MS1 adduct search query with all optional params
@@ -431,6 +460,7 @@ def test_ms_adduct_search_api_all_params(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms2_search_api(client):
     """
     GIVEN a request with an MS2 search query
@@ -450,6 +480,7 @@ def test_ms2_search_api(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_ms2_search_api_error(client):
     """
     GIVEN a request with an invalid MS2 search query
@@ -471,6 +502,7 @@ def test_ms2_search_api_error(client):
         assert_response_fields(response, status_code=400)
 
 
+@valid_db
 def test_ms2_search_api_all_params(client):
     """
     GIVEN a request with an MS2 search query with all optional params
@@ -496,6 +528,7 @@ def test_ms2_search_api_all_params(client):
     assert_response_fields(response)
 
 
+@valid_db
 def test_spectra_download_api(client):
     """
     GIVEN a request with a Mongo syntax query
