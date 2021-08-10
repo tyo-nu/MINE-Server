@@ -38,11 +38,17 @@ class Config(object):
     #: Path to operator images
     OP_IMG_DIR = os.path.join(APP_DIR, '../static/operator_images')
 
+    #: Path to SSL certificate (for development)
+    SSL_CERT_PATH = os.path.join(APP_DIR, '../certs/minedatabase_ci_northwestern_edu.cer')
+
+    #: Path to SSL key (for development)
+    SSL_KEY_PATH = os.path.join(APP_DIR, '../certs/minedatabase.ci.northwestern.edu.key')
+
     # ------------------------------ Databases ------------------------------ #
     # Settings for interface with MongoDB and PostgreSQL
 
     #: URI to MINE MongoDB  # TODO: change this back to port 27017
-    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@localhost:27017/'
+    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@minedatabase.ci.northwestern.edu:27017/'
 
     #: URI to Thermo PostgreSQL DB
     POSTGRES_URI = f'postgres://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@minedatabase.ci.northwestern.edu:5432/eq_compounds'

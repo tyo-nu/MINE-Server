@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Welcome to MINE-Server’s documentation! &#8212; MINE-Server  documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -29,7 +30,8 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">MINE-Server  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">MINE-Server  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to MINE-Server’s documentation!</a></li> 
       </ul>
     </div>  
 
@@ -38,9 +40,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-mine-server-s-documentation">
+  <section id="welcome-to-mine-server-s-documentation">
 <h1>Welcome to MINE-Server’s documentation!<a class="headerlink" href="#welcome-to-mine-server-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="all-api-routes">
+<section id="all-api-routes">
 <h2>All API Routes<a class="headerlink" href="#all-api-routes" title="Permalink to this headline">¶</a></h2>
 <p>To see source code for each route, see
 <a class="reference external" href="https://github.com/tyo-nu/MINE-Server/blob/master/api/routes.py">app.routes</a>
@@ -79,22 +81,6 @@ ordered by path rather than resource.</p>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>Compound</p></td>
-<td><p><a class="reference external" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)-stereo=(stereo)">GET /mineserver/structure-search/(db_name)/smiles=(smiles)/stereo=(stereo)</a></p></td>
-<td><p>Exact structure search</p></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)">GET /mineserver/structure-search/(db_name)/smiles=(smiles)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--mineserver-structure-search-(db_name)-stereo=(stereo)">POST /mineserver/structure-search/(db_name)/stereo=(stereo)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--mineserver-structure-search-(db_name)">POST /mineserver/structure-search/(db_name)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--mineserver-substructure-search-(db_name)-smiles=(smiles)-(int-limit)">GET /mineserver/substructure-search/(db_name)/smiles=(smiles)/(int:limit)</a></p></td>
 <td><p>Substructure search</p></td>
 </tr>
@@ -143,28 +129,44 @@ ordered by path rather than resource.</p>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)">GET /mineserver/structure-search/(db_name)/smiles=(smiles)</a></p></td>
+<td><p>Exact structure search</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#post--mineserver-structure-search-(db_name)">POST /mineserver/structure-search/(db_name)</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--mineserver-ms-adduct-search-(db_name)">POST /mineserver/ms-adduct-search/(db_name)</a></p></td>
 <td><p>Search MINE compounds with MS1 data</p></td>
 </tr>
 <tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#get--mineserver-get-thermo-info-(c_id)">GET /mineserver/get-thermo-info/(c_id)</a></p></td>
+<td><p>Get dG formation for compound</p></td>
+</tr>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--mineserver-ms2-search-(db_name)">POST /mineserver/ms2-search/(db_name)</a></p></td>
 <td><p>Search MINE compounds with MS2 data</p></td>
 </tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--mineserver-get-comps-(db_name)">GET /mineserver/get-comps/(db_name)</a></p></td>
-<td><p>Get MINE compounds by ID</p></td>
-</tr>
 <tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--mineserver-get-comps-(db_name)">POST /mineserver/get-comps/(db_name)</a></p></td>
+<td><p>Get MINE compounds by ID</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--mineserver-get-comps-(db_name)">GET /mineserver/get-comps/(db_name)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ID</p></td>
+<tr class="row-even"><td><p>ID</p></td>
 <td><p><a class="reference external" href="#get--mineserver-get-ids-(db_name)-(collection_name)-q=(query)">GET /mineserver/get-ids/(db_name)/(collection_name)/q=(query)</a></p></td>
 <td><p>Get Mongo IDs</p></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--mineserver-get-ids-(db_name)-(collection_name)">GET /mineserver/get-ids/(db_name)/(collection_name)</a></p></td>
 <td></td>
+</tr>
+<tr class="row-even"><td><p>KEGG</p></td>
+<td><p><a class="reference external" href="#get--mineserver-get-kegg-info-q=(kegg_id)">GET /mineserver/get-kegg-info/q=(kegg_id)</a></p></td>
+<td><p>Get KEGG info for compound</p></td>
 </tr>
 <tr class="row-odd"><td><p>MINE DB</p></td>
 <td><p><a class="reference external" href="#get--mineserver-database-query-(db_name)-q=(mongo_query)">GET /mineserver/database-query/(db_name)/q=(mongo_query)</a></p></td>
@@ -179,39 +181,39 @@ ordered by path rather than resource.</p>
 <td><p>Get reactions for MINE operator</p></td>
 </tr>
 <tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#get--mineserver-get-op-image-(rule_name)">GET /mineserver/get-op-image/(rule_name)</a></p></td>
+<td><p>Get SMARTS image for operator</p></td>
+</tr>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--mineserver-get-ops-(db_name)">POST /mineserver/get-ops/(db_name)</a></p></td>
 <td><p>Get MINE operators by ID</p></td>
 </tr>
-<tr class="row-odd"><td><p>Reaction</p></td>
+<tr class="row-even"><td><p>Reaction</p></td>
+<td><p><a class="reference external" href="#get--mineserver-get-rxns-reactant-in-(db_name)-(cpd_id)">GET /mineserver/get-rxns-reactant-in/(db_name)/(cpd_id)</a></p></td>
+<td><p>Get MINE reactions consuming a compound.</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--mineserver-get-rxns-product-of-(db_name)-(cpd_id)">GET /mineserver/get-rxns-product-of/(db_name)/(cpd_id)</a></p></td>
+<td><p>Get MINE reactions producing a compound.</p></td>
+</tr>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--mineserver-get-rxns-(db_name)">POST /mineserver/get-rxns/(db_name)</a></p></td>
 <td><p>Get MINE reactions by ID</p></td>
 </tr>
-<tr class="row-even"><td><p>Spectra</p></td>
-<td><p><a class="reference external" href="#get--mineserver-spectra-download-(db_name)-q=(mongo_query)">GET /mineserver/spectra-download/(db_name)/q=(mongo_query)</a></p></td>
+<tr class="row-odd"><td><p>Spectra</p></td>
+<td><p><a class="reference external" href="#get--mineserver-spectra-download-(mongo_id)">GET /mineserver/spectra-download/(mongo_id)</a></p></td>
 <td><p>Get computationally predicted MS2 spectra</p></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--mineserver-spectra-download-(db_name)">GET /mineserver/spectra-download/(db_name)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--mineserver-spectra-download-(db_name)-q=(mongo_query)">POST /mineserver/spectra-download/(db_name)/q=(mongo_query)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--mineserver-spectra-download-(db_name)">POST /mineserver/spectra-download/(db_name)</a></p></td>
-<td></td>
 </tr>
 </tbody>
 </table>
-<dl class="get">
-<dt id="get--mineserver-get-adduct-names-(adduct_type)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-adduct-names/</code><span class="sig-paren">(</span><em class="sig-param">adduct_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-adduct-names-(adduct_type)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-adduct-names-(adduct_type)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-adduct-names/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">adduct_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-adduct-names-(adduct_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-get-adduct-names">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-adduct-names</code><a class="headerlink" href="#get--mineserver-get-adduct-names" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-adduct-names">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-adduct-names</span></span><a class="headerlink" href="#get--mineserver-get-adduct-names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get names of all adducts for the specified adduct type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -230,86 +232,14 @@ the second adduct being negative adducts.</p>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-structure-search-(db_name)-smiles=(smiles)-stereo=(stereo)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/structure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><code class="sig-name descname">/stereo=</code><span class="sig-paren">(</span><em class="sig-param">stereo</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)-stereo=(stereo)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-substructure-search-(db_name)-smiles=(smiles)-(int-limit)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/substructure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-substructure-search-(db_name)-smiles=(smiles)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-structure-search-(db_name)-smiles=(smiles)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/structure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform an exact structure search and return results.</p>
-<p>If GET request, uses smiles. If POST, uses mol.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
-<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
-<li><p><strong>mol</strong> (<em>str,optional</em>) – mol object in str format (should contain a lot of strange chars like
-“%20” and end with “END”). Used only for the MINE website backend
-because MarvinJS on the front end only generates mol objects from input
-structures, and cannot convert it to SMILES. Captured from form data.
-Defaults to None.</p></li>
-<li><p><strong>stereo</strong> (<em>bool,optional</em>) – If true, uses sterochemistry in finding exact match. Defaults to True.</p></li>
-<li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
-based on whether it is in or could be derived from the KEGG compounds
-in this organism (provided in the ‘Likelihood_score’ field of each
-compound document). Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return</dt>
-<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
-</dd>
-<dt class="field-odd">Rtype</dt>
-<dd class="field-odd"><p>flask.Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="post">
-<dt id="post--mineserver-structure-search-(db_name)-stereo=(stereo)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/structure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/stereo=</code><span class="sig-paren">(</span><em class="sig-param">stereo</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-structure-search-(db_name)-stereo=(stereo)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="post">
-<dt id="post--mineserver-structure-search-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/structure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-structure-search-(db_name)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform an exact structure search and return results.</p>
-<p>If GET request, uses smiles. If POST, uses mol.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
-<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
-<li><p><strong>mol</strong> (<em>str,optional</em>) – mol object in str format (should contain a lot of strange chars like
-“%20” and end with “END”). Used only for the MINE website backend
-because MarvinJS on the front end only generates mol objects from input
-structures, and cannot convert it to SMILES. Captured from form data.
-Defaults to None.</p></li>
-<li><p><strong>stereo</strong> (<em>bool,optional</em>) – If true, uses sterochemistry in finding exact match. Defaults to True.</p></li>
-<li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
-based on whether it is in or could be derived from the KEGG compounds
-in this organism (provided in the ‘Likelihood_score’ field of each
-compound document). Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return</dt>
-<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
-</dd>
-<dt class="field-odd">Rtype</dt>
-<dd class="field-odd"><p>flask.Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--mineserver-substructure-search-(db_name)-smiles=(smiles)-(int-limit)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/substructure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-substructure-search-(db_name)-smiles=(smiles)-(int-limit)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--mineserver-substructure-search-(db_name)-smiles=(smiles)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/substructure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-substructure-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-substructure-search-(db_name)-smiles=(smiles)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/substructure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-substructure-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a substructure search and return results.</p>
 <p>If GET request, uses smiles. If POST, uses mol.</p>
 <dl class="field-list simple">
@@ -323,7 +253,7 @@ because MarvinJS on the front end only generates mol objects from
 input structures, and cannot convert it to SMILES. Captured from form
 data. Defaults to None.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</p></li>
+100 results.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
@@ -335,14 +265,14 @@ all results (limit=-1).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-substructure-search-(db_name)-(int-limit)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/substructure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-substructure-search-(db_name)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-substructure-search-(db_name)-(int-limit)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/substructure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-substructure-search-(db_name)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-substructure-search-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/substructure-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-substructure-search-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-substructure-search-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/substructure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-substructure-search-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a substructure search and return results.</p>
 <p>If GET request, uses smiles. If POST, uses mol.</p>
 <dl class="field-list simple">
@@ -356,7 +286,7 @@ because MarvinJS on the front end only generates mol objects from
 input structures, and cannot convert it to SMILES. Captured from form
 data. Defaults to None.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</p></li>
+100 results.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
@@ -368,24 +298,24 @@ all results (limit=-1).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)-(int-limit)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">float: </em><em class="sig-param">min_tc</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)-(int-limit)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">float:</span> </em><em class="sig-param"><span class="pre">min_tc</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(int-limit)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(int-limit)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">float: </em><em class="sig-param">min_tc</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">float:</span> </em><em class="sig-param"><span class="pre">min_tc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)-(float-min_tc)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/smiles=</code><span class="sig-paren">(</span><em class="sig-param">smiles</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-similarity-search-(db_name)-smiles=(smiles)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-similarity-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a similarity search for a SMILES string and return results.</p>
 <p>Either a SMILES string or mol object string is required. SMILES is the
 recommended format. If GET request, uses smiles. If POST, uses mol.</p>
@@ -403,7 +333,7 @@ Defaults to None.</p></li>
 <li><p><strong>min_tc</strong> (<em>float,optional</em>) – Minimum Tanimoto Coefficient required for similarity match. Defaults to
 0.7.</p></li>
 <li><p><strong>limit</strong> (<em>int,optional</em>) – Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</p></li>
+up to 100 results (limit=100).</p></li>
 <li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
 based on whether it is in or could be derived from the KEGG compounds
 in this organism (provided in the ‘Likelihood_score’ field of each
@@ -419,24 +349,24 @@ compound document). Defaults to None.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-similarity-search-(db_name)-(float-min_tc)-(int-limit)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">float: </em><em class="sig-param">min_tc</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(float-min_tc)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-similarity-search-(db_name)-(float-min_tc)-(int-limit)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">float:</span> </em><em class="sig-param"><span class="pre">min_tc</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(float-min_tc)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-similarity-search-(db_name)-(int-limit)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-similarity-search-(db_name)-(int-limit)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">limit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(int-limit)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-similarity-search-(db_name)-(float-min_tc)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="property">float: </em><em class="sig-param">min_tc</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(float-min_tc)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-similarity-search-(db_name)-(float-min_tc)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">float:</span> </em><em class="sig-param"><span class="pre">min_tc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)-(float-min_tc)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-similarity-search-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/similarity-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-similarity-search-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/similarity-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-similarity-search-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a similarity search for a SMILES string and return results.</p>
 <p>Either a SMILES string or mol object string is required. SMILES is the
 recommended format. If GET request, uses smiles. If POST, uses mol.</p>
@@ -454,7 +384,7 @@ Defaults to None.</p></li>
 <li><p><strong>min_tc</strong> (<em>float,optional</em>) – Minimum Tanimoto Coefficient required for similarity match. Defaults to
 0.7.</p></li>
 <li><p><strong>limit</strong> (<em>int,optional</em>) – Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</p></li>
+up to 100 results (limit=100).</p></li>
 <li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
 based on whether it is in or could be derived from the KEGG compounds
 in this organism (provided in the ‘Likelihood_score’ field of each
@@ -470,29 +400,29 @@ compound document). Defaults to None.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-spectra-download-(db_name)-q=(mongo_query)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/spectra-download/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/q=</code><span class="sig-paren">(</span><em class="sig-param">mongo_query</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-spectra-download-(db_name)-q=(mongo_query)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--mineserver-spectra-download-(db_name)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/spectra-download/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-spectra-download-(db_name)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download one or more spectra for compounds matching a given query.</p>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-structure-search-(db_name)-smiles=(smiles)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/structure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/smiles=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">smiles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-structure-search-(db_name)-smiles=(smiles)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an exact structure search and return results.</p>
+<p>If GET request, uses smiles. If POST, uses mol.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>db_name</strong> (<em>str</em>) – Name of DB containing compound documents to search.</p></li>
-<li><p><strong>mongo_query</strong> (<em>str,optional</em>) – A valid Mongo query as a literal string. If None, all compound spectra
-are returned. Defaults to None.</p></li>
-<li><p><strong>parent_filter</strong> (<em>str,optional</em>) – If set to a metabolic model’s Mongo _id, only get spectra for compounds
-in or derived from that metabolic model. Defaults to None.</p></li>
-<li><p><strong>putative</strong> (<em>bool,optional</em>) – If False, only find known compounds (i.e. in Generation 0). Otherwise,
-finds both known and predicted compounds. Defaults to True.</p></li>
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
+<li><p><strong>mol</strong> (<em>str,optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
+because MarvinJS on the front end only generates mol objects from input
+structures, and cannot convert it to SMILES. Captured from form data.
+Defaults to None.</p></li>
+<li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
+based on whether it is in or could be derived from the KEGG compounds
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
-<dd class="field-even"><p>Text of all matching spectra, including headers and peak lists.</p>
+<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
 </dd>
 <dt class="field-odd">Rtype</dt>
 <dd class="field-odd"><p>flask.Response</p>
@@ -500,29 +430,29 @@ finds both known and predicted compounds. Defaults to True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-spectra-download-(db_name)-q=(mongo_query)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/spectra-download/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/q=</code><span class="sig-paren">(</span><em class="sig-param">mongo_query</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-spectra-download-(db_name)-q=(mongo_query)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="post">
-<dt id="post--mineserver-spectra-download-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/spectra-download/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-spectra-download-(db_name)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download one or more spectra for compounds matching a given query.</p>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-structure-search-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/structure-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-structure-search-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an exact structure search and return results.</p>
+<p>If GET request, uses smiles. If POST, uses mol.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>db_name</strong> (<em>str</em>) – Name of DB containing compound documents to search.</p></li>
-<li><p><strong>mongo_query</strong> (<em>str,optional</em>) – A valid Mongo query as a literal string. If None, all compound spectra
-are returned. Defaults to None.</p></li>
-<li><p><strong>parent_filter</strong> (<em>str,optional</em>) – If set to a metabolic model’s Mongo _id, only get spectra for compounds
-in or derived from that metabolic model. Defaults to None.</p></li>
-<li><p><strong>putative</strong> (<em>bool,optional</em>) – If False, only find known compounds (i.e. in Generation 0). Otherwise,
-finds both known and predicted compounds. Defaults to True.</p></li>
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
+<li><p><strong>mol</strong> (<em>str,optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
+because MarvinJS on the front end only generates mol objects from input
+structures, and cannot convert it to SMILES. Captured from form data.
+Defaults to None.</p></li>
+<li><p><strong>model</strong> (<em>str,optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
+based on whether it is in or could be derived from the KEGG compounds
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
-<dd class="field-even"><p>Text of all matching spectra, including headers and peak lists.</p>
+<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
 </dd>
 <dt class="field-odd">Rtype</dt>
 <dd class="field-odd"><p>flask.Response</p>
@@ -530,9 +460,9 @@ finds both known and predicted compounds. Defaults to True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-database-query-(db_name)-q=(mongo_query)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/database-query/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/q=</code><span class="sig-paren">(</span><em class="sig-param">mongo_query</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-database-query-(db_name)-q=(mongo_query)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-database-query-(db_name)-q=(mongo_query)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/database-query/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/q=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mongo_query</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-database-query-(db_name)-q=(mongo_query)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a direct query built with Mongo syntax.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -550,9 +480,22 @@ finds both known and predicted compounds. Defaults to True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-model-search-q=(query)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/model-search/q=</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-model-search-q=(query)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-kegg-info-q=(kegg_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-kegg-info/q=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">kegg_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-kegg-info-q=(kegg_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get EC numbers and Pathway names from KEGG API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kegg_id</strong> (<em>str</em>) – Compound KEGG ID (must start with C).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-model-search-q=(query)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/model-search/q=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">query</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-model-search-q=(query)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a model search and return results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -571,9 +514,9 @@ with a space.  TODO: change from space delimiter to something else</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-quick-search-(db_name)-q=(query)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/quick-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/q=</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-quick-search-(db_name)-q=(query)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-quick-search-(db_name)-q=(query)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/quick-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/q=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">query</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-quick-search-(db_name)-q=(query)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a quick search and return results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -591,14 +534,14 @@ with a space.  TODO: change from space delimiter to something else</p></li>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-get-ids-(db_name)-(collection_name)-q=(query)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-ids/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">collection_name</em><span class="sig-paren">)</span><code class="sig-name descname">/q=</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-ids-(db_name)-(collection_name)-q=(query)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-ids-(db_name)-(collection_name)-q=(query)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-ids/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">collection_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/q=</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">query</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-ids-(db_name)-(collection_name)-q=(query)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-get-ids-(db_name)-(collection_name)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-ids/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">collection_name</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-ids-(db_name)-(collection_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-ids-(db_name)-(collection_name)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-ids/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">collection_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-ids-(db_name)-(collection_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Mongo IDs for a subset of a given database collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -619,9 +562,49 @@ Defaults to None.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-ms-adduct-search-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/ms-adduct-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-ms-adduct-search-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-rxns-reactant-in-(db_name)-(cpd_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-rxns-reactant-in/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">cpd_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-rxns-reactant-in-(db_name)-(cpd_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get reactions consuming compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>cpd_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-rxns-product-of-(db_name)-(cpd_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-rxns-product-of/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">cpd_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-rxns-product-of-(db_name)-(cpd_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get reactions producing compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>cpd_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-ms-adduct-search-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/ms-adduct-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-ms-adduct-search-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for commpound-adducts matching precursor mass(es).</p>
 <p>Attach all arguments besides db_name as JSON data in POST request.</p>
 <dl class="field-list simple">
@@ -656,9 +639,47 @@ after passing other defined filters (such as logP).</p>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-get-op-w-rxns-(db_name)-(op_id)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-op-w-rxns/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">op_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-op-w-rxns-(db_name)-(op_id)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-spectra-download-(mongo_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/spectra-download/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mongo_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-spectra-download-(mongo_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download one or more spectra for compounds matching a given query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mongo_id</strong> (<em>str</em>) – Mongo ID of compound to get spectra for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>Text of spectra for input compound.</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-thermo-info-(c_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-thermo-info/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">c_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-thermo-info-(c_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get dG formation for compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>JSON dict with dG formation.</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>flask.Response:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-op-w-rxns-(db_name)-(op_id)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-op-w-rxns/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">op_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-op-w-rxns-(db_name)-(op_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get operator with all its associated reactions in selected database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -676,9 +697,28 @@ after passing other defined filters (such as logP).</p>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-ms2-search-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/ms2-search/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-ms2-search-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-op-image-(rule_name)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-op-image/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">rule_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-op-image-(rule_name)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get image of operator’s reaction produced using ChemAxon software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rule_name</strong> (<em>str</em>) – Name of rule from MetaCyc generalized operator set (e.g. “rule0361”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>Image of operator reaction (.jpg)</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-ms2-search-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/ms2-search/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-ms2-search-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for commpound-adducts matching precursor mass(es).</p>
 <p>Attach all arguments besides db_name as form data in POST request.</p>
 <dl class="field-list simple">
@@ -714,9 +754,9 @@ after passing other defined filters (such as logP).</p>
 </dl>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--mineserver-get-comps-(db_name)">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/mineserver/get-comps/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-comps-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-get-comps-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-comps/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-comps-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get compounds for specified ids in database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -725,6 +765,9 @@ after passing other defined filters (such as logP).</p>
 <li><p><strong>id_list</strong> (<em>list</em>) – List of compound ids. Attach as “dict” to POST request. For example,
 requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
 IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
+<li><p><strong>return_extra_info</strong> (<em>list,optional</em>) – If provided get extra info on this compound from the core and reference
+databases based on the fields in the list. Possible fields are
+“spectra”, “DB links”, and “RDKit_fp”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
@@ -736,9 +779,9 @@ IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-get-comps-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/get-comps/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-comps-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--mineserver-get-comps-(db_name)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-comps/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--mineserver-get-comps-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get compounds for specified ids in database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -747,6 +790,9 @@ IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
 <li><p><strong>id_list</strong> (<em>list</em>) – List of compound ids. Attach as “dict” to POST request. For example,
 requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
 IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
+<li><p><strong>return_extra_info</strong> (<em>list,optional</em>) – If provided get extra info on this compound from the core and reference
+databases based on the fields in the list. Possible fields are
+“spectra”, “DB links”, and “RDKit_fp”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return</dt>
@@ -758,9 +804,9 @@ IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-get-rxns-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/get-rxns/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-rxns-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-get-rxns-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-rxns/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-rxns-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get reactions for specified ids in database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -780,9 +826,9 @@ IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--mineserver-get-ops-(db_name)">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/mineserver/get-ops/</code><span class="sig-paren">(</span><em class="sig-param">db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-ops-(db_name)" title="Permalink to this definition">¶</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--mineserver-get-ops-(db_name)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/mineserver/get-ops/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--mineserver-get-ops-(db_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get operators for specified ids in database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -803,18 +849,19 @@ not provided, all operators are returned (id_list=None).</p></li>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="indices-and-tables">
+</section>
+</section>
+<section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -840,7 +887,7 @@ not provided, all operators are returned (id_list=None).</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -862,12 +909,13 @@ not provided, all operators are returned (id_list=None).</p></li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">MINE-Server  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">MINE-Server  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to MINE-Server’s documentation!</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, James Jeffryes, Jonathan Strutz.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
   </body>
 </html>

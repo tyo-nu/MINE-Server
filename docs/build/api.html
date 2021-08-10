@@ -1,33 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>api package &#8212; MINE-Server  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -40,7 +30,8 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="contents.html">MINE-Server  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MINE-Server  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">api package</a></li> 
       </ul>
     </div>  
 
@@ -49,585 +40,1085 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="api-package">
+  <section id="api-package">
 <h1>api package<a class="headerlink" href="#api-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-api.config">
+</section>
+<section id="module-api.config">
 <span id="api-config-module"></span><h2>api.config module<a class="headerlink" href="#module-api.config" title="Permalink to this headline">¶</a></h2>
 <p>Configuration file. All settings are stored in Config class which gets
 instantiated in __init__.py.</p>
-<dl class="class">
-<dt id="api.config.Config">
-<em class="property">class </em><code class="descclassname">api.config.</code><code class="descname">Config</code><a class="headerlink" href="#api.config.Config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.config.Config">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#api.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to configure important filepaths and settings.</p>
-<dl class="attribute">
-<dt id="api.config.Config.KEGG_DB_NAME">
-<code class="descname">KEGG_DB_NAME</code><em class="property"> = 'kegg'</em><a class="headerlink" href="#api.config.Config.KEGG_DB_NAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.CORE_DB_NAME">
+<span class="sig-name descname"><span class="pre">CORE_DB_NAME</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'core'</span></em><a class="headerlink" href="#api.config.Config.CORE_DB_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of core compound database with spectra and fingerprint info</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.KEGG_DB_NAME">
+<span class="sig-name descname"><span class="pre">KEGG_DB_NAME</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'kegg'</span></em><a class="headerlink" href="#api.config.Config.KEGG_DB_NAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of KEGG database with models collection</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.config.Config.MONGO_URI">
-<code class="descname">MONGO_URI</code><em class="property"> = 'mongodb://localhost/'</em><a class="headerlink" href="#api.config.Config.MONGO_URI" title="Permalink to this definition">¶</a></dt>
-<dd><p>URI to MINE MongoDB</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.MONGO_URI">
+<span class="sig-name descname"><span class="pre">MONGO_URI</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'mongodb://mine_server_api:probably_device_port&#64;minedatabase.ci.northwestern.edu:27017/'</span></em><a class="headerlink" href="#api.config.Config.MONGO_URI" title="Permalink to this definition">¶</a></dt>
+<dd><p>change this back to port 27017</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>URI to MINE MongoDB  # TODO</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.config.Config.NEG_ADDUCT_PATH">
-<code class="descname">NEG_ADDUCT_PATH</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Database\\minedatabase\\data/adducts/Negative Adducts full.txt'</em><a class="headerlink" href="#api.config.Config.NEG_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
-<dd><p>Path to &#8220;Negative Adducts full.txt&#8221;</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.NEG_ADDUCT_PATH">
+<span class="sig-name descname"><span class="pre">NEG_ADDUCT_PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/home/jonstrutz/ALL_PROJECTS/MINE_development/MINE-Database/minedatabase/data/adducts/Negative</span> <span class="pre">Adducts</span> <span class="pre">full.txt'</span></em><a class="headerlink" href="#api.config.Config.NEG_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to “Negative Adducts full.txt”</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.config.Config.POS_ADDUCT_PATH">
-<code class="descname">POS_ADDUCT_PATH</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Database\\minedatabase\\data/adducts/Positive Adducts full.txt'</em><a class="headerlink" href="#api.config.Config.POS_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
-<dd><p>Path to &#8220;Positive Adducts full.txt&#8221;</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.OP_IMG_DIR">
+<span class="sig-name descname"><span class="pre">OP_IMG_DIR</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/mnt/c/Users/jonst/Box</span> <span class="pre">Sync/Strutz</span> <span class="pre">Jonathan/ALL_PROJECTS/MINE_development/MINE-Server/api/../static/operator_images'</span></em><a class="headerlink" href="#api.config.Config.OP_IMG_DIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to operator images</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.config.Config.TEST_DATA_DIR">
-<code class="descname">TEST_DATA_DIR</code><em class="property"> = 'C:\\Users\\jonst\\Box Sync\\MINE_development\\MINE-Server\\api\\../tests/data'</em><a class="headerlink" href="#api.config.Config.TEST_DATA_DIR" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.POSTGRES_URI">
+<span class="sig-name descname"><span class="pre">POSTGRES_URI</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'postgres://mine_webapp:mine_thermo78125&#64;minedatabase.ci.northwestern.edu:5432/eq_compounds'</span></em><a class="headerlink" href="#api.config.Config.POSTGRES_URI" title="Permalink to this definition">¶</a></dt>
+<dd><p>URI to Thermo PostgreSQL DB</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.POS_ADDUCT_PATH">
+<span class="sig-name descname"><span class="pre">POS_ADDUCT_PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/home/jonstrutz/ALL_PROJECTS/MINE_development/MINE-Database/minedatabase/data/adducts/Positive</span> <span class="pre">Adducts</span> <span class="pre">full.txt'</span></em><a class="headerlink" href="#api.config.Config.POS_ADDUCT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to “Positive Adducts full.txt”</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.REF_DB_NAME">
+<span class="sig-name descname"><span class="pre">REF_DB_NAME</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'compound_references'</span></em><a class="headerlink" href="#api.config.Config.REF_DB_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of compound external references database (e.g. pubchem IDs, KEGG IDs, etc.)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.SSL_CERT_PATH">
+<span class="sig-name descname"><span class="pre">SSL_CERT_PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/mnt/c/Users/jonst/Box</span> <span class="pre">Sync/Strutz</span> <span class="pre">Jonathan/ALL_PROJECTS/MINE_development/MINE-Server/api/../certs/minedatabase_ci_northwestern_edu.cer'</span></em><a class="headerlink" href="#api.config.Config.SSL_CERT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to SSL certificate (for development)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.SSL_KEY_PATH">
+<span class="sig-name descname"><span class="pre">SSL_KEY_PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/mnt/c/Users/jonst/Box</span> <span class="pre">Sync/Strutz</span> <span class="pre">Jonathan/ALL_PROJECTS/MINE_development/MINE-Server/api/../certs/minedatabase.ci.northwestern.edu.key'</span></em><a class="headerlink" href="#api.config.Config.SSL_KEY_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to SSL key (for development)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.TEST_DATA_DIR">
+<span class="sig-name descname"><span class="pre">TEST_DATA_DIR</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'/mnt/c/Users/jonst/Box</span> <span class="pre">Sync/Strutz</span> <span class="pre">Jonathan/ALL_PROJECTS/MINE_development/MINE-Server/api/../tests/data'</span></em><a class="headerlink" href="#api.config.Config.TEST_DATA_DIR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to directory with test data</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.config.Config.THERMO_ON">
+<span class="sig-name descname"><span class="pre">THERMO_ON</span></span><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#api.config.Config.THERMO_ON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to use thermo database - useful to switch off for development</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-api.database">
+</dd></dl>
+
+</section>
+<section id="module-api.credentials">
+<span id="api-credentials-module"></span><h2>api.credentials module<a class="headerlink" href="#module-api.credentials" title="Permalink to this headline">¶</a></h2>
+<p>Define Username and Password for MongoDB here. This file should be
+ignored in version control.</p>
+</section>
+<section id="module-api.database">
 <span id="api-database-module"></span><h2>api.database module<a class="headerlink" href="#module-api.database" title="Permalink to this headline">¶</a></h2>
 <p>Used just to create the mongo connection. See Stack Overflow question
 33166612 for details on why this needs to be its own file.</p>
-</div>
-<div class="section" id="module-api.exceptions">
+</section>
+<section id="module-api.database_thermo">
+<span id="api-database-thermo-module"></span><h2>api.database_thermo module<a class="headerlink" href="#module-api.database_thermo" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-api.exceptions">
 <span id="api-exceptions-module"></span><h2>api.exceptions module<a class="headerlink" href="#module-api.exceptions" title="Permalink to this headline">¶</a></h2>
 <p>Module for all Exception subclassses.</p>
-<dl class="exception">
-<dt id="api.exceptions.InvalidUsage">
-<em class="property">exception </em><code class="descclassname">api.exceptions.</code><code class="descname">InvalidUsage</code><span class="sig-paren">(</span><em>message</em>, <em>status_code=400</em>, <em>payload=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="api.exceptions.InvalidUsage">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">api.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidUsage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Custom Exception handler for the API. See source at
 <a class="reference external" href="http://flask.pocoo.org/docs/1.0/patterns/apierrors/">http://flask.pocoo.org/docs/1.0/patterns/apierrors/</a> for more info.</p>
-<dl class="attribute">
-<dt id="api.exceptions.InvalidUsage.message">
-<code class="descname">message</code><a class="headerlink" href="#api.exceptions.InvalidUsage.message" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; Human readable string describing the exception.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.exceptions.InvalidUsage.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#api.exceptions.InvalidUsage.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human readable string describing the exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.exceptions.InvalidUsage.status_code">
-<code class="descname">status_code</code><a class="headerlink" href="#api.exceptions.InvalidUsage.status_code" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int, optional</em> &#8211; HTTP status code - defaults to 400 (Bad Request).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.exceptions.InvalidUsage.status_code">
+<span class="sig-name descname"><span class="pre">status_code</span></span><a class="headerlink" href="#api.exceptions.InvalidUsage.status_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP status code - defaults to 400 (Bad Request).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int, optional</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="api.exceptions.InvalidUsage.payload">
-<code class="descname">payload</code><a class="headerlink" href="#api.exceptions.InvalidUsage.payload" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict, optional</em> &#8211; Extra information on the error.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="api.exceptions.InvalidUsage.payload">
+<span class="sig-name descname"><span class="pre">payload</span></span><a class="headerlink" href="#api.exceptions.InvalidUsage.payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra information on the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict, optional</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="api.exceptions.InvalidUsage.to_dict">
-<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage.to_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.exceptions.InvalidUsage.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.exceptions.InvalidUsage.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert payload to dict with message.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-api.routes">
+</section>
+<section id="module-api.queries">
+<span id="api-queries-module"></span><h2>api.queries module<a class="headerlink" href="#module-api.queries" title="Permalink to this headline">¶</a></h2>
+<p>Queries.py: Contains functions which power the API queries</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.advanced_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">advanced_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mongo_query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_projection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{'Formula':</span> <span class="pre">1,</span> <span class="pre">'Generation':</span> <span class="pre">1,</span> <span class="pre">'InChI_key':</span> <span class="pre">1,</span> <span class="pre">'KEGG_id':</span> <span class="pre">1,</span> <span class="pre">'MINE_id':</span> <span class="pre">1,</span> <span class="pre">'SMILES':</span> <span class="pre">1,</span> <span class="pre">'logP':</span> <span class="pre">1}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.advanced_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns compounds in the indicated database which match the provided
+mongo query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – Database to search.</p></li>
+<li><p><strong>mongo_query</strong> (<em>str</em>) – A query string with Mongo syntax.</p></li>
+<li><p><strong>search_projection</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – The fields which should be returned in the results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of query results (documents in MINE database).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_comps">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_comps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.get_comps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns compounds with associated IDs from a Mongo database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – DB to search.</p></li>
+<li><p><strong>id_list</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – IDs to get compound documents for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>compounds</strong> – List of compound documents with specified IDs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_ids">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db:</span> <span class="pre">&lt;module</span> <span class="pre">'pymongo.database'</span> <span class="pre">from</span> <span class="pre">'/home/jonstrutz/anaconda3/envs/mine3/lib/python3.9/site-packages/pymongo/database.py'&gt;</span></em>, <em class="sig-param"><span class="pre">collection:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">str</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.queries.get_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ids for documents in database collection matching query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>pymongo.database</em>) – DB to search.</p></li>
+<li><p><strong>collection</strong> (<em>str</em>) – Name of collection within db to query.</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – KEGG Org Code or Org Name of model(s) to search for (e.g. ‘hsa’ or
+‘yeast’). Can provide multiple search terms by separating each term
+with a space.  TODO: change from space delimiter to something else</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ids</strong> – List of KEGG Org codes (_id) found in the DB matching search query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_op_w_rxns">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_op_w_rxns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#api.queries.get_op_w_rxns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns operator with all its associated reactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – DB to search.</p></li>
+<li><p><strong>operator_id</strong> (<em>str</em>) – Mongo _id or operator name (e.g. rule0001).</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Max number of reaction _ids to return with operator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>operator</strong> – Operator JSON document (with associated reactions).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_ops">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.get_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns operators from a Mongo database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – DB to search.</p></li>
+<li><p><strong>operator_ids</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – IDs to get operator documents for (e.g. “1.1.-1.h”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>operators</strong> – List of operator documents with specified IDs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_rxns">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_rxns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.get_rxns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns reactions with associated IDs from a Mongo database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – DB to search.</p></li>
+<li><p><strong>id_list</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – IDs to get compound documents for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>reactions</strong> – List of reaction documents with specified IDs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.get_rxns_for_cpd">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">get_rxns_for_cpd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpd_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'product_of'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.get_rxns_for_cpd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns reactions either being producing or consuming a compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – DB to search.</p></li>
+<li><p><strong>cpd_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – If ‘product_of’, get reactions producing this compound. If
+‘reactant_in’, get reactions consuming this compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>reactions</strong> – List of reaction documents producing or consuming given compound.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.model_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">model_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db:</span> <span class="pre">&lt;module</span> <span class="pre">'pymongo.database'</span> <span class="pre">from</span> <span class="pre">'/home/jonstrutz/anaconda3/envs/mine3/lib/python3.9/site-packages/pymongo/database.py'&gt;</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">str</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#api.queries.model_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns models that match a given KEGG Org Code query (e.g. ‘hsa’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>Mongo DB</em>) – DB to search. Should contain a ‘models’ collection. ‘_id’ and ‘Name’
+fields should be indexed for text search.</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – KEGG Org Code or Org Name of model(s) to search for (e.g. ‘hsa’ or
+‘yeast’). Can provide multiple search terms by separating each term
+with a space.  TODO: change from space delimiter to something else</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>model_ids</strong> – List of KEGG Org codes (_id) found in the DB matching search query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.quick_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">quick_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_db</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">minedatabase.databases.MINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_projection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{'Formula':</span> <span class="pre">1,</span> <span class="pre">'Generation':</span> <span class="pre">1,</span> <span class="pre">'InChI_key':</span> <span class="pre">1,</span> <span class="pre">'KEGG_id':</span> <span class="pre">1,</span> <span class="pre">'MINE_id':</span> <span class="pre">1,</span> <span class="pre">'SMILES':</span> <span class="pre">1,</span> <span class="pre">'logP':</span> <span class="pre">1}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.quick_search" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>This function takes user provided compound identifiers and attempts to</dt><dd><p>find a related database ID.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – Database to search.</p></li>
+<li><p><strong>core_db</strong> (<em>MINE</em>) – Core Database.</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – A MINE id, KEGG code, ModelSEED id, Inchikey or Name.</p></li>
+<li><p><strong>search_projection</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – The fields which should be returned in the results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – List of query results (documents in MINE database).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.similarity_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">similarity_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_name:</span> <span class="pre">minedatabase.databases.MINE</span></em>, <em class="sig-param"><span class="pre">core_db:</span> <span class="pre">minedatabase.databases.MINE</span></em>, <em class="sig-param"><span class="pre">comp_structure:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">min_tc:</span> <span class="pre">float</span></em>, <em class="sig-param"><span class="pre">limit:</span> <span class="pre">int</span></em>, <em class="sig-param"><span class="pre">parent_filter:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">model_db:</span> <span class="pre">&lt;module</span> <span class="pre">'pymongo.database'</span> <span class="pre">from</span> <span class="pre">'/home/jonstrutz/anaconda3/envs/mine3/lib/python3.9/site-packages/pymongo/database.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">search_projection:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">int]</span> <span class="pre">=</span> <span class="pre">{'Formula':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'Generation':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'InChI_key':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'KEGG_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'MINE_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'SMILES':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'logP':</span> <span class="pre">1}</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.similarity_search" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns compounds in the indicated database which have structural</dt><dd><p>similarity to the provided compound.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – Database to search.</p></li>
+<li><p><strong>comp_structure</strong> (<em>str</em>) – A molecule in molfile or SMILES format.</p></li>
+<li><p><strong>min_tc</strong> (<em>float</em>) – Minimum Tanimoto score.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – The maximum number of compounds to return.</p></li>
+<li><p><strong>parent_filter</strong> (<em>str</em>) – ID of the organism in KEGG to keep only compounds in this organism.</p></li>
+<li><p><strong>model_db</strong> (<em>pymongo.database</em>) – MongoDB with KEGG organism codes and associated compounds.</p></li>
+<li><p><strong>search_projection</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – The fields which should be returned in the results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>similary_search_results</strong> – List of search results (documents in MINE database).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.structure_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">structure_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db:</span> <span class="pre">minedatabase.databases.MINE</span></em>, <em class="sig-param"><span class="pre">comp_structure:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">parent_filter:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">model_db:</span> <span class="pre">&lt;module</span> <span class="pre">'pymongo.database'</span> <span class="pre">from</span> <span class="pre">'/home/jonstrutz/anaconda3/envs/mine3/lib/python3.9/site-packages/pymongo/database.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">search_projection:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">int]</span> <span class="pre">=</span> <span class="pre">{'Formula':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'Generation':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'InChI_key':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'KEGG_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'MINE_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'SMILES':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'logP':</span> <span class="pre">1}</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.structure_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns compounds in the indicated database which are exact matches to
+the provided structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – Database to search.</p></li>
+<li><p><strong>comp_structure</strong> (<em>str</em>) – A molecule in molfile or SMILES format.</p></li>
+<li><p><strong>parent_filter</strong> (<em>str</em>) – ID of the organism in KEGG to keep only compounds in this organism.</p></li>
+<li><p><strong>model_db</strong> (<em>pymongo.database</em>) – MongoDB with KEGG organism codes and associated compounds.</p></li>
+<li><p><strong>search_projection</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – The fields which should be returned in the results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – List of search results (documents in MINE database).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.queries.substructure_search">
+<span class="sig-prename descclassname"><span class="pre">api.queries.</span></span><span class="sig-name descname"><span class="pre">substructure_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db:</span> <span class="pre">minedatabase.databases.MINE</span></em>, <em class="sig-param"><span class="pre">core_db:</span> <span class="pre">minedatabase.databases.MINE</span></em>, <em class="sig-param"><span class="pre">sub_structure:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">limit:</span> <span class="pre">int</span></em>, <em class="sig-param"><span class="pre">parent_filter:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">model_db:</span> <span class="pre">&lt;module</span> <span class="pre">'pymongo.database'</span> <span class="pre">from</span> <span class="pre">'/home/jonstrutz/anaconda3/envs/mine3/lib/python3.9/site-packages/pymongo/database.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">search_projection:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">int]</span> <span class="pre">=</span> <span class="pre">{'Formula':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'Generation':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'InChI_key':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'KEGG_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'MINE_id':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'SMILES':</span> <span class="pre">1</span></em>, <em class="sig-param"><span class="pre">'logP':</span> <span class="pre">1}</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#api.queries.substructure_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns compounds in the indicated database which contain the provided
+structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> (<em>MINE</em>) – Database to search.</p></li>
+<li><p><strong>sub_structure</strong> (<em>str</em>) – A compound’s substructure in molfile or SMILES format.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – The maximum number of compounds to return.</p></li>
+<li><p><strong>parent_filter</strong> (<em>str</em>) – ID of the organism in KEGG to keep only compounds in this organism.</p></li>
+<li><p><strong>model_db</strong> (<em>pymongo.database</em>) – MongoDB with KEGG organism codes and associated compounds.</p></li>
+<li><p><strong>search_projection</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – The fields which should be returned in the results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>substructure_search_results</strong> – List of search results (documents in MINE database).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-api.routes">
 <span id="api-routes-module"></span><h2>api.routes module<a class="headerlink" href="#module-api.routes" title="Permalink to this headline">¶</a></h2>
 <p>Here, routes are defined for all possible API requests. Note that nearly
 all actual logic is imported from the minedatabase package.</p>
-<dl class="function">
-<dt id="api.routes.database_query_api">
-<code class="descclassname">api.routes.</code><code class="descname">database_query_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>mongo_query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.database_query_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.database_query_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">database_query_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mongo_query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.database_query_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a direct query built with Mongo syntax.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>mongo_query</strong> (<em>str</em>) &#8211; A valid Mongo query (e.g. .../q={&#8220;ID&#8221;: &#8220;cpd00001&#8221;}).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>mongo_query</strong> (<em>str</em>) – A valid Mongo query (e.g. …/q={“ID”: “cpd00001”}).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON Documents matching provided Mongo query.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents matching provided Mongo query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_adduct_names_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_adduct_names_api</code><span class="sig-paren">(</span><em>adduct_type='all'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_adduct_names_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_adduct_names_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_adduct_names_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adduct_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_adduct_names_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get names of all adducts for the specified adduct type.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>adduct_type</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; Options are &#8216;positive&#8217;, &#8216;negative&#8217;, or &#8216;all&#8217;. Defaults to &#8216;all&#8217;.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON array of adduct names. If adduct_type == &#8216;all&#8217;, then this is an
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>adduct_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Options are ‘positive’, ‘negative’, or ‘all’. Defaults to ‘all’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of adduct names. If adduct_type == ‘all’, then this is an
 array of two arrays, with the first element being positive adducts and
-the second adduct being negative adducts.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">flask.Response</td>
-</tr>
-</tbody>
-</table>
+the second adduct being negative adducts.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_comps_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_comps_api</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_comps_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_comps_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_comps_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_comps_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get compounds for specified ids in database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>id_list</strong> (<em>list</em>) &#8211; List of compound ids. Attach as &#8220;dict&#8221; to POST request. For example,
-requests.post(&lt;this_uri&gt;, data=&#8221;{&#8216;id_list&#8217;: [&#8216;id1&#8217;, &#8216;id2&#8217;, &#8216;id3&#8217;]}&#8221;).
-IDs can be either MINE IDs or Mongo IDs (_id).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em>) – List of compound ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
+IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
+<li><p><strong>return_extra_info</strong> (<em>list</em><em>,</em><em>optional</em>) – If provided get extra info on this compound from the core and reference
+databases based on the fields in the list. Possible fields are
+“spectra”, “DB links”, and “RDKit_fp”.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of compound JSON documents.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of compound JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_ids_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_ids_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>collection_name</em>, <em>query=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ids_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_ids_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_ids_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ids_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Mongo IDs for a subset of a given database collection.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>collection_name</strong> (<em>str</em>) &#8211; Name of Mongo collection within database to query against.</li>
-<li><strong>query</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; Specifies subset of collection to retrieve ids for. Formatted as a
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>collection_name</strong> (<em>str</em>) – Name of Mongo collection within database to query against.</p></li>
+<li><p><strong>query</strong> (<em>str</em><em>,</em><em>optional</em>) – Specifies subset of collection to retrieve ids for. Formatted as a
 python dict as you would have in argument to db.collection.find().
-Defaults to None.</li>
+Defaults to None.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of ids matching query in JSON format.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of ids matching query in JSON format.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_op_w_rxns_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_op_w_rxns_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>op_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_op_w_rxns_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_kegg_info">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_kegg_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kegg_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_kegg_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get EC numbers and Pathway names from KEGG API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kegg_id</strong> (<em>str</em>) – Compound KEGG ID (must start with C).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_op_image_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_op_image_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rule_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_op_image_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get image of operator’s reaction produced using ChemAxon software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rule_name</strong> (<em>str</em>) – Name of rule from MetaCyc generalized operator set (e.g. “rule0361”).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Image of operator reaction (.jpg)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_op_w_rxns_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_op_w_rxns_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_op_w_rxns_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get operator with all its associated reactions in selected database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>op_id</strong> (<em>str</em>) &#8211; Either operator id (e.g. 1.1.-1.h) or Mongo ID (_id) for operator.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>op_id</strong> (<em>str</em>) – Either operator id (e.g. 1.1.-1.h) or Mongo ID (_id) for operator.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Operator JSON document (including associated reactions).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Operator JSON document (including associated reactions).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_ops_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_ops_api</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ops_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_ops_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_ops_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_ops_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get operators for specified ids in database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>id_list</strong> (<em>list</em><em>,</em><em>optional</em>) &#8211; List of operator ids. Attach as &#8220;dict&#8221; to POST request. For example,
-requests.post(&lt;this_uri&gt;, data=&#8221;{&#8216;id_list&#8217;: [&#8216;id1&#8217;, &#8216;id2&#8217;, &#8216;id3&#8217;]}&#8221;).
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em><em>,</em><em>optional</em>) – List of operator ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
 IDs can be either operator ids (e.g. 1.1.-1.h) or Mongo IDs (_id). If
-not provided, all operators are returned (id_list=None).</li>
+not provided, all operators are returned (id_list=None).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of operator JSON documents.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of operator JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.get_rxns_api">
-<code class="descclassname">api.routes.</code><code class="descname">get_rxns_api</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_rxns_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_rxns_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_rxns_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_rxns_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get reactions for specified ids in database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>id_list</strong> (<em>list</em>) &#8211; List of reaction ids. Attach as &#8220;dict&#8221; to POST request. For example,
-requests.post(&lt;this_uri&gt;, data=&#8221;{&#8216;id_list&#8217;: [&#8216;id1&#8217;, &#8216;id2&#8217;, &#8216;id3&#8217;]}&#8221;).
-IDs can be either MINE IDs or Mongo IDs (_id).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>id_list</strong> (<em>list</em>) – List of reaction ids. Attach as “dict” to POST request. For example,
+requests.post(&lt;this_uri&gt;, data=”{‘id_list’: [‘id1’, ‘id2’, ‘id3’]}”).
+IDs can be either MINE IDs or Mongo IDs (_id).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of reaction JSON documents.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.handle_invalid_usage">
-<code class="descclassname">api.routes.</code><code class="descname">handle_invalid_usage</code><span class="sig-paren">(</span><em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.handle_invalid_usage" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_rxns_product_of_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_rxns_product_of_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpd_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_rxns_product_of_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get reactions producing compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>cpd_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_rxns_reactant_in_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_rxns_reactant_in_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpd_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_rxns_reactant_in_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get reactions consuming compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>cpd_id</strong> (<em>str</em>) – Mongo ID of compound.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of reaction JSON documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.get_thermo_info">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">get_thermo_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.get_thermo_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get dG formation for compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c_id</strong> (<em>str</em>) – Mongo ID of compound.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON dict with dG formation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.handle_invalid_usage">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">handle_invalid_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.handle_invalid_usage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes it so user can receive an informative error message rather than
 a default internal server error.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.model_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">model_search_api</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.model_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.model_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">model_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.model_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a model search and return results.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>str</em>) &#8211; KEGG Org Code or Org Name of model(s) to search for (e.g. &#8216;hsa&#8217; or
-&#8216;yeast&#8217;). Can provide multiple search terms by separating each term
-with a space.  TODO: change from space delimiter to something else</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON Document with KEGG org codes matching query.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">flask.Response</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – KEGG Org Code or Org Name of model(s) to search for (e.g. ‘hsa’ or
+‘yeast’). Can provide multiple search terms by separating each term
+with a space.  TODO: change from space delimiter to something else</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document with KEGG org codes matching query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.ms2_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">ms2_search_api</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms2_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.ms2_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">ms2_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms2_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for commpound-adducts matching precursor mass(es).</p>
 <p>Attach all arguments besides db_name as form data in POST request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>tolerance</strong> (<em>float</em>) &#8211; Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
-ppm is set to True.</li>
-<li><strong>charge</strong> (<em>bool</em>) &#8211; Positive or negative mode. (True for positive, False for negative).</li>
-<li><strong>energy_level</strong> (<em>int</em>) &#8211; Fragmentation energy level to use. May be 10, 20, or 40.</li>
-<li><strong>scoring_function</strong> (<em>str</em>) &#8211; Scoring function to use. Can be either &#8216;jaccard&#8217; or &#8216;dot product&#8217;.</li>
-<li><strong>text</strong> (<em>str</em>) &#8211; Text as in metabolomics datafile for specific peak.</li>
-<li><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
-None, assumes m/z values are separated by newlines. Default is None.</li>
-<li><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) &#8211; List of adducts to use. If not specified, uses all adducts.
-(adducts=None)</li>
-<li><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) &#8211; List of model _ids. If supplied, score compounds higher if present
-in metabolic model. Defaults to None.</li>
-<li><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; Specifies whether tolerance is in ppm. Defaults to False.</li>
-<li><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) &#8211; Length 2 tuple specifying min and max logp to filter compounds (e.g.
-(-1, 2)). Defaults to None.</li>
-<li><strong>halogens</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; Specifies whether to filter out compounds containing F, Cl, or Br.
-Filtered out if set to True. Defaults to False.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
+ppm is set to True.</p></li>
+<li><p><strong>charge</strong> (<em>bool</em>) – Positive or negative mode. (True for positive, False for negative).</p></li>
+<li><p><strong>energy_level</strong> (<em>int</em>) – Fragmentation energy level to use. May be 10, 20, or 40.</p></li>
+<li><p><strong>scoring_function</strong> (<em>str</em>) – Scoring function to use. Can be either ‘jaccard’ or ‘dot product’.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text as in metabolomics datafile for specific peak.</p></li>
+<li><p><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
+None, assumes m/z values are separated by newlines. Default is None.</p></li>
+<li><p><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) – List of adducts to use. If not specified, uses all adducts.
+(adducts=None)</p></li>
+<li><p><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) – List of model _ids. If supplied, score compounds higher if present
+in metabolic model. Defaults to None.</p></li>
+<li><p><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether tolerance is in ppm. Defaults to False.</p></li>
+<li><p><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) – Length 2 tuple specifying min and max logp to filter compounds (e.g.
+(-1, 2)). Defaults to None.</p></li>
+<li><p><strong>halogens</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether to filter out compounds containing F, Cl, or Br.
+Filtered out if set to True. Defaults to False.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON array of compounds that match m/z within defined tolerance and
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of compounds that match m/z within defined tolerance and
 after passing other defined filters (such as logP).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.ms_adduct_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">ms_adduct_search_api</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms_adduct_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.ms_adduct_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">ms_adduct_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.ms_adduct_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for commpound-adducts matching precursor mass(es).</p>
 <p>Attach all arguments besides db_name as JSON data in POST request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>tolerance</strong> (<em>float</em>) &#8211; Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
-ppm is set to True.</li>
-<li><strong>charge</strong> (<em>bool</em>) &#8211; Positive or negative mode. (True for positive, False for negative).</li>
-<li><strong>text</strong> (<em>str</em>) &#8211; Text as in metabolomics datafile for specific peak.</li>
-<li><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
-None, assumes m/z values are separated by newlines. Default is None.</li>
-<li><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) &#8211; List of adducts to use. If not specified, uses all adducts
-(adducts=None).</li>
-<li><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) &#8211; List of model _ids. If supplied, score compounds higher if present
-in metabolic model. Defaults to None.</li>
-<li><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; Specifies whether tolerance is in ppm. Defaults to False.</li>
-<li><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) &#8211; Length 2 tuple specifying min and max logp to filter compounds (e.g.
-(-1, 2)). Defaults to None.</li>
-<li><strong>halogen</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; Specifies whether to filter out compounds containing F, Cl, or Br.
-Filtered out if set to True. Defaults to False.</li>
-<li><strong>verbose</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; If True, verbose output. Defaults to False.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Specifies tolerance for m/z, in mDa by default. Can specify in ppm if
+ppm is set to True.</p></li>
+<li><p><strong>charge</strong> (<em>bool</em>) – Positive or negative mode. (True for positive, False for negative).</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text as in metabolomics datafile for specific peak.</p></li>
+<li><p><strong>text_type</strong> (<em>str</em><em>,</em><em>optional</em>) – Type of metabolomics datafile (mgf, mzXML, and msp are supported). If
+None, assumes m/z values are separated by newlines. Default is None.</p></li>
+<li><p><strong>adducts</strong> (<em>list</em><em>,</em><em>optional</em>) – List of adducts to use. If not specified, uses all adducts
+(adducts=None).</p></li>
+<li><p><strong>models</strong> (<em>list</em><em>,</em><em>optional</em>) – List of model _ids. If supplied, score compounds higher if present
+in metabolic model. Defaults to None.</p></li>
+<li><p><strong>ppm</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether tolerance is in ppm. Defaults to False.</p></li>
+<li><p><strong>logp</strong> (<em>tuple</em><em>,</em><em>optional</em>) – Length 2 tuple specifying min and max logp to filter compounds (e.g.
+(-1, 2)). Defaults to None.</p></li>
+<li><p><strong>halogen</strong> (<em>bool</em><em>,</em><em>optional</em>) – Specifies whether to filter out compounds containing F, Cl, or Br.
+Filtered out if set to True. Defaults to False.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>,</em><em>optional</em>) – If True, verbose output. Defaults to False.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON array of compounds that match m/z within defined tolerance and
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON array of compounds that match m/z within defined tolerance and
 after passing other defined filters (such as logP).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.quick_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">quick_search_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>query</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.quick_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.quick_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">quick_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.quick_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a quick search and return results.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>query</strong> (<em>str</em>) &#8211; A MINE id, KEGG code, ModelSEED id, Inchikey, or Name.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – A MINE id, KEGG code, ModelSEED id, Inchikey, or Name.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON Documents matching query.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents matching query.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.similarity_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">similarity_search_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>smiles=None</em>, <em>min_tc=0.7</em>, <em>limit=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.similarity_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.similarity_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">similarity_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.similarity_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a similarity search for a SMILES string and return results.</p>
 <p>Either a SMILES string or mol object string is required. SMILES is the
 recommended format. If GET request, uses smiles. If POST, uses mol.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>smiles</strong> (<em>str</em>) &#8211; SMILES string describing molecular structure of query molecule. Either
-smiles or mol arg is required (smiles arg recommended over mol arg).</li>
-<li><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; mol object in str format (should contain a lot of strange chars like
-&#8220;%20&#8221; and end with &#8220;END&#8221;). Used only for the MINE website backend
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule. Either
+smiles or mol arg is required (smiles arg recommended over mol arg).</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
 because MarvinJS on the front end only generates mol objects from input
 structures, and cannot convert it to SMILES. Captured from form data.
-Defaults to None.</li>
-<li><strong>min_tc</strong> (<em>float</em><em>,</em><em>optional</em>) &#8211; Minimum Tanimoto Coefficient required for similarity match. Defaults to
-0.7.</li>
-<li><strong>limit</strong> (<em>int</em><em>,</em><em>optional</em>) &#8211; Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</li>
-<li><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; KEGG organism code (e.g. &#8216;hsa&#8217;). Adds annotations to each compound
+Defaults to None.</p></li>
+<li><p><strong>min_tc</strong> (<em>float</em><em>,</em><em>optional</em>) – Minimum Tanimoto Coefficient required for similarity match. Defaults to
+0.7.</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>,</em><em>optional</em>) – Maximum number of results (compounds) to return. By default, returns
+up to 100 results (limit=100).</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
 based on whether it is in or could be derived from the KEGG compounds
-in this organism (provided in the &#8216;Likelihood_score&#8217; field of each
-compound document). Defaults to None.</li>
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON Document of similar compounds.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document of similar compounds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.spectra_download_api">
-<code class="descclassname">api.routes.</code><code class="descname">spectra_download_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>mongo_query=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.spectra_download_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.spectra_download_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">spectra_download_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mongo_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.spectra_download_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download one or more spectra for compounds matching a given query.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of DB containing compound documents to search.</li>
-<li><strong>mongo_query</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; A valid Mongo query as a literal string. If None, all compound spectra
-are returned. Defaults to None.</li>
-<li><strong>parent_filter</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; If set to a metabolic model&#8217;s Mongo _id, only get spectra for compounds
-in or derived from that metabolic model. Defaults to None.</li>
-<li><strong>putative</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; If False, only find known compounds (i.e. in Generation 0). Otherwise,
-finds both known and predicted compounds. Defaults to True.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Text of all matching spectra, including headers and peak lists.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mongo_id</strong> (<em>str</em>) – Mongo ID of compound to get spectra for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Text of spectra for input compound.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.structure_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">structure_search_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>smiles=None</em>, <em>stereo=True</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.structure_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.structure_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">structure_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.structure_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an exact structure search and return results.</p>
 <p>If GET request, uses smiles. If POST, uses mol.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>smiles</strong> (<em>str</em>) &#8211; SMILES string describing molecular structure of query molecule.</li>
-<li><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; mol object in str format (should contain a lot of strange chars like
-&#8220;%20&#8221; and end with &#8220;END&#8221;). Used only for the MINE website backend
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular structure of query molecule.</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (should contain a lot of strange chars like
+“%20” and end with “END”). Used only for the MINE website backend
 because MarvinJS on the front end only generates mol objects from input
 structures, and cannot convert it to SMILES. Captured from form data.
-Defaults to None.</li>
-<li><strong>stereo</strong> (<em>bool</em><em>,</em><em>optional</em>) &#8211; If true, uses sterochemistry in finding exact match. Defaults to True.</li>
-<li><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; KEGG organism code (e.g. &#8216;hsa&#8217;). Adds annotations to each compound
+Defaults to None.</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>,</em><em>optional</em>) – KEGG organism code (e.g. ‘hsa’). Adds annotations to each compound
 based on whether it is in or could be derived from the KEGG compounds
-in this organism (provided in the &#8216;Likelihood_score&#8217; field of each
-compound document). Defaults to None.</li>
+in this organism (provided in the ‘Likelihood_score’ field of each
+compound document). Defaults to None.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON Document of match (empty if no match).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Document of match (empty if no match).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="api.routes.substructure_search_api">
-<code class="descclassname">api.routes.</code><code class="descname">substructure_search_api</code><span class="sig-paren">(</span><em>db_name</em>, <em>smiles=None</em>, <em>limit=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.substructure_search_api" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.routes.substructure_search_api">
+<span class="sig-prename descclassname"><span class="pre">api.routes.</span></span><span class="sig-name descname"><span class="pre">substructure_search_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.routes.substructure_search_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a substructure search and return results.</p>
 <p>If GET request, uses smiles. If POST, uses mol.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_name</strong> (<em>str</em>) &#8211; Name of Mongo database to query against.</li>
-<li><strong>smiles</strong> (<em>str</em>) &#8211; SMILES string describing molecular substructure to search for.</li>
-<li><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; mol object in str format (may contain a lot of whitespace hex-chars
-like &#8220;%20&#8221; and end with &#8220;END&#8221;). Used only for the MINE website backend
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of Mongo database to query against.</p></li>
+<li><p><strong>smiles</strong> (<em>str</em>) – SMILES string describing molecular substructure to search for.</p></li>
+<li><p><strong>mol</strong> (<em>str</em><em>,</em><em>optional</em>) – mol object in str format (may contain a lot of whitespace hex-chars
+like “%20” and end with “END”). Used only for the MINE website backend
 because MarvinJS on the front end only generates mol objects from
 input structures, and cannot convert it to SMILES. Captured from form
-data. Defaults to None.</li>
-<li><strong>limit</strong> (<em>int</em>) &#8211; Maximum number of results (compounds) to return. By default, returns
-all results (limit=-1).</li>
+data. Defaults to None.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Maximum number of results (compounds) to return. By default, returns
+100 results.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON Documents of compounds containing given substructure.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">flask.Response</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON Documents of compounds containing given substructure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>flask.Response</p>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-api.run">
+</section>
+<section id="module-api.run">
 <span id="api-run-module"></span><h2>api.run module<a class="headerlink" href="#module-api.run" title="Permalink to this headline">¶</a></h2>
 <p>This is the main file that runs the app. FLASK_APP env variable should be
-set to a path to this file (e.g. on Windows &#8220;set FLASK_APP=api/run.py&#8221;).</p>
-<dl class="function">
-<dt id="api.run.create_app">
-<code class="descclassname">api.run.</code><code class="descname">create_app</code><span class="sig-paren">(</span><em>instance_config=&lt;class 'api.config.Config'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#api.run.create_app" title="Permalink to this definition">¶</a></dt>
+set to a path to this file (e.g. on Windows “set FLASK_APP=api/run.py”).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.run.create_app">
+<span class="sig-prename descclassname"><span class="pre">api.run.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">instance_config=&lt;class</span> <span class="pre">'api.config.Config'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.run.create_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Flask instance of MINE-Server with a specified configuration.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>instance_config</strong> (<a class="reference internal" href="#api.config.Config" title="api.config.Config"><em>Config</em></a><em> (</em><em>default: app.config.Config</em><em>)</em>) &#8211; Specifies configuration for this instance. Useful to change when
-running unit tests (see app.config_unittest.ConfigUnitTest).</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instance_config</strong> (<a class="reference internal" href="#api.config.Config" title="api.config.Config"><em>Config</em></a><em> (</em><em>default: app.config.Config</em><em>)</em>) – Specifies configuration for this instance. Useful to change when
+running unit tests (see app.config_unittest.ConfigUnitTest).</p>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This method is automatically called by Flask upon startup.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-api">
+</section>
+<section id="module-api.thermodynamics">
+<span id="api-thermodynamics-module"></span><h2>api.thermodynamics module<a class="headerlink" href="#module-api.thermodynamics" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">api.thermodynamics.</span></span><span class="sig-name descname"><span class="pre">MINE_thermo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mongo_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postgres_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'postgresql:///eq_compounds'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.thermodynamics.MINE_thermo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo.get_eQ_compound_from_cid">
+<span class="sig-name descname"><span class="pre">get_eQ_compound_from_cid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">equilibrator_cache.models.compound.Compound</span></span></span><a class="headerlink" href="#api.thermodynamics.MINE_thermo.get_eQ_compound_from_cid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an equilibrator compound for a given c_id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c_id</strong> (<em>str</em>) – compound ID for MongoDB lookup of a compound.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>eQuilibrator Compound</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>equilibrator_assets.compounds.Compound</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo.get_eQ_reaction_from_rid">
+<span class="sig-name descname"><span class="pre">get_eQ_reaction_from_rid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">equilibrator_api.phased_reaction.PhasedReaction</span></span></span><a class="headerlink" href="#api.thermodynamics.MINE_thermo.get_eQ_reaction_from_rid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an eQuilibrator reaction object from an r_id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_id</strong> (<em>str</em>) – Reaction id to get object for.</p></li>
+<li><p><strong>mine</strong> (<em>str</em>) – Database to look for reaction in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>eQuilibrator reactiono to calculate ∆Gr with.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PhasedReaction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo.physiological_dg_prime_from_rid">
+<span class="sig-name descname"><span class="pre">physiological_dg_prime_from_rid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.thermodynamics.MINE_thermo.physiological_dg_prime_from_rid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the ∆G’physiological of a reaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_id</strong> (<em>str</em>) – ID of the reaction to calculate.</p></li>
+<li><p><strong>mine</strong> (<em>str</em>) – MINE the reaction is found in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated ∆G’physiological.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pint.Measurement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo.standard_dg_formation_from_cid">
+<span class="sig-name descname"><span class="pre">standard_dg_formation_from_cid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pint.measurement.Measurement</span></span></span><a class="headerlink" href="#api.thermodynamics.MINE_thermo.standard_dg_formation_from_cid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get standard ∆Gf for a compound.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c_id</strong> (<em>str</em>) – Compound ID to get the ∆Gf for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>∆Gf for a compound.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pint.Measurement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="api.thermodynamics.MINE_thermo.standard_dg_from_rid">
+<span class="sig-name descname"><span class="pre">standard_dg_from_rid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.thermodynamics.MINE_thermo.standard_dg_from_rid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the ∆Go of a reaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_id</strong> (<em>str</em>) – ID of the reaction to calculate.</p></li>
+<li><p><strong>mine</strong> (<em>str</em>) – MINE the reaction is found in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calculated ∆Go.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pint.Measurement</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-api.utils">
+<span id="api-utils-module"></span><h2>api.utils module<a class="headerlink" href="#module-api.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.utils.extract_enzyme_pathway_from_kegg_data">
+<span class="sig-prename descclassname"><span class="pre">api.utils.</span></span><span class="sig-name descname"><span class="pre">extract_enzyme_pathway_from_kegg_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.utils.extract_enzyme_pathway_from_kegg_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get enzyme and pathway info from KEGG api response for compound.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.utils.get_extra_info">
+<span class="sig-prename descclassname"><span class="pre">api.utils.</span></span><span class="sig-name descname"><span class="pre">get_extra_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.utils.get_extra_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look up compounds in core database to get spectra, fingerprints,
+and DB Links.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.utils.get_smiles_from_mol_string">
+<span class="sig-prename descclassname"><span class="pre">api.utils.</span></span><span class="sig-name descname"><span class="pre">get_smiles_from_mol_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.utils.get_smiles_from_mol_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a molfile in string format to a SMILES string.</p>
+</dd></dl>
+
+</section>
+<section id="module-api">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">api package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-api.config">api.config module</a></li>
+<li><a class="reference internal" href="#module-api.credentials">api.credentials module</a></li>
 <li><a class="reference internal" href="#module-api.database">api.database module</a></li>
+<li><a class="reference internal" href="#module-api.database_thermo">api.database_thermo module</a></li>
 <li><a class="reference internal" href="#module-api.exceptions">api.exceptions module</a></li>
+<li><a class="reference internal" href="#module-api.queries">api.queries module</a></li>
 <li><a class="reference internal" href="#module-api.routes">api.routes module</a></li>
 <li><a class="reference internal" href="#module-api.run">api.run module</a></li>
+<li><a class="reference internal" href="#module-api.thermodynamics">api.thermodynamics module</a></li>
+<li><a class="reference internal" href="#module-api.utils">api.utils module</a></li>
 <li><a class="reference internal" href="#module-api">Module contents</a></li>
 </ul>
 </li>
@@ -641,15 +1132,15 @@ running unit tests (see app.config_unittest.ConfigUnitTest).</td>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -666,12 +1157,13 @@ running unit tests (see app.config_unittest.ConfigUnitTest).</td>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="contents.html">MINE-Server  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MINE-Server  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">api package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, James Jeffryes, Jonathan Strutz.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
   </body>
 </html>

@@ -77,7 +77,7 @@ def quick_search_api(db_name, query):
                       '/<int:limit>')
 @mineserver_api.route('/similarity-search/<db_name>/smiles=<smiles>'
                       '/<float:min_tc>/<int:limit>')
-def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=-1):
+def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=100):
     """Perform a similarity search for a SMILES string and return results.
 
     .. :quickref: Compound; Structure similarity search
@@ -101,7 +101,7 @@ def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=-1):
         0.7.
     :param int,optional limit:
         Maximum number of results (compounds) to return. By default, returns
-        all results (limit=-1).
+        up to 100 results (limit=100).
     :param str,optional model:
         KEGG organism code (e.g. 'hsa'). Adds annotations to each compound
         based on whether it is in or could be derived from the KEGG compounds
@@ -193,7 +193,7 @@ def structure_search_api(db_name, smiles=None):
 @mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>')
 @mineserver_api.route('/substructure-search/<db_name>/smiles=<smiles>'
                       '/<int:limit>')
-def substructure_search_api(db_name, smiles=None, limit=-1):
+def substructure_search_api(db_name, smiles=None, limit=100):
     """Perform a substructure search and return results.
 
     .. :quickref: Compound; Substructure search
@@ -212,7 +212,7 @@ def substructure_search_api(db_name, smiles=None, limit=-1):
         data. Defaults to None.
     :param int limit:
         Maximum number of results (compounds) to return. By default, returns
-        all results (limit=-1).
+        100 results.
 
     :return: JSON Documents of compounds containing given substructure.
     :rtype: flask.Response
@@ -363,7 +363,6 @@ def get_comps_api(db_name):
     ref_db = mongo.cx[app.config['REF_DB_NAME']]
     results = get_comps(db, id_list, core_db)
 
-    print(results)
     if return_extra_info and results and all(results):
         results = get_extra_info(db, core_db, ref_db, results)
 
@@ -829,43 +828,19 @@ def ms2_search_api(db_name):
 
     return json_results
 
-
-@mineserver_api.route('/spectra-download/<db_name>', methods=['GET', 'POST'])
-@mineserver_api.route('/spectra-download/<db_name>/q=<mongo_query>',
-                      methods=['GET', 'POST'])
-def spectra_download_api(db_name, mongo_query=None):
+@mineserver_api.route('/spectra-download/<mongo_id>')
+def spectra_download_api(mongo_id):
     """Download one or more spectra for compounds matching a given query.
 
     .. :quickref: Spectra; Get computationally predicted MS2 spectra
 
-    :param str db_name:
-        Name of DB containing compound documents to search.
-    :param str,optional mongo_query:
-        A valid Mongo query as a literal string. If None, all compound spectra
-        are returned. Defaults to None.
-    :param str,optional parent_filter:
-        If set to a metabolic model's Mongo _id, only get spectra for compounds
-        in or derived from that metabolic model. Defaults to None.
-    :param bool,optional putative:
-        If False, only find known compounds (i.e. in Generation 0). Otherwise,
-        finds both known and predicted compounds. Defaults to True.
+    :param str mongo_id:
+        Mongo ID of compound to get spectra for.
 
-    :return: Text of all matching spectra, including headers and peak lists.
+    :return: Text of spectra for input compound.
     :rtype: flask.Response
     """
-    parent_filter = None
-    putative = None
-    if request.method == 'POST':
-        json_data = request.get_json()
-
-        if 'parent_filter' in json_data:
-            parent_filter = json_data['parent_filter']
-
-        if 'putative' in json_data:
-            putative = bool(json_data['putative'])
-
-    db = mongo.cx[db_name]
-    results = spectra_download(db, mongo_query=mongo_query,
-                               parent_filter=parent_filter, putative=putative)
+    core_db = mongo.cx[app.config['CORE_DB_NAME']]
+    results = spectra_download(core_db, mongo_id)
 
     return app.response_class(results)

@@ -168,7 +168,7 @@ def similarity_search(
             ]
         },
         # search_projection,
-    ).limit(limit):
+    ):
         # Put fingerprint in set for fast union (&) and intersection (|)
         # calculations
         test_fp = set(x[fp_type])
@@ -176,8 +176,11 @@ def similarity_search(
         tmc = len(query_fp & test_fp) / float(len(query_fp | test_fp))
         # If a sufficient tanimoto coefficient is calculated, append the
         # compound to the search results (until the limit is reached)
+        #print(tmc)
         if tmc >= min_tc:
             similarity_search_results.append(x)
+            if len(similarity_search_results) >= limit:
+                break
 
     # del search_projection[fp_type]
 
@@ -293,7 +296,7 @@ def substructure_search(
                 {"MINES": db.name}
             ]
         },
-        search_projection).limit(limit):
+        search_projection):
 
         # Get Mol object from SMILES string (rdkit)
         comp = AllChem.MolFromSmiles(x["SMILES"])
@@ -302,6 +305,8 @@ def substructure_search(
         # limit).
         if comp and comp.HasSubstructMatch(mol):
             substructure_search_results.append(x)
+            if len(substructure_search_results) >= limit:
+                break
 
     if parent_filter and model_db:
         substructure_search_results = score_compounds(
@@ -508,7 +513,7 @@ def get_op_w_rxns(db: MINE, operator_id: str, limit: int = 100) -> Dict:
     db : MINE
         DB to search.
     operator_id : str
-        Mongo _id or operator name (e.g. 1.1.-1.h).
+        Mongo _id or operator name (e.g. rule0001).
     limit : int
         Max number of reaction _ids to return with operator.
 

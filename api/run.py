@@ -88,4 +88,5 @@ def create_app(instance_config=Config):
 
 if __name__ == "__main__":
     application = create_app()
-    application.run(debug=False)
+    application.run(debug=False,
+                    ssl_context='adhoc')
