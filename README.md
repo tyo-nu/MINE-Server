@@ -4,4 +4,4 @@ This repository contains the RESTful API client for the MINE databases, written 
 
 To learn more about the MINE databases, visit https://minedatabase.ci.northwestern.edu.
 
-See docs/API Examples.ipynb for example API usage. For API documentation, please see https://mine-api.readthedocs.io/en/latest/.
+See [docs/API Examples.ipynb](https://github.com/tyo-nu/MINE-Server/blob/master/docs/API%20Examples.ipynb) for example API usage. For API documentation, please see https://mine-api.readthedocs.io/en/latest/.
