@@ -20,9 +20,6 @@ DEFAULT_PROJECTION = {
     "Charge": 1,
     "Inchi": 1,
     "Mass": 1,
-    "MINES": 0,
-    "RDKit_fp": 0,
-    "Spectra": 0,
     "len_RDKit_fp": 1
 }
 
@@ -166,6 +163,7 @@ def similarity_search(
     # search_projection[fp_type] = 1
 
     # Filter compounds that meet tanimoto coefficient size requirements
+    search_projection['RDKit_fp'] = 1
     for x in core_db.compounds.find(
         {
             "$and": [
@@ -189,7 +187,7 @@ def similarity_search(
             if len(similarity_search_results) >= limit:
                 break
 
-    # del search_projection[fp_type]
+    del search_projection['RDKit_fp']
 
     if parent_filter and model_db:
         similarity_search_results = score_compounds(
