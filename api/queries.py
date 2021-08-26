@@ -16,7 +16,14 @@ DEFAULT_PROJECTION = {
     "MINE_id": 1,
     "KEGG_id": 1,
     "Formula": 1,
-    "logP": 1
+    "logP": 1,
+    "Charge": 1,
+    "Inchi": 1,
+    "Mass": 1,
+    "MINES": 0,
+    "RDKit_fp": 0,
+    "Spectra": 0,
+    "len_RDKit_fp": 1
 }
 
 
@@ -167,7 +174,7 @@ def similarity_search(
                 {"MINES": db_name}
             ]
         },
-        # search_projection,
+        search_projection,
     ):
         # Put fingerprint in set for fast union (&) and intersection (|)
         # calculations
