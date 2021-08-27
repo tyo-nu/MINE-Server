@@ -9,8 +9,7 @@ from flask import current_app as app
 from flask import jsonify, request
 from flask.helpers import send_from_directory
 from minedatabase.metabolomics import (ms2_search, ms_adduct_search, read_adduct_names,
-                                       spectra_download)
-from minedatabase.utils import score_compounds
+                                       score_compounds, spectra_download)
 
 from api.config import Config
 from api.database import mongo
@@ -122,10 +121,11 @@ def similarity_search_api(db_name, smiles=None, min_tc=0.7, limit=100):
     else:
         model = None
 
+    db = mongo.cx[db_name]
     model_db = mongo.cx[app.config['KEGG_DB_NAME']]
     core_db = mongo.cx[app.config['CORE_DB_NAME']]
 
-    results = similarity_search(db_name, core_db, smiles, min_tc=min_tc, limit=limit,
+    results = similarity_search(db, core_db, smiles, min_tc=min_tc, limit=limit,
                                 parent_filter=model, model_db=model_db)
     json_results = jsonify(results)
 
@@ -178,7 +178,7 @@ def structure_search_api(db_name, smiles=None):
     db = mongo.cx[db_name]
     core_db = mongo.cx[app.config['CORE_DB_NAME']]
     ref_db = mongo.cx[app.config['REF_DB_NAME']]
-    results = structure_search(db, smiles, model_db=model_db, parent_filter=model)
+    results = structure_search(db, core_db, smiles, model_db=model_db, parent_filter=model)
     results = get_extra_info(db, core_db, ref_db, results)
     json_results = jsonify(results)
 

@@ -7,7 +7,7 @@ import pymongo
 from rdkit.Chem import AllChem
 
 from minedatabase.databases import MINE
-from minedatabase.utils import score_compounds
+from minedatabase.metabolomics import score_compounds
 
 DEFAULT_PROJECTION = {
     "SMILES": 1,
@@ -108,7 +108,7 @@ def advanced_search(
 
 
 def similarity_search(
-    db_name: MINE,
+    db: MINE,
     core_db: MINE,
     comp_structure: str,
     min_tc: float,
@@ -169,7 +169,7 @@ def similarity_search(
             "$and": [
                 {"len_" + fp_type: {"$gte": min_tc * len_fp}},
                 {"len_" + fp_type: {"$lte": len_fp / min_tc}},
-                {"MINES": db_name}
+                {"MINES": db.name}
             ]
         },
         search_projection,
@@ -191,7 +191,8 @@ def similarity_search(
 
     if parent_filter and model_db:
         similarity_search_results = score_compounds(
-            model_db, similarity_search_results, parent_filter
+            similarity_search_results, parent_filter, core_db=core_db, mine_db=db,
+            kegg_db=model_db, get_native=True
         )
 
     return similarity_search_results
@@ -199,6 +200,7 @@ def similarity_search(
 
 def structure_search(
     db: MINE,
+    core_db: MINE,
     comp_structure: str,
     parent_filter: str = None,
     model_db: pymongo.database = None,
@@ -243,7 +245,10 @@ def structure_search(
                search_projection)]
 
     if parent_filter and model_db:
-        results = score_compounds(model_db, results, parent_filter)
+        results = score_compounds(
+            results, parent_filter, core_db=core_db, mine_db=db,
+            kegg_db=model_db, get_native=True
+        )
 
     return results
 
@@ -315,7 +320,8 @@ def substructure_search(
 
     if parent_filter and model_db:
         substructure_search_results = score_compounds(
-            model_db, substructure_search_results, parent_filter
+            substructure_search_results, parent_filter, core_db=core_db, mine_db=db,
+            kegg_db=model_db, get_native=True
         )
 
     return substructure_search_results
