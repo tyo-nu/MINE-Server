@@ -19,7 +19,7 @@ class Config(object):
     """Class to configure important filepaths and settings."""
     # ------------------------------ Switches ------------------------------- #
     #: Whether to use thermo database - useful to switch off for development
-    THERMO_ON = True
+    THERMO_ON = False
 
     # ------------------------------ Filepaths ------------------------------ #
     # Local filepaths are defined here
