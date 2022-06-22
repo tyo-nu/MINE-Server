@@ -36,7 +36,7 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 minedatabase==1.0.0
 more-itertools==8.0.2
-numpy==1.17.4
+numpy==1.22.0
 olefile==0.46
 packaging==20.0
 pandas==0.25.3
